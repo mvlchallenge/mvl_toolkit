@@ -1,0 +1,15 @@
+# Byte-compiled / optimized / DLL files
+*/__pycache__/
+*__pycache__/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# VS-Code
+*.code-workspace
+*.vscode/
+*logs/
+*ckpt/
+*.egg-info
+assets/
