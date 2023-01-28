@@ -4,6 +4,7 @@ import logging
 import os
 import shutil
 import sys
+from pathlib import Path
 
 import dill
 import numpy as np
@@ -44,14 +45,14 @@ def create_directory(output_dir, delete_prev=True):
         shutil.rmtree(output_dir, ignore_errors=True)
     logging.info(f"Dir created: {output_dir}")
     os.makedirs(output_dir, exist_ok=True)
-    return output_dir
+    return Path(output_dir).resolve()
 
 def save_obj(filename, obj):
     dill.dump(obj, open(filename, "wb"))
     print(f" >> OBJ saved: {filename}")
 
 
-def get_files_given_a_pattern(data_dir, flag_file, exclude="", include_flag_file=False):
+def get_files_given_a_pattern(data_dir, flag_file, exclude="", include_flag_file=False, isDir=False):
     """
     Searches in the the @data_dir, recurrently, the sub-directories which content the @flag_file.
     exclude directories can be passed to speed up the rearching
@@ -59,10 +60,14 @@ def get_files_given_a_pattern(data_dir, flag_file, exclude="", include_flag_file
     scenes_paths = []
     for root, dirs, files in os.walk(data_dir):
         dirs[:] = [d for d in dirs if d not in exclude]
-        if include_flag_file:
-            [scenes_paths.append(os.path.join(root, flag_file)) for f in files if flag_file in f]
+        if not isDir:
+            if include_flag_file:
+                [scenes_paths.append(os.path.join(root, f)) for f in files if flag_file in f]
+            else:
+                [scenes_paths.append(root) for f in files if flag_file in f]
         else:
-            [scenes_paths.append(root) for f in files if flag_file in f]
+            [scenes_paths.append(os.path.join(root, flag_file)) for d in dirs if flag_file in d]
+            
     return scenes_paths
 
 
