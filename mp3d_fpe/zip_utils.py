@@ -1,9 +1,9 @@
 import argparse
 import os
 import zipfile
+from pathlib import Path
 
 from tqdm import tqdm
-from pathlib import Path
 
 from mp3d_fpe.io_utils import create_directory, get_files_given_a_pattern
 
