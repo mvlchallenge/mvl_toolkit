@@ -16,6 +16,7 @@ def save_json_dict(filename, dict_data):
     with open(filename, 'w') as outfile:
         json.dump(dict_data, outfile, indent='\t')
 
+
 def read_csv_file(filename):
     with open(filename) as f:
         csvreader = csv.reader(f)
@@ -47,6 +48,7 @@ def create_directory(output_dir, delete_prev=True):
     os.makedirs(output_dir, exist_ok=True)
     return Path(output_dir).resolve()
 
+
 def save_obj(filename, obj):
     dill.dump(obj, open(filename, "wb"))
     print(f" >> OBJ saved: {filename}")
@@ -67,7 +69,7 @@ def get_files_given_a_pattern(data_dir, flag_file, exclude="", include_flag_file
                 [scenes_paths.append(root) for f in files if flag_file in f]
         else:
             [scenes_paths.append(os.path.join(root, flag_file)) for d in dirs if flag_file in d]
-            
+
     return scenes_paths
 
 
