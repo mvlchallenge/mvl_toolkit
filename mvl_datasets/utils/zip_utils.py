@@ -31,12 +31,12 @@ def zip_geometry_files(list_scenes, args):
     for scene in list_scenes:
         zip_filename = os.path.join(args.o,
                                     f"{scene.replace('/', '_')}_geometry.zip")
-        scene_dir = os.path.join(args.s, scene)
+        scene_dir = os.path.join(args.scene_dir, scene)
         with zipfile.ZipFile(file=zip_filename, mode='w') as zf:
             list_fn = []
             for fn in geometry_files:
                 list_fn += get_files_given_a_pattern(
-                    data_dir=os.path.join(args.s, scene),
+                    data_dir=os.path.join(args.scene_dircene_dir, scene),
                     flag_file=fn,
                     exclude=["depth", "hn_mp3d"],
                     include_flag_file=True)
@@ -63,7 +63,7 @@ def zip_rgb_files(list_scenes, args):
     for scene in list_scenes:
         zip_filename = os.path.join(args.o,
                                     f"{scene.replace('/', '_')}_rgb.zip")
-        scene_dir = os.path.join(args.s, scene)
+        scene_dir = os.path.join(args.scene_dir, scene)
         with zipfile.ZipFile(file=zip_filename, mode='w') as zf:
             list_fn = get_list_frames(scene_dir)
             [
@@ -79,7 +79,7 @@ def zip_depth_files(list_scenes, args):
     for scene in list_scenes:
         zip_filename = os.path.join(args.o,
                                     f"{scene.replace('/', '_')}_depth.zip")
-        scene_dir = os.path.join(args.s, scene)
+        scene_dir = os.path.join(args.scene_dir, scene)
         with zipfile.ZipFile(file=zip_filename, mode='w') as zf:
             list_fn = get_list_frames(scene_dir)
             [
@@ -97,7 +97,7 @@ def zip_npy_files(list_scenes, args):
     for scene in list_scenes:
         zip_filename = os.path.join(args.o,
                                     f"{scene.replace('/', '_')}_npy.zip")
-        scene_dir = os.path.join(args.s, scene)
+        scene_dir = os.path.join(args.scene_dir, scene)
         with zipfile.ZipFile(file=zip_filename, mode='w') as zf:
             list_fn = get_files_given_a_pattern(data_dir=scene_dir,
                                                 flag_file=".npy",
@@ -121,10 +121,10 @@ def zip_mvl_data(args):
     # ! Create output directory
     create_directory(args.o, delete_prev=False)
 
-    print(f"Identifying mvl scenes in {args.s}.")
+    print(f"Identifying mvl scenes in {args.scene_dir}.")
     list_scenes = get_files_given_a_pattern(
-        args.s, "minos_poses.txt", exclude=["depth", 'rgb', "hn_mp3d"])
-    list_arcname = process_arcname(list_scenes, base_dir=args.s)
+        args.scene_dir, "minos_poses.txt", exclude=["depth", 'rgb', "hn_mp3d"])
+    list_arcname = process_arcname(list_scenes, base_dir=args.scene_dir)
     print(f"Found {list_arcname.__len__()} mvl scenes.")
 
     if "npy" in args.keys:
@@ -145,7 +145,7 @@ def get_argparse():
 
     # * Input Directory (-s)
     parser.add_argument(
-        '-s',
+        '--scene_dir',
         # required=True,
         default="/media/public_dataset/MP3D_360_FPE/MULTI_ROOM_SCENES",
         type=str,
@@ -153,7 +153,7 @@ def get_argparse():
 
     # * Output Directory (-o)
     parser.add_argument(
-        '-o',
+        '-output',
         # required=True,
         default="/media/public_dataset/MP3D_360_FPE/zipped_mp3d_fpe",
         type=str,

@@ -23,7 +23,7 @@ def get_args():
     parser = argparse.ArgumentParser()
     # * Input Directory (-s)
     parser.add_argument(
-        '-scene_dir',
+        '--scene_dir',
         # required=True,
         default="/media/public_dataset/HM3D-MVL/test/BHXhpBwSMLh/0/",
         type=str,
@@ -31,7 +31,7 @@ def get_args():
     )
     
     parser.add_argument(
-        '-dataset_name',
+        '--dataset_name',
         # required=True,
         default="hm3d_mvl",
         type=str,
