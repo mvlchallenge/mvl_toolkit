@@ -1,0 +1,3 @@
+[submodule "mvl_datasets/config"]
+	path = mvl_datasets/config
+	url = git@github.com:EnriqueSolarte/nice_config_files.git
