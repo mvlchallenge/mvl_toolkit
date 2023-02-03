@@ -49,7 +49,7 @@ def plot_color_plc(points,
                    ):
 
     view = setting_viewer(main_axis=plot_main_axis, bgcolor=background, caption=caption)
-    view.camera  = vispy.scene.TurntableCamera(elevation=45,
+    view.camera  = vispy.scene.TurntableCamera(elevation=0,
                                                       azimuth=45,
                                                       roll=0,
                                                       fov=0,
