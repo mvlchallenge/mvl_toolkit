@@ -21,7 +21,6 @@ class SphericalCamera:
         color_pixels = get_color_array(color_map=color_map) / 255
         mask = depth_map.flatten() > 0
         pcl = self.default_bearings[:, mask] * scaler * get_color_array(color_map=depth_map)[0][mask]
-        # pcl = self.default_bearings[:, mask] * scaler
         return pcl, color_pixels[:, mask]
 
 
@@ -45,8 +44,8 @@ def uv2sph(uv, shape):
     Projects a set of uv points into spherical coordinates (theta, phi)
     """
     H, W = shape
-    theta = 2 * np.pi * ((uv[0] + 0.5) / W - 0.5)
-    phi = np.pi * ((uv[1] + 0.5) / H - 0.5)
+    theta = 2 * np.pi * ((uv[0]) / W - 0.5)
+    phi = -np.pi * ((uv[1]) / H - 0.5)
     return np.vstack((theta, phi))
 
 
@@ -67,7 +66,7 @@ def sph2xyz(sph):
 def sph2uv(sph, shape):
     H, W = shape
     u = W * (sph[0]/(2*np.pi) + 0.5)
-    v = H * (sph[1]/np.pi + 0.5)
+    v = H * (-sph[1]/np.pi + 0.5)
     return np.vstack((
         np.clip(u, 0, W-1),
         np.clip(v, 0, H-1)
