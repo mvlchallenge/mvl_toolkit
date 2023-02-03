@@ -55,7 +55,7 @@ def save_obj(filename, obj):
 def get_files_given_a_pattern(data_dir, flag_file, exclude="", include_flag_file=False, isDir=False):
     """
     Searches in the the @data_dir, recurrently, the sub-directories which content the @flag_file.
-    exclude directories can be passed to speed up the rearching
+    exclude directories can be passed to speed up the searching
     """
     scenes_paths = []
     for root, dirs, files in os.walk(data_dir):

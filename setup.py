@@ -1,11 +1,11 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='mp3d-fpe',
+    name='mvl_dataset_toolkit_dev',
     version='0.1',
     packages=find_packages(),
     author = "Enrique Solarte",
     author_email = "enrique.solarte.pardo@gmail.com",
-    description = ("MP3D-FPE dataset"),
+    description = ("Toolkit to process mvl datasets"),
     license = "BSD",
 )

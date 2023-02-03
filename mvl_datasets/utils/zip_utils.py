@@ -1,5 +1,5 @@
 """
-This script allows us to zip the MP3D_FPE dataset into several zip files separated by 
+This script allows us to zip the MP3D_FPE and HM3D-MVL dataset into several zip files separated by 
 categories and scenes for convenience. i.e., 
 - $SCENE_$VERSION_geometry.zip: Files which define geometries: cam poses, labels (floor plan only), selected key-frame
 - $SCENE_$VERSION_rgb.zip: Images defined per scene
@@ -18,8 +18,9 @@ from fileinput import filename
 
 from tqdm import tqdm
 
-from mp3d_fpe.utils.io_utils import (create_directory,
-                                     get_files_given_a_pattern, read_csv_file)
+from mvl_datasets.utils.io_utils import (create_directory,
+                                         get_files_given_a_pattern,
+                                         read_csv_file)
 
 
 def zip_geometry_files(list_scenes, args):
@@ -115,16 +116,16 @@ def process_arcname(list_fn, base_dir):
     return [os.path.relpath(fn, start=base_dir) for fn in list_fn]
 
 
-def main(args):
+def zip_mvl_data(args):
 
     # ! Create output directory
     create_directory(args.o, delete_prev=False)
 
-    print(f"Identifying MP3D-FPE scenes in {args.s}.")
+    print(f"Identifying mvl scenes in {args.s}.")
     list_scenes = get_files_given_a_pattern(
         args.s, "minos_poses.txt", exclude=["depth", 'rgb', "hn_mp3d"])
     list_arcname = process_arcname(list_scenes, base_dir=args.s)
-    print(f"Found {list_arcname} MP3D-FPE scenes.")
+    print(f"Found {list_arcname.__len__()} mvl scenes.")
 
     if "npy" in args.keys:
         zip_npy_files(list_arcname, args)
@@ -164,7 +165,7 @@ def get_argparse():
         default=["geom", "rgb", "depth", "npy"],
         # default="rgb",
         nargs='+',
-        help='Key argument in source')
+        help='Key argument in source ["geom", "rgb", "depth", "npy"]')
 
     args = parser.parse_args()
     return args
@@ -172,4 +173,4 @@ def get_argparse():
 
 if __name__ == '__main__':
     args = get_argparse()
-    main(args)
+    zip_mvl_data(args)
