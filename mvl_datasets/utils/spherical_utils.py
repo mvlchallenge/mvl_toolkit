@@ -1,7 +1,7 @@
 import math
 
 import numpy as np
-from hm3d_data_collection.utils.image_utils import get_color_array
+from mvl_datasets.utils.image_utils import get_color_array
 
 
 class SphericalCamera:

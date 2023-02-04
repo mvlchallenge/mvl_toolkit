@@ -16,7 +16,7 @@ def main(args):
         raise ValueError()
     
     list_fr = dt.get_list_frames()
-    pcl  = np.hstack([fr.get_pcl() for fr in list_fr[:4]])
+    pcl  = np.hstack([fr.get_pcl() for fr in list_fr[:50]])
     plot_color_plc(points=pcl[0:3, :].T, color=pcl[3:].T)
 
 def get_args():
