@@ -8,6 +8,7 @@ __pycache__/
 
 # VS-Code
 *.code-workspace
+*.notebook
 *.vscode/
 *logs/
 *ckpt/

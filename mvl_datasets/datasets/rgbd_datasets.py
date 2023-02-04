@@ -23,9 +23,12 @@ class RGBD_Dataset:
         cfg = get_empty_cfg()
         cfg.dataset = dict()
         cfg.dataset.scene_dir = args.scene_dir
-      
+        return clc.from_cfg(cfg)
+    
+    @classmethod
+    def from_cfg(clc, cfg):   
         # MP3D-FPE dataset has a vo* directory
-        vo_dir = glob.glob(os.path.join(args.scene_dir, 'vo_*'))
+        vo_dir = glob.glob(os.path.join(cfg.dataset.scene_dir, 'vo_*'))
         if vo_dir.__len__() == 0: 
             # HM3D-MVL dataset
             dt = HM3D_MVL(cfg)
@@ -33,8 +36,18 @@ class RGBD_Dataset:
             # MP3D-FPE
             dt = MP3D_FPE(cfg)
         
-        return dt
-               
+        return dt  
+    
+    @classmethod
+    def from_scene_dir(clc, scene_dir):
+        assert os.path.exists(scene_dir)     
+        cfg = get_empty_cfg()
+        cfg.dataset = dict()
+        cfg.dataset.scene_dir = scene_dir
+        return clc.from_cfg(cfg)
+        
+
+                  
     def __init__(self, cfg):
         self.cfg = cfg
         self.set_paths()
