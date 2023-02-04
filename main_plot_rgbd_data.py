@@ -2,12 +2,14 @@ import argparse
 
 import numpy as np
 
-from mvl_datasets.datasets.rgbd_datasets import HM3D_MVL, MP3D_FPE
+from mvl_datasets.datasets.rgbd_datasets import HM3D_MVL, MP3D_FPE, RGBD_Dataset
 from mvl_datasets.utils.vispy_utils import plot_color_plc
 
 
 def main(args):
     
+    if args.dataset_name == "":
+        dt = RGBD_Dataset.from_args(args)
     if args.dataset_name == "mp3d_fpe":
         dt = MP3D_FPE.from_args(args)
     elif args.dataset_name == "hm3d_mvl":
@@ -33,7 +35,7 @@ def get_args():
     parser.add_argument(
         '--dataset_name',
         # required=True,
-        default="hm3d_mvl",
+        default="",
         type=str,
         help='dataset name [mp3d_fpe or hmd3d_mvl]'
     )

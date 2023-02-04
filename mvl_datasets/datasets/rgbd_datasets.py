@@ -14,15 +14,27 @@ from mvl_datasets.utils.spherical_utils import SphericalCamera
 from mvl_datasets.utils.vispy_utils import plot_color_plc
 
 
-class rgbd_dataset:
+class RGBD_Dataset:
+        
     @classmethod
     def from_args(clc, args):
+        assert os.path.exists(args.scene_dir)
+        
         cfg = get_empty_cfg()
         cfg.dataset = dict()
         cfg.dataset.scene_dir = args.scene_dir
-        return clc(cfg)
+      
+        # MP3D-FPE dataset has a vo* directory
+        vo_dir = glob.glob(os.path.join(args.scene_dir, 'vo_*'))
+        if vo_dir.__len__() == 0: 
+            # HM3D-MVL dataset
+            dt = HM3D_MVL(cfg)
+        else:
+            # MP3D-FPE
+            dt = MP3D_FPE(cfg)
         
-            
+        return dt
+               
     def __init__(self, cfg):
         self.cfg = cfg
         self.set_paths()
@@ -95,7 +107,7 @@ class rgbd_dataset:
         return list_fr
 
 
-class MP3D_FPE(rgbd_dataset):
+class MP3D_FPE(RGBD_Dataset):
     def __init__(self, cfg):
         self.rgb_ext = 'png'
         super().__init__(cfg)
@@ -110,7 +122,7 @@ class MP3D_FPE(rgbd_dataset):
         self.idx = np.array(self.kf_list) - 1
 
 
-class HM3D_MVL(rgbd_dataset):
+class HM3D_MVL(RGBD_Dataset):
     def __init__(self, cfg):
         self.rgb_ext = "jpg"
         super().__init__(cfg)
@@ -119,7 +131,7 @@ class HM3D_MVL(rgbd_dataset):
         self.kf_list = sorted([int(os.path.basename(f).split(".")[0]) for f in os.listdir(self.rgb_dir)])
         self.idx = np.array(self.kf_list)
 
-
+    
 def get_default_args():
     parser = argparse.ArgumentParser()
 
