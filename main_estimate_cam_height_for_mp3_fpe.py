@@ -7,6 +7,7 @@ from mvl_datasets.utils.vispy_utils import plot_color_plc
 from mvl_datasets.utils.io_utils import save_json_dict, create_directory, get_files_given_a_pattern
 from tqdm import tqdm
 import os
+from copy import copy
 
 
 def compute_cam_height_for_multiple_scene(args):
@@ -22,16 +23,29 @@ def compute_cam_height_for_multiple_scene(args):
         
 def compute_and_save_cam_height(args, dt):
     cam_height_dict = dict()
+    # org_fr = dt.get_list_frames()
     for list_fr in dt.iter_rooms_scenes():
+        # Each fr in list_fr is wrt to room references
         room_name=list_fr[0].room_name
+        init_idx = list_fr[0].idx
+        cam_h = estimate_camera_height(args, list_fr)
+        
+        # h_room2world = [fr.pose[1, 3] for fr in org_fr if fr.idx == init_idx][0]
+        # cam_h2world =  cam_h + h_room2world 
+        
+        # cam_height_dict[room_name]=dict(
+        #     cam_height=cam_h2world, 
+        #     first_frm_idx=init_idx
+        #     )
+
         cam_height_dict[room_name]=dict(
-            cam_height=estimate_camera_height(args, list_fr), 
-            first_frm_idx=list_fr[0].idx
+            cam_height=cam_h, 
+            first_frm_idx=init_idx
             )
         
-    create_directory(args.output_dir, delete_prev=False)
-    camera_height_fn = os.path.join(args.output_dir, f"{dt.scene_name}_cam_height.json")
-    save_json_dict(camera_height_fn, cam_height_dict)
+        create_directory(args.output_dir, delete_prev=False)
+        camera_height_fn = os.path.join(args.output_dir, f"{dt.scene_name}_cam_height.json")
+        save_json_dict(camera_height_fn, cam_height_dict)
  
 def compute_cam_height_for_one_scene(args):
     cfg = get_empty_cfg()
@@ -63,7 +77,7 @@ def get_args():
     parser.add_argument(
         '--fit_error',
         # required=True,
-        default=0.01,
+        default=0.001,
         help='How much variance is allowed for RANSAC plane estimation'
     )
     
@@ -99,6 +113,7 @@ def get_args():
         default=5,
         help='Number of random iteration to compute camera height'
     )
+    
     args = parser.parse_args()
     return args
     
