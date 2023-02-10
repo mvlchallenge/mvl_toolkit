@@ -44,3 +44,12 @@ class Frame:
                 color
             ))
         return self.pcl
+
+    def set_room_data(self, room_name, pose_ref):
+        """
+        Sets the room data from where this fr belongs to
+        """
+        # ! This function is mainly implemented for MP3D-FPE dataset
+        self.room_name = room_name
+        self.pose = np.linalg.inv(pose_ref) @ self.pose
+        

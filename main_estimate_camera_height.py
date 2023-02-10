@@ -5,7 +5,7 @@ import logging
 from tqdm import tqdm
 
 from mvl_datasets.config.cfg import get_empty_cfg
-from mvl_datasets.pre_processing.camera_height_from_pcl import get_args as default_args, get_camera_height
+from mvl_datasets.pre_processing.camera_height_from_pcl import estimate_camera_height
 from mvl_datasets.datasets.rgbd_datasets import RGBD_Dataset
 from mvl_datasets.utils.io_utils import create_directory, get_files_given_a_pattern, save_json_dict
 
@@ -21,7 +21,7 @@ def main(args):
         cfg.dataset.scene_dir = scene_dir
         dt = RGBD_Dataset.from_cfg(cfg)
         list_fr = dt.get_list_frames()
-        h = get_camera_height(args, list_fr)
+        h = estimate_camera_height(args, list_fr)
         data[dt.scene_name] = h
         print(f"Scene {scene_dir} - H: {h}")        
         save_json_dict(
@@ -48,8 +48,35 @@ def get_args():
         type=str,
         help='Output directory'
     )
+        
+    parser.add_argument(
+        '--fit_error',
+        # required=True,
+        default=0.01,
+        help='How much variance is allowed for RANSAC plane estimation'
+    )
     
-    args = default_args(parser)
+    parser.add_argument(
+        '--xz_distance',
+        # required=True,
+        default=1,
+        help='Max distance in XZ around the 1st camera frame'
+    )
+    
+    parser.add_argument(
+        '--min_height',
+        # required=True,
+        default=0.8,
+        help='Min camera height from camera frames to floor'
+    )
+     
+    parser.add_argument(
+        '--min_samples',
+        # required=True,
+        default=200,
+        help='Min number of point used for RANSAC plane estimation'
+    )
+
     args = parser.parse_args()
     return args
         
