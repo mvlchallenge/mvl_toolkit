@@ -3,6 +3,13 @@ import math
 import numpy as np
 from pyquaternion import Quaternion
 
+def get_quaternion_from_matrix(matrix):
+    """
+    Returns the [qx, qy, qz qw] quaternion vector for the passed matrix (SE3 or SO3)
+    """
+    q = Quaternion(matrix=matrix)
+    return np.sign(q.w)*np.array((q.x, q.y, q.z, q.w))
+
 
 def tum_pose2matrix44(l, seq="xyzw"):
     """

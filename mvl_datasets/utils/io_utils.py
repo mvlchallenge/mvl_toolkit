@@ -11,7 +11,9 @@ import numpy as np
 from plyfile import PlyData
 from pyquaternion import Quaternion
 
-
+def get_idx_from_fr_name(fr_name):
+    return int(fr_name.split("_")[-1].split(".")[0])
+    
 def save_json_dict(filename, dict_data):
     with open(filename, 'w') as outfile:
         json.dump(dict_data, outfile, indent='\t')

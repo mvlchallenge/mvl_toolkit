@@ -9,10 +9,12 @@ from tqdm import tqdm
 
 from mvl_datasets.config.cfg import get_empty_cfg
 from mvl_datasets.data_structure.frame import Frame
-from mvl_datasets.utils.io_utils import read_trajectory
+from mvl_datasets.utils.io_utils import read_trajectory, get_idx_from_fr_name
 from mvl_datasets.utils.spherical_utils import SphericalCamera
 from mvl_datasets.utils.vispy_utils import plot_color_plc
-import yaml
+from mvl_datasets import MP3D_FPE_DATA_DIR
+import json
+
 
 class RGBD_Dataset:
 
@@ -28,7 +30,7 @@ class RGBD_Dataset:
     @classmethod
     def from_cfg(clc, cfg):
         # MP3D-FPE dataset has a vo* directory
-        vo_dir = glob.glob(os.path.join(cfg.dataset.scene_dir, 'vo_*'))
+        vo_dir = glob.glob(os.path.join(cfg.dataset.scene_dir, 'vo*'))
         if vo_dir.__len__() == 0:
             # HM3D-MVL dataset
             dt = HM3D_MVL(cfg)
@@ -124,7 +126,7 @@ class MP3D_FPE(RGBD_Dataset):
         super().__init__(cfg)
 
     def set_list_of_frames(self):
-        self.vo_dir = glob.glob(os.path.join(self.scene_dir, 'vo_*'))[0]
+        self.vo_dir = glob.glob(os.path.join(self.scene_dir, 'vo*'))[0]
         list_keyframe_fn = os.path.join(self.vo_dir, 'keyframe_list.txt')
         assert os.path.exists(list_keyframe_fn), f"{list_keyframe_fn}"
 
@@ -137,19 +139,21 @@ class MP3D_FPE(RGBD_Dataset):
         Create a iter obj which yield per room the list of fr on it. 
         This function is only available for the MP3D-FPE dataset
         """
-        # ! Floor plan rooms defined as GT in metadata
-        room_gt_fn = os.path.join(self.scene_dir, "metadata", "room_gt_v0.0.yaml")
-        room_gt_data =yaml.safe_load(open(room_gt_fn, "r"))
+        # ! Room-scenes definition file
+        scenes_room_fn = os.path.join(MP3D_FPE_DATA_DIR, "mp3d_fpe_room_scenes.json")
+        scenes_room = json.load(open(scenes_room_fn, "r"))
 
-        #! Select only keys relate to the rooms
-        room_names = [r for r in list(room_gt_data.keys()) if "room" in r]
-        
+        #! Select frames related to the scene in this class
+        room_names = [r for r in list(scenes_room.keys()) if self.scene_name in r]
+
         #! Select all fr in the scene
-        list_fr = self.get_list_frames()        
+        list_fr = self.get_list_frames()
         for room in tqdm(room_names, desc=f"Reading room in {self.scene_name}..."):
             #! list of indexes defined in the room
-            room_list_fr_idx = room_gt_data[room]['list_kf']
-            room_list_fr = [fr for fr in list_fr if fr.idx in room_list_fr_idx]
+            list_frm_idx = [get_idx_from_fr_name(fr_name) for fr_name in scenes_room[room]]
+            room_list_fr = [fr for fr in list_fr if fr.idx in list_frm_idx]
+            if room_list_fr.__len__() == 0:
+                continue
             # ! Set the room the corresponding room information
             initial_pose = room_list_fr[0].pose.copy()
             [r.set_room_data(room.replace(".", ""), initial_pose)
@@ -157,6 +161,10 @@ class MP3D_FPE(RGBD_Dataset):
              ]
 
             yield room_list_fr
+
+    def __str__(self):
+        return "MP3D_FPE"
+
 
 class HM3D_MVL(RGBD_Dataset):
     def __init__(self, cfg):
@@ -166,6 +174,9 @@ class HM3D_MVL(RGBD_Dataset):
     def set_list_of_frames(self):
         self.kf_list = sorted([int(os.path.basename(f).split(".")[0]) for f in os.listdir(self.rgb_dir)])
         self.idx = np.array(self.kf_list)
+
+    def __str__(self):
+        return "HM3D_MVL"
 
 
 def get_default_args():
