@@ -11,10 +11,11 @@ import logging
 
 
 def save_geometry_info(cfg, data_dict):
-    scene_name = list(data_dict.keys())[0]
-    geom_info  = data_dict[scene_name] 
-    fn = os.path.join(cfg.output_dir, f"{scene_name}.json")
-    save_json_dict(fn, geom_info)
+    for dt in data_dict:
+        scene_name = list(dt.keys())[0]
+        geom_info  = dt[scene_name] 
+        fn = os.path.join(cfg.output_dir, f"{scene_name}.json")
+        save_json_dict(fn, geom_info)
 
 def compute_and_save_geometry_info(cfg):
     logging.info(f"Saving geometric info for {cfg.dataset.scene_dir}")
@@ -29,8 +30,7 @@ def main(args):
     args.scene_dir, flag_file="frm_ref.txt", exclude=["rgb", 'depth'])
     create_directory(cfg.output_dir, delete_prev=False)
 
-    for scene_dir in tqdm(list_scenes_dir, desc="Saving geom_info..."):
-        
+    for scene_dir in list_scenes_dir:
         cfg.dataset.scene_dir = scene_dir
         compute_and_save_geometry_info(cfg)
     

@@ -38,11 +38,14 @@ def get_masked_pcl(cfg, list_fr):
 def estimate_camera_height(cfg, list_fr):
     cam_h_hyp = []
     # for _ in tqdm(range(cfg.iter), desc="Iter camera Height..."):
-    iter_progress = tqdm(cfg.iter, desc="Iter camera Height...")
+    # iter_progress = tqdm(cfg.iter, desc="Iter camera Height...")
     iteration = 0
+    logging.info(f"Estimating camera hight {list_fr[0].room_name}")
     while True:
         np.random.shuffle(list_fr)
+        logging.info(f"Cam-h estimation trial: {iteration+1}")
         logging.info(f"Number fr: {list_fr.__len__()}")
+        
         pcl, color = get_masked_pcl(cfg, list_fr)
         if pcl.size == 0:
             continue
@@ -54,7 +57,7 @@ def estimate_camera_height(cfg, list_fr):
         cam_h2room = np.abs(best_eq[-1]) + list_fr[0].pose[1, 3]
         cam_h_hyp.append(cam_h2room)
         iteration += 1
-        iter_progress.update(iteration)
+        # iter_progress.update(iteration)
 
         if cfg.iter == iteration:
             break

@@ -148,7 +148,8 @@ class MP3D_FPE(RGBD_Dataset):
 
         #! Select all fr in the scene
         list_fr = self.get_list_frames()
-        for room in tqdm(room_names, desc=f"Reading room in {self.scene_name}..."):
+        for room in room_names:
+            logging.info(f"Reading room data {room}")
             #! list of indexes defined in the room
             list_frm_idx = [get_idx_from_fr_name(fr_name) for fr_name in scenes_room[room]]
             room_list_fr = [fr for fr in list_fr if fr.idx in list_frm_idx]

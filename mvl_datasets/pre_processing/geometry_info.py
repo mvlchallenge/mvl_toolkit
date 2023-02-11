@@ -23,6 +23,7 @@ def get_geometry_info_for_mp3d_fpe(dt: MP3D_FPE):
     list_fr = dt.get_list_frames()
 
     # ! Loop for every room identified
+    list_geom_info = []
     for room_name in cam_h_dict.keys():
 
         # ! Cam height in WC
@@ -34,15 +35,15 @@ def get_geometry_info_for_mp3d_fpe(dt: MP3D_FPE):
         list_fr_room = sorted([fr for fr in list_fr if fr.idx in list_idx], key=lambda x: x.idx)
 
         # ! List geometry info per fr
-        list_geom_info = [{f"{room_name}_{fr.idx}":{
+        list_geom_info.append([{f"{room_name}_{fr.idx}":{
             'translation': [t for t in fr.pose[:3, 3]],
             'quaternion': [q for q in get_quaternion_from_matrix(fr.pose)],
             'cam_h':  cam_h_wc - fr.pose[1, 3]
         }}
             for fr in list_fr_room
-        ]
+        ])
 
-        return list_geom_info
+    return list_geom_info
         
 
 def get_geometry_info(dt: RGBD_Dataset):
