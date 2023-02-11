@@ -37,9 +37,15 @@ def get_masked_pcl(cfg, list_fr):
 
 def estimate_camera_height(cfg, list_fr):
     cam_h_hyp = []
-    for _ in tqdm(range(cfg.iter), desc="Iter camera Height..."):
+    # for _ in tqdm(range(cfg.iter), desc="Iter camera Height..."):
+    iter_progress = tqdm(cfg.iter, desc="Iter camera Height...")
+    iteration = 0
+    while True:
         np.random.shuffle(list_fr)
+        logging.info(f"Number fr: {list_fr.__len__()}")
         pcl, color = get_masked_pcl(cfg, list_fr)
+        if pcl.size == 0:
+            continue
         pln = pyrsc.Plane()
         best_eq, best_inliers = pln.fit(pcl.T, cfg.fit_error)
         # plot_color_plc(points=pcl[0:3, best_inliers].T, color=color[:, best_inliers].T)
@@ -47,7 +53,11 @@ def estimate_camera_height(cfg, list_fr):
         # ! since each camera fr does not have the same height
         cam_h2room = np.abs(best_eq[-1]) + list_fr[0].pose[1, 3]
         cam_h_hyp.append(cam_h2room)
+        iteration += 1
+        iter_progress.update(iteration)
 
+        if cfg.iter == iteration:
+            break
     return np.median(cam_h_hyp)
 
 
@@ -62,7 +72,6 @@ def main(args):
 
 def get_args():
     parser = argparse.ArgumentParser()
-    # * Input Directory (-s)
 
     parser.add_argument(
         '--scene_dir',

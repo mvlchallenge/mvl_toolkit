@@ -1,7 +1,7 @@
 import argparse
 from mvl_datasets.datasets.rgbd_datasets import MP3D_FPE
 from mvl_datasets.config.cfg import get_empty_cfg
-from mvl_datasets.pre_processing.camera_height_from_pcl import estimate_camera_height
+from mvl_datasets.pre_processing.camera_height import estimate_camera_height
 import numpy as np 
 from mvl_datasets.utils.vispy_utils import plot_color_plc
 from mvl_datasets.utils.io_utils import save_json_dict, create_directory, get_files_given_a_pattern
@@ -10,28 +10,32 @@ from mvl_datasets.config.cfg import read_omega_cfg
 import logging
 
         
-def compute_cam_height_per_room(cfg, dt):
+def estimate_cam_height_per_room(cfg, dt):
     list_fr2world = dt.get_list_frames()
-    caption_output = []
+    cam_height_dict = {}
     for list_fr in dt.iter_rooms_scenes():
+        if list_fr.__len__() == 0:
+            continue
         #! Each fr in list_fr is wrt to room references
         room_name=list_fr[0].room_name
         init_idx = list_fr[0].idx
-        cam_h = estimate_camera_height(cfg, list_fr)
+        cam_h_rc = estimate_camera_height(cfg, list_fr)
         
-        room2world = [fr.pose[1, 3] for fr in list_fr2world if fr.idx == init_idx][0]
-        cam_h2world =  cam_h + room2world 
-        caption_output.append(f"Room_fr: {room_name}_{init_idx}\tCam-h (room): {cam_h:2.3f}\tCam-h (world){cam_h2world:2.3f}")
-    [logging.info(r) for r in caption_output]
-        
+        room_wc = [fr.pose[1, 3] for fr in list_fr2world if fr.idx == init_idx][0]
+        cam_h_wc =  cam_h_rc + room_wc 
+        cam_height_dict[room_name]=dict(
+            cam_h_rc = cam_h_rc,
+            cam_h_wc= cam_h_wc
+        )
+    [logging.info(f"Room: {r}\tcam_h(r): {d['cam_h_rc']:2.3f}\tcam_h(w): {d['cam_h_wc']:2.3f}") for r, d in cam_height_dict.items()]
+    return cam_height_dict
  
 def main(args):
-    cfg = get_empty_cfg()
+    cfg = read_omega_cfg(args.cfg)
     cfg.dataset = dict()
     cfg.dataset.scene_dir = args.scene_dir
     dt = MP3D_FPE.from_cfg(cfg)
-    cfg_cam = read_omega_cfg(args.cfg)
-    compute_cam_height_per_room(cfg_cam, dt)
+    estimate_cam_height_per_room(cfg.cam_height_cfg, dt)
         
 def get_args():
     parser = argparse.ArgumentParser()

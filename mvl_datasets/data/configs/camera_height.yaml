@@ -1,0 +1,7 @@
+#! Default parameter to estimate camera height using PCL
+cam_height_cfg:
+  fit_error: 0.001
+  xz_radius: 1
+  min_height: 1
+  min_samples: 200
+  iter: 5
