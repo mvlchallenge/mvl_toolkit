@@ -62,10 +62,9 @@ def get_args():
     
     parser.add_argument(
         '--cfg',
-        default=f"{CFG_DIR}/camera_height.yaml",
-        help='Cfg to compute camera height'
+        default=f"{CFG_DIR}/hyperparameters_camera_height.yaml",
+        help='Hyperparameters to compute camera height'
     )
-    
     args = parser.parse_args()
     return args
     
