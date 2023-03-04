@@ -1,11 +1,11 @@
 import argparse
-from mvl_datasets import CFG_DIR, ASSETS_DIR
+from mvl_challenge import CFG_DIR, ASSETS_DIR
 import os
-from mvl_datasets.config.cfg import read_omega_cfg
-from mvl_datasets.utils.io_utils import get_files_given_a_pattern
-from mvl_datasets.datasets.rgbd_datasets import RGBD_Dataset
-from mvl_datasets.pre_processing.geometry_info import get_geometry_info
-from mvl_datasets.utils.io_utils import save_json_dict, create_directory
+from mvl_challenge.config.cfg import read_omega_cfg
+from mvl_challenge.utils.io_utils import get_files_given_a_pattern
+from mvl_challenge.datasets.rgbd_datasets import RGBD_Dataset
+from mvl_challenge.pre_processing.geometry_info import get_geometry_info
+from mvl_challenge.utils.io_utils import save_json_dict, create_directory
 from tqdm import tqdm
 import logging
 

@@ -1,7 +1,7 @@
 import math
 
 import numpy as np
-from mvl_datasets.utils.image_utils import get_color_array
+from mvl_challenge.utils.image_utils import get_color_array
 
 
 class SphericalCamera:

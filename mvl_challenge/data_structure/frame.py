@@ -3,8 +3,8 @@ import os
 import numpy as np
 from imageio import imread
 
-from mvl_datasets.utils.geometry_utils import extend_array_to_homogeneous
-from mvl_datasets.utils.image_utils import load_depth_map
+from mvl_challenge.utils.geometry_utils import extend_array_to_homogeneous
+from mvl_challenge.utils.image_utils import load_depth_map
 
 
 class Frame:

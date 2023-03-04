@@ -7,12 +7,12 @@ from pathlib import Path
 import numpy as np
 from tqdm import tqdm
 
-from mvl_datasets.config.cfg import get_empty_cfg
-from mvl_datasets.data_structure.frame import Frame
-from mvl_datasets.utils.io_utils import read_trajectory, get_idx_from_fr_name
-from mvl_datasets.utils.spherical_utils import SphericalCamera
-from mvl_datasets.utils.vispy_utils import plot_color_plc
-from mvl_datasets import MP3D_FPE_DATA_DIR
+from mvl_challenge.config.cfg import get_empty_cfg
+from mvl_challengee.data_structure.frame import Frame
+from mvl_challengee.utils.io_utils import read_trajectory, get_idx_from_fr_name
+from mvl_challengee.utils.spherical_utils import SphericalCamera
+from mvl_challengee.utils.vispy_utils import plot_color_plc
+from mvl_challengee import MP3D_FPE_DATA_DIR
 import json
 
 

@@ -2,8 +2,8 @@ import argparse
 
 import numpy as np
 
-from mvl_datasets.datasets.rgbd_datasets import HM3D_MVL, MP3D_FPE, RGBD_Dataset
-from mvl_datasets.utils.vispy_utils import plot_color_plc
+from mvl_challenge.datasets.rgbd_datasets import HM3D_MVL, MP3D_FPE, RGBD_Dataset
+from mvl_challenge.utils.vispy_utils import plot_color_plc
 
 
 def main(args):

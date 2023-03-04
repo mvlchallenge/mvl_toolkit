@@ -18,7 +18,7 @@ from fileinput import filename
 
 from tqdm import tqdm
 
-from mvl_datasets.utils.io_utils import (create_directory,
+from mvl_challenge.utils.io_utils import (create_directory,
                                          get_files_given_a_pattern,
                                          read_csv_file)
 

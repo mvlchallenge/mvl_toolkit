@@ -5,13 +5,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import logging
-from mvl_datasets.datasets.rgbd_datasets import RGBD_Dataset
-from mvl_datasets.utils.vispy_utils import plot_color_plc
-from mvl_datasets.utils.geometry_utils import extend_array_to_homogeneous
-from mvl_datasets import CFG_DIR, ASSETS_DIR
+from mvl_challenge.datasets.rgbd_datasets import RGBD_Dataset
+from mvl_challengee.utils.vispy_utils import plot_color_plc
+from mvl_challengee.utils.geometry_utils import extend_array_to_homogeneous
+from mvl_challengee import CFG_DIR, ASSETS_DIR
 import pyransac3d as pyrsc
 from tqdm import tqdm
-from mvl_datasets.config.cfg import read_omega_cfg
+from mvl_challengee.config.cfg import read_omega_cfg
 
 
 def get_masked_pcl(cfg, list_fr):
