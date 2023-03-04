@@ -39,7 +39,6 @@ def main(args):
         
 def get_args():
     parser = argparse.ArgumentParser()
-    # * Input Directory (-s)
     
     parser.add_argument(
         '--scene_dir',

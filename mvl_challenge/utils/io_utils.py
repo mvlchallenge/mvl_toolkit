@@ -5,15 +5,21 @@ import os
 import shutil
 import sys
 from pathlib import Path
-
+from tqdm import tqdm
 import dill
 import numpy as np
 from plyfile import PlyData
 from pyquaternion import Quaternion
 
-def get_idx_from_fr_name(fr_name):
+
+def get_idx_from_scene_room_idx(fr_name):
     return int(fr_name.split("_")[-1].split(".")[0])
-    
+
+
+def get_scene_room_from_scene_room_idx(fr_name):
+    return "_".join(fr_name.split("_")[:-1])
+
+
 def save_json_dict(filename, dict_data):
     with open(filename, 'w') as outfile:
         json.dump(dict_data, outfile, indent='\t')
@@ -62,7 +68,7 @@ def get_files_given_a_pattern(data_dir, flag_file, exclude="", include_flag_file
     exclude directories can be passed to speed up the searching
     """
     scenes_paths = []
-    for root, dirs, files in os.walk(data_dir):
+    for root, dirs, files in tqdm(os.walk(data_dir)):
         dirs[:] = [d for d in dirs if d not in exclude]
         if not isDir:
             if include_flag_file:
