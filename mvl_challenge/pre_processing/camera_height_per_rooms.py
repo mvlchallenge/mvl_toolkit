@@ -1,7 +1,7 @@
 import argparse
 from mvl_challenge.datasets.rgbd_datasets import MP3D_FPE
 from mvl_challenge.config.cfg import get_empty_cfg
-from mvl_challenge.pre_processing.camera_height import estimate_camera_height
+from mvl_challenge.pre_processing.compute_camera_height import estimate_camera_height
 import numpy as np 
 from mvl_challenge.utils.vispy_utils import plot_color_plc
 from mvl_challenge.utils.io_utils import save_json_dict, create_directory, get_files_given_a_pattern
@@ -14,7 +14,7 @@ def estimate_cam_height_per_room(cfg, dt):
     list_fr2world = dt.get_list_frames()
     cam_height_dict = {}
     for list_fr in dt.iter_rooms_scenes():
-        if list_fr.__len__() == 0:
+        if list_fr.__len__() < 5:
             continue
         #! Each fr in list_fr is wrt to room references
         room_name=list_fr[0].room_name

@@ -8,11 +8,10 @@ import numpy as np
 from tqdm import tqdm
 
 from mvl_challenge.config.cfg import get_empty_cfg
-from mvl_challengee.data_structure.frame import Frame
-from mvl_challengee.utils.io_utils import read_trajectory, get_idx_from_fr_name
-from mvl_challengee.utils.spherical_utils import SphericalCamera
-from mvl_challengee.utils.vispy_utils import plot_color_plc
-from mvl_challengee import MP3D_FPE_DATA_DIR
+from mvl_challenge.data_structure.frame import Frame
+from mvl_challenge.utils.io_utils import read_trajectory, get_idx_from_scene_room_idx
+from mvl_challenge.utils.spherical_utils import SphericalCamera
+from mvl_challenge.utils.vispy_utils import plot_color_plc
 import json
 
 
@@ -140,7 +139,7 @@ class MP3D_FPE(RGBD_Dataset):
         This function is only available for the MP3D-FPE dataset
         """
         # ! Room-scenes definition file
-        scenes_room_fn = os.path.join(MP3D_FPE_DATA_DIR, "mp3d_fpe_room_scenes.json")
+        scenes_room_fn = self.cfg.dataset.scene_list
         scenes_room = json.load(open(scenes_room_fn, "r"))
 
         #! Select frames related to the scene in this class
@@ -151,7 +150,7 @@ class MP3D_FPE(RGBD_Dataset):
         for room in room_names:
             logging.info(f"Reading room data {room}")
             #! list of indexes defined in the room
-            list_frm_idx = [get_idx_from_fr_name(fr_name) for fr_name in scenes_room[room]]
+            list_frm_idx = [get_idx_from_scene_room_idx(fr_name) for fr_name in scenes_room[room]]
             room_list_fr = [fr for fr in list_fr if fr.idx in list_frm_idx]
             if room_list_fr.__len__() == 0:
                 continue

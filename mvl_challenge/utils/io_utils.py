@@ -68,7 +68,7 @@ def get_files_given_a_pattern(data_dir, flag_file, exclude="", include_flag_file
     exclude directories can be passed to speed up the searching
     """
     scenes_paths = []
-    for root, dirs, files in tqdm(os.walk(data_dir)):
+    for root, dirs, files in tqdm(os.walk(data_dir), desc=f"Walking through {data_dir}..."):
         dirs[:] = [d for d in dirs if d not in exclude]
         if not isDir:
             if include_flag_file:

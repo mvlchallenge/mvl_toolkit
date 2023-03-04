@@ -47,7 +47,7 @@ def get_list_scene_room_idx(args):
         flag_file="frm_ref.txt",
         exclude=['rgb', 'depth'],
     )
-    assert list_scenes.__len__() > 0, f"No scenes were listed at {args.scene_dir}"
+    assert list_scenes.__len__() > 0, f"No scenes were found at {args.scene_dir}"
 
     print(f"Total Number of scenes found: {list_scenes.__len__()}")
     # ! Construct list scene_version string

@@ -1,11 +1,11 @@
 import argparse
 from mvl_challenge.config.cfg import read_omega_cfg
-from mvl_challengee import ASSETS_DIR, CFG_DIR, MP3D_FPE_DATA_DIR
-from mvl_challengee.datasets.rgbd_datasets import MP3D_FPE, RGBD_Dataset
-from mvl_challengee.pre_processing.camera_height import estimate_camera_height
-from mvl_challengee.pre_processing.camera_height_per_rooms import estimate_cam_height_per_room
-from mvl_challengee.utils.io_utils import get_idx_from_fr_name
-from mvl_challengee.utils.geometry_utils import get_quaternion_from_matrix
+from mvl_challenge import ASSETS_DIR, CFG_DIR, EPILOG
+from mvl_challenge.datasets.rgbd_datasets import MP3D_FPE, RGBD_Dataset
+from mvl_challenge.pre_processing.compute_camera_height import estimate_camera_height
+from mvl_challenge.pre_processing.camera_height_per_rooms import estimate_cam_height_per_room
+from mvl_challenge.utils.io_utils import get_idx_from_scene_room_idx
+from mvl_challenge.utils.geometry_utils import get_quaternion_from_matrix
 import logging
 import os
 import json
@@ -16,7 +16,7 @@ def get_geometry_info_for_mp3d_fpe(dt: MP3D_FPE):
     cam_h_dict = estimate_cam_height_per_room(dt.cfg.cam_height_cfg, dt)
 
     # ! List all frames in the scene
-    scenes_room_fn = os.path.join(MP3D_FPE_DATA_DIR, "mp3d_fpe_room_scenes.json")
+    scenes_room_fn = dt.cfg.dataset.scene_list
     scenes_room = json.load(open(scenes_room_fn, "r"))
 
     # ! list of Frames defined (defined in wc)
@@ -31,7 +31,7 @@ def get_geometry_info_for_mp3d_fpe(dt: MP3D_FPE):
 
         # ! List fr defined in this room
         list_fr_names = scenes_room[room_name]
-        list_idx = sorted([get_idx_from_fr_name(fr_names) for fr_names in list_fr_names])
+        list_idx = sorted([get_idx_from_scene_room_idx(fr_names) for fr_names in list_fr_names])
         list_fr_room = sorted([fr for fr in list_fr if fr.idx in list_idx], key=lambda x: x.idx)
 
         # ! List geometry info per fr
@@ -75,27 +75,49 @@ def main(args):
     geo_info_dict = get_geometry_info(dt)
 
 
-def get_args():
-    parser = argparse.ArgumentParser()
+def get_argparse():
+    desc = "This script computes the geometry information per frame from a given MV dataset. " + \
+        "The geometry info is defined as the geometrical information which define each frame , i.e., camera pose and camera height."
 
-    parser.add_argument(
-        '--scene_dir',
-        # required=True,
-        default="/media/public_dataset/MP3D_360_FPE/MULTI_ROOM_SCENES/2t7WUuJeko7/1/",
-        type=str,
-        help='Directory of all scene in the dataset'
+    parser = argparse.ArgumentParser(
+        description=desc,
+        epilog=EPILOG
     )
 
     parser.add_argument(
+        '-d', '--scene_dir',
+        # required=True,
+        default="/media/public_dataset/MP3D_360_FPE/MULTI_ROOM_SCENES/",
+        # default="/media/public_dataset/HM3D-MVL/test/BHXhpBwSMLh",
+        type=str,
+        help='MV data scene directory.)'
+    )
+
+    parser.add_argument(
+        '-f', '--scene_list',
+        # required=True,
+        default=f"{ASSETS_DIR}/mvl_data/mp3d_fpe_scenes.json",
+        type=str,
+        help='Scene list file which contents all frames encoded in scene_room_idx format.'
+    )
+
+    parser.add_argument(
+        '-o', '--output_dir',
+        # required=True,
+        default=f"{ASSETS_DIR}/mvl_data/geometry_info",
+        type=str,
+        help='Output directory for the output_file to be created.'
+    )
+    
+    parser.add_argument(
         '--cfg',
-        default=f"{CFG_DIR}/camera_height.yaml",
-        help='Cfg tp compute camera height'
+        default=f"{CFG_DIR}/hyperparameters_camera_height.yaml",
+        help=f'Hypermeter cfg (default: {CFG_DIR}/hyperparameters_camera_height.yaml )'
     )
 
     args = parser.parse_args()
     return args
-
-
+    
 if __name__ == '__main__':
-    args = get_args()
+    args = get_argparse()
     main(args)
