@@ -118,27 +118,12 @@ class RGBD_Dataset:
             list_fr.append(fr)
         return list_fr
 
-
-class MP3D_FPE(RGBD_Dataset):
-    def __init__(self, cfg):
-        self.rgb_ext = 'png'
-        super().__init__(cfg)
-
-    def set_list_of_frames(self):
-        self.vo_dir = glob.glob(os.path.join(self.scene_dir, 'vo*'))[0]
-        list_keyframe_fn = os.path.join(self.vo_dir, 'keyframe_list.txt')
-        assert os.path.exists(list_keyframe_fn), f"{list_keyframe_fn}"
-
-        with open(list_keyframe_fn, 'r') as f:
-            self.kf_list = sorted([int(kf) for kf in f.read().splitlines()])
-        self.idx = np.array(self.kf_list) - 1
-
     def iter_rooms_scenes(self):
         """
         Create a iter obj which yield per room the list of fr on it. 
         This function is only available for the MP3D-FPE dataset
         """
-        # ! Room-scenes definition file
+        # ! scene_room_idx definition file
         scenes_room_fn = self.cfg.dataset.scene_list
         scenes_room = json.load(open(scenes_room_fn, "r"))
 
@@ -161,6 +146,21 @@ class MP3D_FPE(RGBD_Dataset):
              ]
 
             yield room_list_fr
+
+
+class MP3D_FPE(RGBD_Dataset):
+    def __init__(self, cfg):
+        self.rgb_ext = 'png'
+        super().__init__(cfg)
+
+    def set_list_of_frames(self):
+        self.vo_dir = glob.glob(os.path.join(self.scene_dir, 'vo*'))[0]
+        list_keyframe_fn = os.path.join(self.vo_dir, 'keyframe_list.txt')
+        assert os.path.exists(list_keyframe_fn), f"{list_keyframe_fn}"
+
+        with open(list_keyframe_fn, 'r') as f:
+            self.kf_list = sorted([int(kf) for kf in f.read().splitlines()])
+        self.idx = np.array(self.kf_list) - 1
 
     def __str__(self):
         return "MP3D_FPE"
