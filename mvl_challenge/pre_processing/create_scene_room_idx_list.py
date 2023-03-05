@@ -152,7 +152,7 @@ def get_argparse():
         '-m', '--min_fr',
         # required=True,
         default=5,
-        # default=None,
+        type=int,
         help='Minimum number of frames per room.'
     )
 

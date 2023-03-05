@@ -10,7 +10,7 @@ from mvl_challenge.config.cfg import read_omega_cfg
 import logging
 
         
-def estimate_cam_height_per_room(cfg, dt):
+def estimate_cam_height_per_room(cfg, dt: MP3D_FPE):
     list_fr2world = dt.get_list_frames()
     cam_height_dict = {}
     for list_fr in dt.iter_rooms_scenes():

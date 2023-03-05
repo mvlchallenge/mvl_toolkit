@@ -11,7 +11,7 @@ import os
 import json
 
 
-def get_geometry_info_for_mp3d_fpe(dt: MP3D_FPE):
+def get_geometry_info(dt: RGBD_Dataset):
     # ! Estimate camera height per room
     cam_h_dict = estimate_cam_height_per_room(dt.cfg.cam_height_cfg, dt)
 
@@ -46,27 +46,6 @@ def get_geometry_info_for_mp3d_fpe(dt: MP3D_FPE):
     return list_geom_info
         
 
-def get_geometry_info(dt: RGBD_Dataset):
-    if dt.__str__() == "MP3D_FPE":
-        geo_info = get_geometry_info_for_mp3d_fpe(dt)
-    elif dt.__str__() == "HM3D-MVL":
-        # ! Data from HM3D-MVL
-        pass
-        # here the dict must be
-        """
-        list([scene_name]_[version/room]_[fr]: {
-            translation: value, 
-            quaternion: value,
-            cam_h: value
-            })
-        """
-    else:
-        logging.error(f"dt class unknown {dt.__str__()}")
-        raise NotImplementedError()
-
-    return geo_info
-
-
 def main(args):
     cfg = read_omega_cfg(args.cfg)
     cfg.dataset = dict()
@@ -90,7 +69,7 @@ def get_argparse():
         default="/media/public_dataset/MP3D_360_FPE/MULTI_ROOM_SCENES/",
         # default="/media/public_dataset/HM3D-MVL/test/BHXhpBwSMLh",
         type=str,
-        help='MV data scene directory.)'
+        help='MVL data scene directory.'
     )
 
     parser.add_argument(

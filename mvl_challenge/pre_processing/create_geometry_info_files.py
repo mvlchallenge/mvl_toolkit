@@ -36,7 +36,7 @@ def main(args):
     
     create_directory(cfg.output_dir, delete_prev=False)
 
-    for scene_dir in tqdm(list_scenes_dir[28:], desc="list scenes..."):
+    for scene_dir in tqdm(list_scenes_dir, desc="list scenes..."):
         cfg.dataset.scene_dir = scene_dir
         cfg.dataset.scene_list = args.scene_list
         compute_and_save_geometry_info(cfg)
@@ -46,6 +46,7 @@ def get_cfg(args):
     cfg = read_omega_cfg(args.cfg)
     cfg.dataset = dict()
     cfg.dataset.scene_dir = args.scene_dir
+    cfg.dataset.scene_list = args.scene_list
     cfg.output_dir = args.output_dir
     return cfg
         
@@ -62,24 +63,25 @@ def get_argparse():
     parser.add_argument(
         '-d', '--scene_dir',
         # required=True,
-        default="/media/public_dataset/MP3D_360_FPE/MULTI_ROOM_SCENES/",
-        # default="/media/public_dataset/HM3D-MVL/test/BHXhpBwSMLh",
+        # default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/",
+        # default="/media/public_dataset/HM3D-MVL/test/",
+        default=None,
         type=str,
-        help='MV data scene directory.)'
+        help='MVL data scene directory.'
     )
 
     parser.add_argument(
         '-f', '--scene_list',
-        # required=True,
-        default=f"{ASSETS_DIR}/mvl_data/mp3d_fpe_scenes.json",
+        required=True,
+        # default=f"{ASSETS_DIR}/mvl_data/hm3d_mvl_test_scene_list.json",
         type=str,
-        help='Scene list file which contents all frames encoded in scene_room_idx format. (default: {ASSETS_DIR}/mvl_data/mp3d_fpe_scenes.json)'
+        help='Scene list file which contents all frames encoded in scene_room_idx format.'
     )
 
     parser.add_argument(
         '-o', '--output_dir',
         # required=True,
-        default=f"{ASSETS_DIR}/mvl_data/geometry_info",
+        default=f"{ASSETS_DIR}/tmp/geometry_info",
         type=str,
         help='Output directory for the output_file to be created.'
     )
