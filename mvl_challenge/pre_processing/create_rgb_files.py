@@ -4,7 +4,7 @@ import os
 from mvl_challenge.config.cfg import read_omega_cfg
 from mvl_challenge.utils.io_utils import get_files_given_a_pattern
 from mvl_challenge.datasets.rgbd_datasets import RGBD_Dataset
-from mvl_challenge.pre_processing.geometry_info import get_geometry_info
+from mvl_challenge.pre_processing.geometry_info_utils import get_geometry_info
 from mvl_challenge.utils.io_utils import save_json_dict, create_directory
 from mvl_challenge.config.cfg import set_loggings
 from tqdm import tqdm
