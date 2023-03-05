@@ -14,7 +14,6 @@ Example
 import argparse
 import os
 import zipfile
-from fileinput import filename
 
 from tqdm import tqdm
 
@@ -116,10 +115,10 @@ def process_arcname(list_fn, base_dir):
     return [os.path.relpath(fn, start=base_dir) for fn in list_fn]
 
 
-def zip_mvl_data(args):
+def zip_rgbd_data(args):
 
     # ! Create output directory
-    create_directory(args.o, delete_prev=False)
+    create_directory(args.output_dir, delete_prev=False)
 
     print(f"Identifying mvl scenes in {args.scene_dir}.")
     list_scenes = get_files_given_a_pattern(
@@ -145,7 +144,7 @@ def get_argparse():
 
     # * Input Directory (-s)
     parser.add_argument(
-        '--scene_dir',
+        '-d', '--scene_dir',
         # required=True,
         default="/media/public_dataset/MP3D_360_FPE/MULTI_ROOM_SCENES",
         type=str,
@@ -153,7 +152,7 @@ def get_argparse():
 
     # * Output Directory (-o)
     parser.add_argument(
-        '-output',
+        '-o', '-output_dir',
         # required=True,
         default="/media/public_dataset/MP3D_360_FPE/zipped_mp3d_fpe",
         type=str,
@@ -173,4 +172,4 @@ def get_argparse():
 
 if __name__ == '__main__':
     args = get_argparse()
-    zip_mvl_data(args)
+    zip_rgbd_data(args)
