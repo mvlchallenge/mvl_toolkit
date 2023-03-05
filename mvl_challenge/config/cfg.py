@@ -113,18 +113,20 @@ def update_cfg(d, u):
     return d
 
 
-def read_omega_cfg(cfg_file):
-    assert os.path.exists(cfg_file), f"File does not exist {cfg_file}"
-
+def set_loggings():    
     logging.basicConfig(
         format='[%(levelname)s] [%(asctime)s]:  %(message)s',
         level=logging.INFO
     )
 
+def read_omega_cfg(cfg_file):
+    assert os.path.exists(cfg_file), f"File does not exist {cfg_file}"
+
     # ! Reading YAML file
     with open(cfg_file, "r") as f:
         cfg_dict = yaml.safe_load(f)
 
+    set_loggings()
     # ! Saving cfg root for relative_paths
     global CFG_ROOT
     CFG_ROOT = os.path.dirname(cfg_file)
