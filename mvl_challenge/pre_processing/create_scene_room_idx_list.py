@@ -1,11 +1,11 @@
 import argparse
 from mvl_challenge import ASSETS_DIR, EPILOG
-from mvl_challenge.utils.io_utils import get_files_given_a_pattern
+from mvl_challenge.utils.io_utils import get_files_given_a_pattern, get_scene_room_from_scene_room_idx
 import os
 import yaml
 from pathlib import Path
-from mvl_challenge.utils.io_utils import get_scene_room_from_scene_room_idx
 from mvl_challenge.utils.io_utils import save_json_dict, create_directory
+from mvl_challenge.config.cfg import set_loggings
 import numpy as np
 from tqdm import tqdm
 
@@ -74,10 +74,28 @@ def get_list_scene_room_idx(args):
     return list_scene_version_room_frames
 
 
-def main(args):
+def from_geom_info(args):
+    assert os.path.exists(args.geom_info_dir), f"No directory found {args.geom_info_dir}"
+
+    set_loggings()
+    list_geom_info = os.listdir(args.geom_info_dir)
+    list_rooms = np.unique([get_scene_room_from_scene_room_idx(Path(fn).stem) for fn in list_geom_info]).tolist()
+    data_dict = {}
+    for room in tqdm(list_rooms, desc="List rooms..."):
+        data_dict[room] = [
+            Path(fn).stem for fn in list_geom_info
+            if room in fn
+        ]
+
+    create_directory(args.output_dir, delete_prev=False)
+    fn = os.path.join(args.output_dir, Path(f"{args.output_filename}").stem)
+    save_json_dict(f"{fn}.json", data_dict)
+
+
+def from_rgbd_dataset(args):
     list_scene_room_idx = get_list_scene_room_idx(args)
     print(f"Total number of frames found: {list_scene_room_idx.__len__()}")
-    
+
     list_rooms = np.unique([
         get_scene_room_from_scene_room_idx(r)
         for r in list_scene_room_idx
@@ -87,7 +105,8 @@ def main(args):
     data_dict = {}
     for room in tqdm(list_rooms, desc="List rooms..."):
         list_frames = [fr for fr in list_scene_room_idx if room in fr]
-        data_dict[room] = list_frames
+        if list_frames.__len__() > args.min_fr:
+            data_dict[room] = list_frames
 
     create_directory(args.output_dir, delete_prev=False)
     fn = os.path.join(args.output_dir, Path(f"{args.output_filename}").stem)
@@ -106,26 +125,43 @@ def get_argparse():
     parser.add_argument(
         '-d', '--scene_dir',
         # required=True,
-        default="/media/public_dataset/MP3D_360_FPE/MULTI_ROOM_SCENES/",
+        default=None,
+        # default="/media/public_dataset/MP3D_360_FPE/MULTI_ROOM_SCENES/",
         # default="/media/public_dataset/HM3D-MVL/test/BHXhpBwSMLh",
         type=str,
-        help='MV data scene directory.)'
+        help='MVL data scene directory.'
     )
 
     parser.add_argument(
         '-f', '--output_filename',
-        # required=True,
-        default="scene_room_frames.json",
+        required=True,
+        # default="scene_room_frames.json",
         type=str,
-        help='File name for the sene_room_frame file (default: scene_room_frames.json)'
+        help='Filename to the scene_room_idx file.'
     )
 
     parser.add_argument(
         '-o', '--output_dir',
         # required=True,
-        default=f"{ASSETS_DIR}/mvl_data",
+        default=f"{ASSETS_DIR}/tmp",
         type=str,
-        help='Output directory for the output_file to be created.'
+        help=f'Output directory for the output_file to be created. (Default: "{ASSETS_DIR}/tmp")'
+    )
+
+    parser.add_argument(
+        '-m', '--min_fr',
+        # required=True,
+        default=5,
+        # default=None,
+        help='Minimum number of frames per room.'
+    )
+
+    parser.add_argument(
+        '-g', '--geom_info_dir',
+        # required=True,
+        # default=f"{ASSETS_DIR}/mvl_data/geometry_info",
+        default=None,
+        help='Whether to use a geometry files defined in a directory.'
     )
 
     args = parser.parse_args()
@@ -134,4 +170,7 @@ def get_argparse():
 
 if __name__ == '__main__':
     args = get_argparse()
-    main(args)
+    if args.geom_info_dir is None:
+        from_rgbd_dataset(args)
+    else:
+        from_geom_info(args)
