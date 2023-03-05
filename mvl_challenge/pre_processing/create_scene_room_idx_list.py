@@ -104,7 +104,7 @@ def from_rgbd_dataset(args):
     print(f"Total number of rooms found: {list_rooms.__len__()}")
     data_dict = {}
     for room in tqdm(list_rooms, desc="List rooms..."):
-        list_frames = [fr for fr in list_scene_room_idx if room in fr]
+        list_frames = [fr for fr in list_scene_room_idx if f"{room}_" in fr]
         if list_frames.__len__() > args.min_fr:
             data_dict[room] = list_frames
 
@@ -114,7 +114,7 @@ def from_rgbd_dataset(args):
 
 
 def get_argparse():
-    desc = "This script reads a MV data directory to create and saves a `scene_room_idx` file. " + \
+    desc = "This script reads a RGBD dataset directory to create and saves a `scene_room_idx` file. " + \
         "A 'scene_room_idx' file is a list of all frames encoded as scene+room+idx, e.g., 2t7WUuJeko7_1_room0_2606"
 
     parser = argparse.ArgumentParser(
@@ -129,7 +129,7 @@ def get_argparse():
         # default="/media/public_dataset/MP3D_360_FPE/MULTI_ROOM_SCENES/",
         # default="/media/public_dataset/HM3D-MVL/test/BHXhpBwSMLh",
         type=str,
-        help='MVL data scene directory.'
+        help='RGBD dataset directory.'
     )
 
     parser.add_argument(

@@ -67,7 +67,7 @@ def get_argparse():
         # default="/media/public_dataset/HM3D-MVL/test/",
         default=None,
         type=str,
-        help='MVL data scene directory.'
+        help='RGBD dataset directory.'
     )
 
     parser.add_argument(

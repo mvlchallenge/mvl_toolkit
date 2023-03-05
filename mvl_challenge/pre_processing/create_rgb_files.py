@@ -49,7 +49,7 @@ def get_argparse():
         default="/media/public_dataset/MP3D_360_FPE/MULTI_ROOM_SCENES/",
         # default="/media/public_dataset/HM3D-MVL/test/BHXhpBwSMLh",
         type=str,
-        help='MVL data scene directory.'
+        help='RGBD dataset directory.'
     )
 
     parser.add_argument(
