@@ -90,8 +90,8 @@ def get_argparse():
     
     parser.add_argument(
         '--cfg',
-        default=f"{CFG_DIR}/hyperparameters_camera_height.yaml",
-        help=f'Hypermeter cfg (default: {CFG_DIR}/hyperparameters_camera_height.yaml )'
+        default=f"{CFG_DIR}/camera_height.yaml",
+        help=f'Hypermeter cfg (default: {CFG_DIR}/camera_height.yaml )'
     )
 
     args = parser.parse_args()
