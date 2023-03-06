@@ -1,0 +1,35 @@
+scene_dir: None
+scene_list: None
+ckpt: None
+
+auto_loading:
+  trained_models: ${rel_path:./trained_models.yaml}
+
+runners:
+  mvl:
+    data_dir: ${scene_dir}
+    scene_list: ${scene_list}
+    batch_size: 10
+    size: -1
+    grid_size: 0.01 
+    min_likelihood_percent: 0.000001
+    padding: 20
+    max_room_factor_size: 2
+    num_workers: 5
+
+model:
+  ly_model: HorizonNet
+  ckpt: ${trained_models.${ckpt}.ckpt}
+  optimizer: Adam
+  loss: weighted_L1
+  min_std: 0.001
+  epochs: 10
+  save_every: -1
+  lr: 0.00005
+  lr_decay_rate: 0.90
+  seed: 594277
+  bn_momentum: 0
+  freeze_earlier_blocks: -1
+  beta1: 0.9
+  weight_decay: 0.0
+  no_save: True
