@@ -23,7 +23,7 @@ def zip_mvl_data(args):
             zip_data(args, zf, geo_info_fn)
             zip_data(args, zf, img_fn)
             
-
+            
 def zip_data(args, zf, geo_info_fn):
     list_arc_fn = process_arcname(geo_info_fn, args.scene_dir)
     [(print(f"zipping {fn}"),
@@ -32,6 +32,7 @@ def zip_data(args, zf, geo_info_fn):
                 arcname=fn))
     for fn in tqdm(list_arc_fn)
     ]  
+       
        
 def get_argparse():
     desc = "This script zip and unzip MVL dataset locally. " + \
