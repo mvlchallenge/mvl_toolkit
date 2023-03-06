@@ -1,29 +1,30 @@
 import argparse
 from mvl_challenge import DATA_DIR, ROOT_DIR, CFG_DIR, EPILOG
 from mvl_challenge.config.cfg import read_omega_cfg
-from mvl_challenge.datasets.mvl_dataset import MVLDataset
+from mvl_challenge.datasets.mvl_dataset import MVLDataset, iter_mvl_room_scenes, estimate_within_list_ly
+from mvl_challenge.models import WrapperHorizonNet
 import logging
 from tqdm import tqdm
+from mvl_challenge.utils.vispy_utils import plot_list_ly
 
 def get_cfg_from_args(args):
     cfg = read_omega_cfg(args.cfg)
     cfg.scene_dir = args.scene_dir
     cfg.scene_list = args.scene_list
+    cfg.ckpt = args.ckpt
+    cfg.cuda = args.cuda
     return cfg
 
 def main(args):
     cfg = get_cfg_from_args(args)
     mvl = MVLDataset(cfg)
-    mvl.print_mvl_data_info()
-    # ! Loading list_ly by passing room_scene
-    for room_scene in tqdm(mvl.list_rooms, desc="Loading room scene..."):
-        list_ly = mvl.get_list_ly(room_scene=room_scene)
+    hn = WrapperHorizonNet(cfg)
     
-    # ! Iterator of list_ly
-    for list_ly in mvl.iter_list_ly():
-        continue
-        
-
+    for list_ly in iter_mvl_room_scenes(model=hn, dataset=mvl):
+        plot_list_ly(list_ly)
+    
+    estimate_within_list_ly(list_ly, hn)
+    
 def get_argparse():
     desc = "This script loads a MVL dataset given a passed scene directory, scene list and cfg file. " + \
         "The scene directory is where the MVL data is stored. " + \
@@ -49,7 +50,7 @@ def get_argparse():
     parser.add_argument(
         "--cfg",
         type=str, 
-        default=f"{CFG_DIR}/load_mvl_dataset.yaml", 
+        default=f"{CFG_DIR}/eval_mvl_dataset.yaml", 
         help="Config file to load a MVL dataset."
         )
     
@@ -58,6 +59,19 @@ def get_argparse():
         type=str, 
         default=f"{DATA_DIR}/mp3d_fpe/mp3d_fpe__single_room_scene_list.json", 
         help="Config file to load a MVL dataset."
+        )
+    
+    parser.add_argument(
+         "--ckpt", 
+        default="mp3d", 
+        help="Pretrained model ckpt."
+        )   
+    
+    parser.add_argument(
+         "--cuda", 
+        default=0,
+        type=int, 
+        help="Cuda device."
         )
     
     args = parser.parse_args()
