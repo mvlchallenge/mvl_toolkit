@@ -1,0 +1,13 @@
+# ! Pretrained HN models 
+# TODO: generalize this paths
+mp3d:
+  ckpt: "/media/NFS/justin/code/360-retraining/models/HorizonNet/ckpt/resnet50_rnn__mp3d.pth"
+
+zind:
+  ckpt: "/media/NFS/justin/code/360-retraining/models/HorizonNet/ckpt/resnet50_rnn__zind.pth"
+
+st3d:
+  ckpt: "/media/NFS/justin/code/360-retraining/models/HorizonNet/ckpt/resnet50_rnn__st3d.pth"
+
+panos2d3d:
+  ckpt: "/media/NFS/justin/code/360-retraining/models/HorizonNet/ckpt/resnet50_rnn__panos2d3d.pth"
