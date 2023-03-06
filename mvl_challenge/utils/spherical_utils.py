@@ -73,6 +73,34 @@ def sph2uv(sph, shape):
     )).astype(int)
 
 
+
+def phi_coords2xyz(phi_coords):
+    """
+    Returns 3D bearing vectors (on the unite sphere) from phi_coords
+    """
+    W = phi_coords.__len__()
+    u = np.linspace(0, W - 1, W)
+    theta_coords = (2 * np.pi * u / W) - np.pi
+    bearings_y = -np.sin(phi_coords)
+    bearings_x = np.cos(phi_coords) * np.sin(theta_coords)
+    bearings_z = np.cos(phi_coords) * np.cos(theta_coords)
+    return np.vstack((bearings_x, bearings_y, bearings_z))
+
+
+def phi_coords2uv(phi_coord, shape=(512, 1024)):
+    """
+    Converts a set of phi_coordinates (2, W), defined by ceiling and floor boundaries encoded as 
+    phi coordinates, into uv pixels 
+    """
+    H, W = shape
+    u = np.linspace(0, W - 1, W)
+    theta_coords = (2 * np.pi * u / W) - np.pi
+    uv_c = sph2uv(np.vstack((theta_coords, phi_coord[0])), shape)
+    uv_f = sph2uv(np.vstack((theta_coords, phi_coord[1])), shape)
+
+    return uv_c, uv_f
+
+
 def xyz2uv(xyz, shape=(512, 1024)):
     """
     Projects XYZ array into uv coord
