@@ -7,7 +7,6 @@ import os
 from pathlib import Path
 
 
-
 def label_cor2ly_phi_coord(label_cor_path, shape=(512, 1024)):
     """
     Implementation taken from HorizonNet (CVPR 2019)
@@ -90,10 +89,10 @@ def cor_2_1d(cor, H, W):
 
 def filter_out_noisy_layouts(list_ly, max_room_factor_size=2):
     """
-    Filters out list_ly based on the cam2boundary defined for each ly. 
-    All estimation which are greater than max_room_factor_size x mean(largest cam distances)
+    Filters out the passed list_ly based on the cam2boundary instances defined for each ly. 
+    All layouts which have an estimation greater than max_room_factor_size x median( of all cam distances) are filtered out  
     Args:
-        list_ly (_type_): List of Layout instances
+        list_ly (list): List of Layout instances
         max_room_factor_size (int, optional): max ly size allowed. Defaults to 2.
     """
     # ! Filtering out noisy estimation
@@ -114,11 +113,10 @@ def normalize_list_ly(list_ly, scale_and_center=None):
         center = np.median(pcl, axis=1, keepdims=True)
         pcl = pcl - center
         scale = np.max(np.linalg.norm(pcl[(0, 2), :], axis=0))
-    else: 
+    else:
         scale, center = scale_and_center
     [ly.normalize_boundaries(scale, center) for ly in list_ly]
     return scale, center
-    
 
 
 def load_pseudo_labels(list_ly, hard_copy=False):
