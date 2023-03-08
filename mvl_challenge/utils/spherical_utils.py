@@ -1,7 +1,6 @@
 import math
 
 import numpy as np
-from mvl_challenge.utils.image_utils import get_color_array
 
 
 class SphericalCamera:
@@ -18,6 +17,7 @@ class SphericalCamera:
         self.default_bearings = uv2xyz(self.default_pixel, self.shape)
 
     def project_pcl_from_depth_and_rgb_maps(self, color_map, depth_map, scaler=1):
+        from mvl_challenge.utils.image_utils import get_color_array
         color_pixels = get_color_array(color_map=color_map) / 255
         mask = depth_map.flatten() > 0
         pcl = self.default_bearings[:, mask] * scaler * get_color_array(color_map=depth_map)[0][mask]

@@ -1,6 +1,6 @@
 
 import numpy as np
-from mlc.models.HorizonNet.misc import panostretch
+from mvl_challenge.models.HorizonNet.misc import panostretch
 import logging
 from copy import deepcopy
 import os

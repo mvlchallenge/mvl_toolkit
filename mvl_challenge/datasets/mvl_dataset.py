@@ -1,13 +1,7 @@
 import os
 import json
-from traceback import print_tb
 from tqdm import tqdm
-from mvl_challenge.utils.layout_utils import label_cor2ly_phi_coord
-from mvl_challenge.utils.geometry_utils import eulerAnglesToRotationMatrix, extend_array_to_homogeneous
-from mvl_challenge.utils.geometry_utils import tum_pose2matrix44
-from mvl_challenge.utils.spherical_utils import phi_coords2xyz
 from mvl_challenge.data_structure import Layout, CamPose
-from mvl_challenge.models.layout_model import LayoutModel
 from mvl_challenge.utils.layout_utils import filter_out_noisy_layouts
 import numpy as np
 import logging
@@ -116,36 +110,9 @@ class MVImageLayout(data.Dataset):
         img = np.array(Image.open(image_fn), np.float32)[..., :3] / 255.
         x = torch.FloatTensor(img.transpose([2, 0, 1]).copy())
         return dict(images=x, idx=self.data[idx][1])
-
-
-def estimate_within_list_ly(list_ly, model: LayoutModel):
-    """
-    Estimates phi_coord (layout boundaries) for all ly defined in list_ly using the passed model instance
-    """
-    cfg = model.cfg
-    layout_dataloader = DataLoader(
-        MVImageLayout([(ly.img_fn, ly.idx) for ly in list_ly]),
-        batch_size=cfg.runners.mvl.batch_size,
-        shuffle=False,
-        drop_last=False,
-        num_workers=cfg.runners.mvl.num_workers,
-        pin_memory=True if model.device != 'cpu' else False,
-        worker_init_fn=lambda x: np.random.seed(),
-    )
-    model.net.eval()
-    evaluated_data = {}
-    for x in tqdm(layout_dataloader, desc=f"Estimating layout..."):
-        with torch.no_grad():
-            y_bon_, y_cor_ = model.net(x['images'].to(model.device))
-            # y_bon_, y_cor_ = net(x[0].to(device))
-        for y_, cor_, idx in zip(y_bon_.cpu(), y_cor_.cpu(), x['idx']):
-            data = np.vstack((y_, cor_))
-            evaluated_data[idx] = data
-
-    [ly.recompute_data(phi_coord=evaluated_data[ly.idx]) for ly in list_ly]
-
+    
         
-def iter_mvl_room_scenes(model:LayoutModel, dataset: MVLDataset):
+def iter_mvl_room_scenes(model, dataset: MVLDataset):
     """
     Creates a generator which yields a list of layout from a defined 
     MVL dataset and estimates layout in it.
@@ -153,11 +120,11 @@ def iter_mvl_room_scenes(model:LayoutModel, dataset: MVLDataset):
     
     dataset.print_mvl_data_info()
     cfg = dataset.cfg
-    for room_scene in tqdm(dataset.list_rooms, desc="Reading MVL rooms..."):
+    for room_scene in dataset.list_rooms:
         list_ly = dataset.get_list_ly(room_scene=room_scene)
 
         # ! Overwrite phi_coord within the list_ly by the estimating new layouts.
-        estimate_within_list_ly(list_ly, model)
+        model.estimate_within_list_ly(list_ly)
         filter_out_noisy_layouts(
             list_ly=list_ly,
             max_room_factor_size=cfg.runners.mvl.max_room_factor_size
