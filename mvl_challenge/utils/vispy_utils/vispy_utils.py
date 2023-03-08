@@ -144,11 +144,11 @@ def setting_pcl(view, size=5, edge_width=2, antialias=0):
 
 
 def plot_color_plc(points,
-                   color=(1, 1, 1, 1),
+                   color=(0, 0, 0, 1),
                    return_view=False,
                    size=0.5,
                    plot_main_axis=False,
-                   background="black",
+                   background="white",
                    scale_factor=15,
                    caption=''
                    ):

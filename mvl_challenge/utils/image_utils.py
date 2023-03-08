@@ -1,6 +1,10 @@
 from imageio import imread
 import numpy as np
 from mvl_challenge.utils.spherical_utils import phi_coords2xyz, xyz2uv
+import matplotlib.pyplot as plt
+from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
 
 def get_color_array(color_map):
     """
@@ -25,7 +29,7 @@ def load_depth_map(fpath):
     return depth_map
 
 
-def draw_boundaries_uv(image, boundary_uv, color=(0, 1, 0), size=2):
+def draw_boundaries_uv(image, boundary_uv, color=(0, 255, 0), size=2):
     if image.shape.__len__() == 3:
         for i in range(size):
             image[(boundary_uv[1]+i) % image.shape[0], boundary_uv[0], :] = np.array(color)
@@ -63,3 +67,19 @@ def draw_boundaries_phi_coord(image, phi_coord, color=(0, 255, 0), size=2):
     )
 
     return image
+
+
+def add_caption_to_image(image, caption):
+    img_obj = Image.fromarray(image)
+    img_draw = ImageDraw.Draw(img_obj)
+    font_obj = ImageFont.truetype('FreeMono.ttf', 20)
+    img_draw.text((20, 20), f"{caption}", font=font_obj, fill=(255, 0, 0))
+    return np.array(img_obj)
+        
+def plot_image(image, caption, figure=0):
+    plt.figure(figure)
+    plt.clf()
+    image = add_caption_to_image(image, caption)
+    plt.imshow(image)
+    plt.draw()
+    plt.waitforbuttonpress(0.01)

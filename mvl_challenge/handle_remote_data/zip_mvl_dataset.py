@@ -45,26 +45,18 @@ def get_argparse():
 
     parser.add_argument(
         '-d', '--scene_dir',
-        # required=True,
-        # default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/",
-        # default="/media/public_dataset/mvl_challenge/mp3d_fpe",
-        # default=f'{ASSETS_DIR}/tmp/zip_files',
-        # default=None,
         type=str,
         help='MVL dataset directory.'
     )
 
     parser.add_argument(
         '-f', '--scene_list',
-        # required=True,
-        default="/media/public_dataset/mvl_challenge/mp3d_fpe__single_room_scene_list.json",
         type=str,
         help='Scene list file which contents all frames encoded in scene_room_idx format.'
     )
 
     parser.add_argument(
         '-o', '--output_dir',
-        # required=True,
         default=f"{ASSETS_DIR}/tmp/zip_files",
         type=str,
         help='Output directory for the output_file to be created.'

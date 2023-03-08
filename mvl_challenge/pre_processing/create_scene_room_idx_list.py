@@ -3,6 +3,7 @@ from mvl_challenge import ASSETS_DIR, EPILOG
 from mvl_challenge.utils.io_utils import get_files_given_a_pattern, get_scene_room_from_scene_room_idx
 import os
 import yaml
+import json
 from pathlib import Path
 from mvl_challenge.utils.io_utils import save_json_dict, create_directory
 from mvl_challenge.config.cfg import set_loggings
@@ -41,6 +42,26 @@ def get_list_rooms_idx_from_metadata(metadata_filename):
     return list_room_idx
 
 
+def get_list_rooms_idx_from_mvl_labels(mvl_labels_filename):
+    """
+    Returns the list of room_idx defined by mvl_labels.
+
+    Args:
+        mvl_labels_filename (string): mvl_labels filename
+    Returns:
+        [list room_idx]: List of room_idx
+    """
+    
+    mvl_data = json.load(open(mvl_labels_filename, "r"))
+    list_room_idx = []
+    for room, list_kf in enumerate(mvl_data['list_kf']):
+        [
+         list_room_idx.append(f"room{room}_{kf}")
+         for kf in list_kf
+        ]
+    return list_room_idx
+
+
 def get_list_scene_room_idx(args):
     list_scenes = get_files_given_a_pattern(
         data_dir=args.scene_dir,
@@ -60,13 +81,20 @@ def get_list_scene_room_idx(args):
 
         filename = "_".join(scene.split("/")[-2:])
 
+        if os.path.exists(os.path.join(scene, "mvl_challenge_labels.json")):
+            # ! If mvl_challenge_labels exists for this scene
+            mvl_labels_fn  = os.path.join(scene, "mvl_challenge_labels.json")
+            list_room_idx = get_list_rooms_idx_from_mvl_labels(mvl_labels_fn)
         # ! Check multi-room scenes
-        if os.path.exists(os.path.join(scene, "metadata")):
+        elif os.path.exists(os.path.join(scene, "metadata")):
+            # ! If metadata exists
             metadata_filename = os.path.join(scene, "metadata", "room_gt_v0.0.yaml")
             list_room_idx = get_list_rooms_idx_from_metadata(metadata_filename)
         else:
+            # ! defining room_scene_idx from rgb images directly
             list_idx = get_list_idx_from_dir(os.path.join(scene, "rgb"))
             list_room_idx = [f"room0_{idx}" for idx in list_idx]
+            
         [list_scene_version_room_frames.append(f"{filename}_{room_idx}")
          for room_idx in list_room_idx
          ]
@@ -125,8 +153,8 @@ def get_argparse():
     parser.add_argument(
         '-d', '--scene_dir',
         # required=True,
-        default=None,
-        # default="/media/public_dataset/MP3D_360_FPE/MULTI_ROOM_SCENES/",
+        # default=None,
+        default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/",
         # default="/media/public_dataset/HM3D-MVL/test/BHXhpBwSMLh",
         type=str,
         help='RGBD dataset directory.'
@@ -134,8 +162,8 @@ def get_argparse():
 
     parser.add_argument(
         '-f', '--output_filename',
-        required=True,
-        # default="scene_room_frames.json",
+        # required=True,
+        default="scene_room_frames.json",
         type=str,
         help='Filename to the scene_room_idx file.'
     )

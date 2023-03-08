@@ -5,6 +5,7 @@ import logging
 from copy import deepcopy
 import os
 from pathlib import Path
+from mvl_challenge.utils.vispy_utils import plot_color_plc
 
 
 def label_cor2ly_phi_coord(label_cor_path, shape=(512, 1024)):
@@ -135,3 +136,16 @@ def load_pseudo_labels(list_ly, hard_copy=False):
     }
     [ly.recompute_data(phi_coord=ps_labels[ly.idx]) for ly in list_ly]
     return list_ly
+
+
+def get_boundary_from_list_corners(list_corner):
+    boundary = []
+    for idx in range(list_corner.__len__()):
+        direction = (list_corner[(idx +1) % list_corner.__len__()] - list_corner[idx]).reshape(3, 1)
+        wall_long = np.linalg.norm(direction)
+        resolution = int(wall_long / 0.001)
+        bound_points = list_corner[idx].reshape(
+            3, 1) + direction * np.linspace(0, 1, resolution)
+        boundary.append(bound_points)
+        
+    return np.hstack(boundary)

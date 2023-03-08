@@ -136,26 +136,6 @@ def extend_vector_to_homogeneous_transf(vector):
     return T
 
 
-def get_boundaries_from_corners(corners, cam_height):
-    """
-    Returns a set of points in 3D (3, n) for floor and ceiling boundaries using
-    the ordered corners @corners and the camera_height (ceiling, floor)
-    """
-    # corners.append(corners[0])
-    crn = extend_array_to_homogeneous(np.vstack(corners).T)[(0, 2, 1), :].T
-    boundary = []
-    for idx, c in enumerate(crn):
-        v_dir = crn[(idx + 1) % corners.__len__(), :] - c
-        wall_long = np.linalg.norm(v_dir)
-        resolution = int(wall_long / 0.001)
-        wall = c.reshape(3, 1) + v_dir.reshape(3, 1) * np.linspace(0, 1, resolution)
-
-        boundary.append(wall)
-    ceiling = np.hstack(boundary) * np.array((1, -cam_height[0], 1)).reshape(3, 1)
-    floor = np.hstack(boundary) * np.array((1, cam_height[1], 1)).reshape(3, 1)
-    return np.hstack((ceiling, floor))
-
-
 def eulerAnglesToRotationMatrix(angles):
     theta = np.zeros((3))
 

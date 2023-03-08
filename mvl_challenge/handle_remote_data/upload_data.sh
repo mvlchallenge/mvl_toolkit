@@ -1,7 +1,7 @@
 #!/bin/bash
 
-ZIP_DIR=$1
-ID_DIR=1j40k7MBg-yJVwIQX5DVL4qEBFD25baBo
+ZIP_DIR=/media/NFS/kike/360_Challenge/mvl_toolkit/mvl_challenge/assets/tmp/zip
+ID_DIR=1IrH4sj1V8F9KMlANYDDU0MGR0ftoSrKc
 
 for filename in $ZIP_DIR/*.zip; do
     echo $filename

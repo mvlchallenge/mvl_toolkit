@@ -73,6 +73,9 @@ def sph2uv(sph, shape):
     )).astype(int)
 
 
+def sphere_normalization(xyz):
+    norm = np.linalg.norm(xyz, axis=0)
+    return xyz/norm
 
 def phi_coords2xyz(phi_coords):
     """
@@ -81,7 +84,7 @@ def phi_coords2xyz(phi_coords):
     W = phi_coords.__len__()
     u = np.linspace(0, W - 1, W)
     theta_coords = (2 * np.pi * u / W) - np.pi
-    bearings_y = -np.sin(phi_coords)
+    bearings_y = np.sin(phi_coords)
     bearings_x = np.cos(phi_coords) * np.sin(theta_coords)
     bearings_z = np.cos(phi_coords) * np.cos(theta_coords)
     return np.vstack((bearings_x, bearings_y, bearings_z))
@@ -101,6 +104,13 @@ def phi_coords2uv(phi_coord, shape=(512, 1024)):
     return uv_c, uv_f
 
 
+def uv2phi_coords(uv, shape=(512, 1024)):    
+    _, idx = np.unique(uv[0], return_index=True)
+    v = uv[1, idx]
+    phi_bon = -(v / 512 - 0.5) * np.pi
+    return phi_bon
+
+
 def xyz2uv(xyz, shape=(512, 1024)):
     """
     Projects XYZ array into uv coord
@@ -109,7 +119,7 @@ def xyz2uv(xyz, shape=(512, 1024)):
 
     normXZ = np.linalg.norm(xyz[(0, 2), :], axis=0, keepdims=True)
 
-    phi_coord = -np.arcsin(xyz_n[1, :])
+    phi_coord = np.arcsin(xyz_n[1, :])
     theta_coord = np.sign(xyz[0, :]) * np.arccos(xyz[2, :] / normXZ)
 
     u = np.clip(np.floor((0.5 * theta_coord / np.pi + 0.5) * shape[1] + 0.5), 0, shape[1] - 1)
