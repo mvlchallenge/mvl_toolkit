@@ -1,9 +1,11 @@
 import argparse
-from mvl_challenge import DATA_DIR, ROOT_DIR, CFG_DIR, EPILOG
+from mvl_challenge import DATA_DIR, ROOT_DIR, CFG_DIR, EPILOG, ASSETS_DIR
 from mvl_challenge.config.cfg import read_omega_cfg
 from mvl_challenge.datasets.mvl_dataset import MVLDataset
 import logging
 from tqdm import tqdm
+import numpy as np
+from mvl_challenge.utils.image_utils import plot_image
 
 def get_cfg_from_args(args):
     cfg = read_omega_cfg(args.cfg)
@@ -18,10 +20,20 @@ def main(args):
     # ! Loading list_ly by passing room_scene
     for room_scene in tqdm(mvl.list_rooms, desc="Loading room scene..."):
         list_ly = mvl.get_list_ly(room_scene=room_scene)
+        for ly in list_ly:
+            plot_image(
+                image=ly.get_rgb(), 
+                caption=ly.idx
+            )
+            
     
     # ! Iterator of list_ly
     for list_ly in mvl.iter_list_ly():
-        continue
+        for ly in list_ly:
+            plot_image(
+                image=ly.get_rgb(), 
+                caption=ly.idx
+            )
         
 
 def get_argparse():
@@ -38,8 +50,7 @@ def get_argparse():
     parser.add_argument(
         '-d', '--scene_dir',
         # required=True,
-        # default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/",
-        default="/media/public_dataset/mvl_challenge/mp3d_fpe",
+        default=f"{ASSETS_DIR}/mvl_data/mp3d_fpe",
         # default=f'{ASSETS_DIR}/tmp/zip_files',
         # default=None,
         type=str,
@@ -56,7 +67,6 @@ def get_argparse():
     parser.add_argument(
          "-f", "--scene_list", 
         type=str, 
-        default=f"{DATA_DIR}/mp3d_fpe/mp3d_fpe__single_room_scene_list.json", 
         help="Config file to load a MVL dataset."
         )
     
