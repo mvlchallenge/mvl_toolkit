@@ -61,7 +61,7 @@ def get_argparse():
         "--cfg",
         type=str, 
         default=f"{CFG_DIR}/load_mvl_dataset.yaml", 
-        help="Config file to load a MVL dataset."
+        help=f"Config file to load a MVL dataset. (default: {CFG_DIR}/load_mvl_dataset.yaml)"
         )
     
     parser.add_argument(
