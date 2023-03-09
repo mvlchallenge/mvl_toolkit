@@ -50,7 +50,7 @@ def get_argparse():
     parser.add_argument(
         '-d', '--scene_dir',
         # required=True,
-        default=f"{ASSETS_DIR}/mvl_data/mp3d_fpe",
+        # default=f"{ASSETS_DIR}/mvl_data/mp3d_fpe",
         # default=f'{ASSETS_DIR}/tmp/zip_files',
         # default=None,
         type=str,

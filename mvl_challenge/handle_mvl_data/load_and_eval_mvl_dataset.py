@@ -12,6 +12,7 @@ import numpy as np
 from mvl_challenge.utils.io_utils import create_directory, get_scene_room_from_scene_room_idx
 from mvl_challenge.utils.image_utils import plot_image
 
+
 def get_cfg_from_args(args):
     cfg = read_omega_cfg(args.cfg)
     cfg.scene_dir = args.scene_dir
@@ -29,13 +30,16 @@ def main(args):
     for list_ly in iter_mvl_room_scenes(model=hn, dataset=mvl):
         for ly in list_ly:
             img = ly.get_rgb()
-            draw_boundaries_phi_coord(img, phi_coord=ly.phi_coord)
+            draw_boundaries_phi_coord(
+                img,
+                phi_coord=np.vstack([ly.phi_coord[0], ly.phi_coord[0]])
+                )
             plot_image(
-                image=img, 
+                image=img,
                 caption=ly.idx
             )
         plot_list_ly(list_ly)
-        
+
 
 def get_argparse():
     desc = "This script loads a MVL dataset given a passed scene directory, scene list and cfg file. " + \
@@ -51,6 +55,7 @@ def get_argparse():
     parser.add_argument(
         '-d', '--scene_dir',
         type=str,
+        # default=f'{ASSETS_DIR}/mvl_data/mp3d_fpe',
         help='MVL dataset directory.'
     )
 
@@ -64,6 +69,7 @@ def get_argparse():
     parser.add_argument(
         "-f", "--scene_list",
         type=str,
+        # default=f"{DATA_DIR}/mp3d_fpe/mp3d_fpe__test__scene_list.json",
         help="Config file to load a MVL dataset."
     )
 

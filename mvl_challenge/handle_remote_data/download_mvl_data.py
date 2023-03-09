@@ -34,7 +34,7 @@ def get_argparse():
     parser.add_argument(
         "-f", '--ids_file', 
         type=str, 
-        default=f"{ROOT_DIR}/data/mp3d_fpe/test_google_drive_ids.csv", 
+        # default=f"{ROOT_DIR}/data/mp3d_fpe/test_google_drive_ids.csv", 
         help="lists of IDS to download from GoogleDrive"
         )
     
