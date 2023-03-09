@@ -33,7 +33,7 @@ def uv2xyz(uv, shape):
     phi = sph[1]
 
     x = np.cos(phi) * np.sin(theta)
-    y = -np.sin(phi)
+    y = np.sin(phi)
     z = np.cos(phi) * np.cos(theta)
 
     return np.vstack((x, y, z))
@@ -45,7 +45,7 @@ def uv2sph(uv, shape):
     """
     H, W = shape
     theta = 2 * np.pi * ((uv[0]) / W - 0.5)
-    phi = -np.pi * ((uv[1]) / H - 0.5)
+    phi = np.pi * ((uv[1]) / H - 0.5)
     return np.vstack((theta, phi))
 
 
@@ -57,26 +57,33 @@ def sph2xyz(sph):
     phi = sph[:, 1]
 
     x = math.cos(phi) * math.sin(theta)
-    y = -math.sin(phi)
+    y = math.sin(phi)
     z = math.cos(phi) * math.cos(theta)
 
     return np.vstack((x, y, z))
 
-
+#! Checked OK
 def sph2uv(sph, shape):
-    H, W = shape
-    u = W * (sph[0]/(2*np.pi) + 0.5)
-    v = H * (-sph[1]/np.pi + 0.5)
-    return np.vstack((
-        np.clip(u, 0, W-1),
-        np.clip(v, 0, H-1)
-    )).astype(int)
+    # H, W = shape
+    # u = W * (sph[0]/(2*np.pi) + 0.5)
+    # v = H * (sph[1]/np.pi + 0.5)
+    # return np.floor(np.vstack((
+    #     np.clip(u, 0, W-1),
+    #     np.clip(v, 0, H-1)
+    # ))).astype(int)
+    theta_coord = sph[0]
+    phi_coord = sph[1]
+    u = np.clip(np.floor((0.5 * theta_coord / np.pi + 0.5) * shape[1] + 0.5), 0, shape[1] - 1)
+    v = np.clip(np.floor((phi_coord / np.pi + 0.5) * shape[0]+0.5), 0, shape[0] - 1)
+    return np.vstack([u, v]).astype(int)
 
 
 def sphere_normalization(xyz):
     norm = np.linalg.norm(xyz, axis=0)
     return xyz/norm
 
+
+#! Checked ok!
 def phi_coords2xyz(phi_coords):
     """
     Returns 3D bearing vectors (on the unite sphere) from phi_coords
@@ -90,6 +97,7 @@ def phi_coords2xyz(phi_coords):
     return np.vstack((bearings_x, bearings_y, bearings_z))
 
 
+#! Checked ok!
 def phi_coords2uv(phi_coord, shape=(512, 1024)):
     """
     Converts a set of phi_coordinates (2, W), defined by ceiling and floor boundaries encoded as 
@@ -100,17 +108,27 @@ def phi_coords2uv(phi_coord, shape=(512, 1024)):
     theta_coords = (2 * np.pi * u / W) - np.pi
     uv_c = sph2uv(np.vstack((theta_coords, phi_coord[0])), shape)
     uv_f = sph2uv(np.vstack((theta_coords, phi_coord[1])), shape)
-
     return uv_c, uv_f
 
 
-def uv2phi_coords(uv, shape=(512, 1024)):    
-    _, idx = np.unique(uv[0], return_index=True)
-    v = uv[1, idx]
-    phi_bon = -(v / 512 - 0.5) * np.pi
+#! Checked ok!
+def uv2phi_coords(uv, shape=(512, 1024), type_bound='floor'):
+    # _, idx, count = np.unique(uv[0], return_index=True, return_counts=True)
+    u_coords = np.linspace(0, shape[1] - 1, shape[1]).astype(np.int16)
+    v = []
+    for u in u_coords:
+        v_idx = np.where(uv[0] == u)[0]
+        if type_bound == 'floor':
+            v.append(np.max(uv[1, v_idx]))
+        elif type_bound == 'ceiling':
+            v.append(np.min(uv[1, v_idx]))
+        else: 
+            raise ValueError("wrong type_bound")
+    
+    phi_bon = (np.array(v) / shape[0] - 0.5) * np.pi
     return phi_bon
 
-
+#! Checked ok!
 def xyz2uv(xyz, shape=(512, 1024)):
     """
     Projects XYZ array into uv coord
@@ -125,21 +143,3 @@ def xyz2uv(xyz, shape=(512, 1024)):
     u = np.clip(np.floor((0.5 * theta_coord / np.pi + 0.5) * shape[1] + 0.5), 0, shape[1] - 1)
     v = np.clip(np.floor((phi_coord / np.pi + 0.5) * shape[0]+0.5), 0, shape[0] - 1)
     return np.vstack((u, v)).astype(int)
-
-
-def xyz2sph(xyz):
-    """
-    Project xyz coordinates into spherical coordinates (theta, phi)
-    """
-    normXZ = math.sqrt(math.pow(xyz[0], 2) + math.pow(xyz[2], 2))
-    if normXZ < 0.000001:
-        normXZ = 0.000001
-
-    normXYZ = math.sqrt(math.pow(xyz[0], 2) + math.pow(xyz[1], 2) + math.pow(xyz[2], 2))
-
-    # ! Spherical coordinates
-    phi = -math.asin(xyz[1] / normXYZ)
-    theta = math.acos(xyz[2] / normXZ)
-
-    uv = (theta, phi)
-    return uv
