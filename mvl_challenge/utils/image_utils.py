@@ -6,6 +6,7 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
+
 def get_color_array(color_map):
     """
     returns an array (3, n) of the colors in image (H, W)
@@ -69,13 +70,19 @@ def draw_boundaries_phi_coord(image, phi_coord, color=(0, 255, 0), size=2):
     return image
 
 
+def draw_boundaries_xyz(image, xyz, color=(0, 255, 0), size=2):
+    uv = xyz2uv(xyz)
+    draw_boundaries_uv(image, uv, color, size)
+
+
 def add_caption_to_image(image, caption):
     img_obj = Image.fromarray(image)
     img_draw = ImageDraw.Draw(img_obj)
     font_obj = ImageFont.truetype('FreeMono.ttf', 20)
     img_draw.text((20, 20), f"{caption}", font=font_obj, fill=(255, 0, 0))
     return np.array(img_obj)
-        
+
+
 def plot_image(image, caption, figure=0):
     plt.figure(figure)
     plt.clf()

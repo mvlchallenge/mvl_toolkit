@@ -10,11 +10,11 @@ from mvl_challenge.utils.io_utils import create_directory
 from mvl_challenge.config.cfg import set_loggings
 from mvl_challenge.utils.io_utils import get_scene_room_from_scene_room_idx
 from mvl_challenge.utils.layout_utils import get_boundary_from_list_corners
-from mvl_challenge.utils.spherical_utils import xyz2uv, uv2phi_coords
+from mvl_challenge.utils.spherical_utils import xyz2uv, uv2phi_coords, phi_coords2uv, phi_coords2xyz
 from mvl_challenge.utils.vispy_utils import plot_color_plc
 from mvl_challenge.utils.geometry_utils import tum_pose2matrix44, extend_array_to_homogeneous
 from mvl_challenge.utils.image_utils import draw_boundaries_uv, draw_boundaries_phi_coord
-
+from mvl_challenge.utils.image_utils import add_caption_to_image
 
 
 def save_phi_bound(args, list_corners, list_geom_info):
@@ -26,37 +26,46 @@ def save_phi_bound(args, list_corners, list_geom_info):
     crn_floor = [np.array(c[1]).T for c in list_corners[0]]
     bound_floor  = get_boundary_from_list_corners(crn_floor)
     
+    gt_dir = create_directory(args.output_dir, delete_prev=False)
+    gt_vis_dir = create_directory(args.output_dir + "_vis", delete_prev=False)
+    
     for geom_info in list_geom_info:
         scene_room_idx = Path(geom_info).stem
         geom_info_fn = os.path.join(args.geom_info_dir, geom_info)
         geom_data = json.load(open(geom_info_fn, 'r'))
+        
+        # ! Getting SE3 transformation in geom_info
         cam_pose = tum_pose2matrix44([-1] +
             geom_data['translation'] + geom_data['quaternion'])
         
+        # ! Transform into camera coordinates
         local_xyz_ceil = np.linalg.inv(cam_pose)[:3, :] @ extend_array_to_homogeneous(bound_ceil)
         local_xyz_floor = np.linalg.inv(cam_pose)[:3, :] @ extend_array_to_homogeneous(bound_floor)
         
+        # ! projection into uv coord
         uv_ceil = xyz2uv(local_xyz_ceil)
         uv_floor  = xyz2uv(local_xyz_floor)
         
         img = imread(Path(args.geom_info_dir).parent.__str__() + f"/img/{scene_room_idx}.jpg")
         
-        phi_coords_ceil = uv2phi_coords(uv_ceil)
-        phi_coords_floor = uv2phi_coords(uv_floor)
+        #! Projection into phi_coords
+        phi_coords_ceil = uv2phi_coords(uv_ceil, type_bound='ceiling')
+        phi_coords_floor = uv2phi_coords(uv_floor, type_bound='floor')
+        phi_coords = np.vstack([phi_coords_ceil, phi_coords_floor])
         
-        draw_boundaries_phi_coord(img, np.vstack([phi_coords_ceil, phi_coords_floor]))
-        
-        
-        imwrite("test.jpg", img)
-        
-        
-
+        img = add_caption_to_image(
+                image=img,
+                caption="mvl-challenge " + scene_room_idx 
+            )
     
-    # plot_color_plc(bound_ceil)
-    
-    
-    pass
-
+        draw_boundaries_phi_coord(img, phi_coords)
+          
+        gt_vis_fn = os.path.join(gt_vis_dir, f"{scene_room_idx}.jpg")
+        gt_fn = os.path.join(gt_dir, f"{scene_room_idx}.npy")    
+           
+        imwrite(gt_vis_fn, img)
+        np.save(gt_fn, phi_coords)
+        
 def main(args):
     # ! Reading geometry info
     set_loggings()
@@ -78,8 +87,6 @@ def main(args):
             save_phi_bound(args, list_corners, [g for g in list_geom_info if room_name in g])
                 
             
-                
-       
 def get_argparse():
     desc = "This script creates the npy files from the mvl-annotation. " + \
         "This npy files content the boundary defined for ceiling and floor."
