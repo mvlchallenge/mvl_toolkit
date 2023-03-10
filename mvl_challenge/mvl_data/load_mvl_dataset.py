@@ -5,7 +5,7 @@ from mvl_challenge.datasets.mvl_dataset import MVLDataset
 import logging
 from tqdm import tqdm
 import numpy as np
-from mvl_challenge.utils.image_utils import plot_image
+from mvl_challenge.utils.image_utils import plot_image, add_caption_to_image
 
 def get_cfg_from_args(args):
     cfg = read_omega_cfg(args.cfg)

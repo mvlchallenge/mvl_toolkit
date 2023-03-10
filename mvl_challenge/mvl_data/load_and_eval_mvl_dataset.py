@@ -32,7 +32,7 @@ def main(args):
             img = ly.get_rgb()
             draw_boundaries_phi_coord(
                 img,
-                phi_coord=np.vstack([ly.phi_coord[0], ly.phi_coord[0]])
+                phi_coord=np.vstack([ly.phi_coord[0], ly.phi_coord[1]])
                 )
             plot_image(
                 image=img,
@@ -63,7 +63,7 @@ def get_argparse():
         "--cfg",
         type=str,
         default=f"{CFG_DIR}/eval_mvl_dataset.yaml",
-        help="Config file to load a MVL dataset."
+        help=f"Config file to load a MVL dataset. (Default: {CFG_DIR}/eval_mvl_dataset.yaml)"
     )
 
     parser.add_argument(
@@ -76,14 +76,14 @@ def get_argparse():
     parser.add_argument(
         "--ckpt",
         default="mp3d",
-        help="Pretrained model ckpt."
+        help="Pretrained model ckpt (Default: mp3d)"
     )
 
     parser.add_argument(
         "--cuda",
         default=0,
         type=int,
-        help="Cuda device."
+        help="Cuda device. (Default: 0)"
     )
 
     args = parser.parse_args()
