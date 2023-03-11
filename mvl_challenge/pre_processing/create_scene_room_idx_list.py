@@ -102,16 +102,16 @@ def get_list_scene_room_idx(args):
     return list_scene_version_room_frames
 
 
-def from_geom_info(args):
-    assert os.path.exists(args.geom_info_dir), f"No directory found {args.geom_info_dir}"
+def scene_list_from_mvl_directory(args):
+    assert os.path.exists(args.mvl_dir), f"No directory found {args.mvl_dir}"
 
     set_loggings()
-    list_geom_info = os.listdir(args.geom_info_dir)
-    list_rooms = np.unique([get_scene_room_from_scene_room_idx(Path(fn).stem) for fn in list_geom_info]).tolist()
+    list_mvl_fn = os.listdir(args.mvl_dir)
+    list_rooms = np.unique([get_scene_room_from_scene_room_idx(Path(fn).stem) for fn in list_mvl_fn]).tolist()
     data_dict = {}
     for room in tqdm(list_rooms, desc="List rooms..."):
         data_dict[room] = [
-            Path(fn).stem for fn in list_geom_info
+            Path(fn).stem for fn in list_mvl_fn
             if room in fn
         ]
 
@@ -120,7 +120,7 @@ def from_geom_info(args):
     save_json_dict(f"{fn}.json", data_dict)
 
 
-def from_rgbd_dataset(args):
+def scene_list_from_rgbd_dataset(args):
     list_scene_room_idx = get_list_scene_room_idx(args)
     print(f"Total number of frames found: {list_scene_room_idx.__len__()}")
 
@@ -185,20 +185,20 @@ def get_argparse():
     )
 
     parser.add_argument(
-        '-g', '--geom_info_dir',
+        '-x', '--mvl_dir',
         # required=True,
         # default=f"{ASSETS_DIR}/mvl_data/geometry_info",
         default=None,
-        help='Whether to use a geometry files defined in a directory.'
+        help='MVL directory of files saved in scene_room_idx format.'
     )
-
+    
     args = parser.parse_args()
     return args
 
 
 if __name__ == '__main__':
     args = get_argparse()
-    if args.geom_info_dir is None:
-        from_rgbd_dataset(args)
+    if args.mvl_dir is None:
+        scene_list_from_rgbd_dataset(args)
     else:
-        from_geom_info(args)
+        scene_list_from_mvl_directory(args)

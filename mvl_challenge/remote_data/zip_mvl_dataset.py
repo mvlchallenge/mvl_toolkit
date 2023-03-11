@@ -6,7 +6,8 @@ import json
 import zipfile
 import numpy as np
 import os
-from mvl_challenge.handle_remote_data.zip_rgbd_dataset import process_arcname
+from mvl_challenge.remote_data.zip_rgbd_dataset import process_arcname
+from glob import glob
 from tqdm import tqdm
     
 def zip_mvl_data(args): 
