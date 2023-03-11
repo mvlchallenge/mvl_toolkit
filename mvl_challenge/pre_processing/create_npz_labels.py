@@ -111,8 +111,8 @@ def get_argparse():
 
     parser.add_argument(
         '-d', '--scene_dir',
-        # required=True,
-        default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/",
+        required=True,
+        # default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/",
         # default="/media/public_dataset/HM3D-MVL/test/BHXhpBwSMLh",
         type=str,
         help='RGBD dataset directory.'
@@ -120,16 +120,16 @@ def get_argparse():
 
     parser.add_argument(
         '-g', '--geom_info_dir',
-        # required=True,
-        default="/media/public_dataset/mvl_challenge/mp3d_fpe/geometry_info",
+        required=True,
+        # default="/media/public_dataset/mvl_challenge/mp3d_fpe/geometry_info",
         type=str,
         help='Geometry information directory.'
     )
 
     parser.add_argument(
         '-o', '--output_dir',
-        # required=True,
-        default=f"{ASSETS_DIR}/mvl_data/mp3d_fpe/labels/gt",
+        required=True,
+        # default=f"{ASSETS_DIR}/mvl_data/mp3d_fpe/labels/gt",
         type=str,
         help='Output directory for the output_file to be created.'
     )
