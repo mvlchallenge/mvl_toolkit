@@ -4,17 +4,19 @@ import argparse
 from tqdm import tqdm
 from pathlib import Path
 import numpy as np
+import logging
 from imageio import imread, imwrite
 from mvl_challenge import EPILOG, ASSETS_DIR, CFG_DIR
 from mvl_challenge.utils.io_utils import create_directory
-from mvl_challenge.config.cfg import set_loggings
+from mvl_challenge.config.cfg import set_loggings, get_empty_cfg
 from mvl_challenge.utils.io_utils import get_scene_room_from_scene_room_idx
 from mvl_challenge.utils.layout_utils import get_boundary_from_list_corners
 from mvl_challenge.utils.spherical_utils import xyz2uv, uv2phi_coords, phi_coords2uv, phi_coords2xyz
 from mvl_challenge.utils.vispy_utils import plot_color_plc
 from mvl_challenge.utils.geometry_utils import tum_pose2matrix44, extend_array_to_homogeneous
-from mvl_challenge.utils.image_utils import draw_boundaries_uv, draw_boundaries_phi_coord
+from mvl_challenge.utils.image_utils import draw_boundaries_uv, draw_boundaries_phi_coords
 from mvl_challenge.utils.image_utils import add_caption_to_image
+from mvl_challenge.pre_processing.create_scene_room_idx_list import scene_list_from_mvl_directory
 
 
 def save_phi_bound(args, list_corners, list_geom_info):
@@ -29,7 +31,7 @@ def save_phi_bound(args, list_corners, list_geom_info):
     gt_dir = create_directory(args.output_dir, delete_prev=False)
     gt_vis_dir = create_directory(args.output_dir + "_vis", delete_prev=False)
     
-    for geom_info in list_geom_info:
+    for geom_info in tqdm(list_geom_info, desc="Save Gt labels..."):
         scene_room_idx = Path(geom_info).stem
         geom_info_fn = os.path.join(args.geom_info_dir, geom_info)
         geom_data = json.load(open(geom_info_fn, 'r'))
@@ -58,13 +60,14 @@ def save_phi_bound(args, list_corners, list_geom_info):
                 caption="mvl-challenge " + scene_room_idx 
             )
     
-        draw_boundaries_phi_coord(img, phi_coords)
+        draw_boundaries_phi_coords(img, phi_coords)
           
         gt_vis_fn = os.path.join(gt_vis_dir, f"{scene_room_idx}.jpg")
-        gt_fn = os.path.join(gt_dir, f"{scene_room_idx}.npy")    
+        gt_fn = os.path.join(gt_dir, f"{scene_room_idx}")    
            
         imwrite(gt_vis_fn, img)
-        np.save(gt_fn, phi_coords)
+        np.savez_compressed(gt_fn, phi_coords=phi_coords)
+        
         
 def main(args):
     # ! Reading geometry info
@@ -81,11 +84,21 @@ def main(args):
         
         mvl_labels_fn = os.path.join(scene_dir, 'mvl_challenge_labels.json')
         if os.path.exists(mvl_labels_fn):
+            logging.info(f"Saving GT labels for {room_name}")
             #! We process only scenes with mvl-labels
+
             mvl_data = json.load(open(mvl_labels_fn, "r"))
             list_corners = mvl_data['room_corners']
+            
             save_phi_bound(args, list_corners, [g for g in list_geom_info if room_name in g])
-                
+    
+    # ! Save scene_list for GT labels
+    cfg = get_empty_cfg()
+    cfg.mvl_dir = args.output_dir
+    cfg.output_dir = Path(args.output_dir).parent.__str__()
+    cfg.output_filename = "gt_labels__scene_list"
+    scene_list_from_mvl_directory(cfg)
+    
             
 def get_argparse():
     desc = "This script creates the npy files from the mvl-annotation. " + \
