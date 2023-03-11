@@ -24,13 +24,15 @@ def save_json_dict(filename, dict_data):
     with open(filename, 'w') as outfile:
         json.dump(dict_data, outfile, indent='\t')
 
+
 def read_txt_file(filename):
 
-    with open (filename, "r") as fn:
+    with open(filename, "r") as fn:
         data = fn.read().splitlines()
-    
+
     return data
-    
+
+
 def read_csv_file(filename):
     with open(filename) as f:
         csvreader = csv.reader(f)
@@ -181,3 +183,12 @@ def read_ply(fn):
     points[:, 0:3] = points[:, [0, 2, 1]]
     colors = np.ascontiguousarray(v[:, 6:9], dtype=np.float32)/255
     return np.concatenate((points, colors), axis=1).T
+
+
+def save_compressed_phi_coords(phi_coords, filename):
+    np.savez_compressed(filename, phi_coords=phi_coords)
+    
+
+def process_arcname(list_fn, base_dir):
+    return [os.path.relpath(fn, start=base_dir) for fn in list_fn]
+

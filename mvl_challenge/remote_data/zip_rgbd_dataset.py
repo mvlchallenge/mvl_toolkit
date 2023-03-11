@@ -19,7 +19,7 @@ from tqdm import tqdm
 
 from mvl_challenge.utils.io_utils import (create_directory,
                                          get_files_given_a_pattern,
-                                         read_csv_file)
+                                         read_csv_file, process_arcname)
 
 
 def zip_geometry_files(list_scenes, args):
@@ -109,10 +109,6 @@ def zip_npy_files(list_scenes, args):
                          arcname=os.path.relpath(fn, start=scene_dir))
                 for fn in tqdm(list_fn, desc=f"zipping npy files {scene}")
             ]
-
-
-def process_arcname(list_fn, base_dir):
-    return [os.path.relpath(fn, start=base_dir) for fn in list_fn]
 
 
 def zip_rgbd_data(args):

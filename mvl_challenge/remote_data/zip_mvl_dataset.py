@@ -1,12 +1,11 @@
 import argparse
 from mvl_challenge import EPILOG, CFG_DIR, ASSETS_DIR, DATA_DIR
 from mvl_challenge.utils.check_utils import check_mvl_dataset
-from mvl_challenge.utils.io_utils import create_directory
+from mvl_challenge.utils.io_utils import create_directory, process_arcname
 import json
 import zipfile
 import numpy as np
 import os
-from mvl_challenge.remote_data.zip_rgbd_dataset import process_arcname
 from glob import glob
 from tqdm import tqdm
 from shutil import copyfile
