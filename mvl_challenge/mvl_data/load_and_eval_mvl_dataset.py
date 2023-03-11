@@ -5,7 +5,7 @@ from mvl_challenge.datasets.mvl_dataset import MVLDataset, iter_mvl_room_scenes
 import logging
 from tqdm import tqdm
 from mvl_challenge.utils.vispy_utils import plot_list_ly
-from mvl_challenge.utils.image_utils import draw_boundaries_phi_coord
+from mvl_challenge.utils.image_utils import draw_boundaries_phi_coords
 from imageio import imwrite
 from mvl_challenge.models.wrapper_horizon_net import WrapperHorizonNet
 import numpy as np
@@ -30,9 +30,9 @@ def main(args):
     for list_ly in iter_mvl_room_scenes(model=hn, dataset=mvl):
         for ly in list_ly:
             img = ly.get_rgb()
-            draw_boundaries_phi_coord(
+            draw_boundaries_phi_coords(
                 img,
-                phi_coord=np.vstack([ly.phi_coord[0], ly.phi_coord[1]])
+                phi_coords=np.vstack([ly.phi_coords[0], ly.phi_coords[1]])
                 )
             plot_image(
                 image=img,
@@ -70,7 +70,7 @@ def get_argparse():
         "-f", "--scene_list",
         type=str,
         # default=f"{DATA_DIR}/mp3d_fpe/mp3d_fpe__test__scene_list.json",
-        help="Config file to load a MVL dataset."
+        help="Scene_list of mvl scenes in scene_room_idx format."
     )
 
     parser.add_argument(

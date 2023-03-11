@@ -134,7 +134,7 @@ def load_pseudo_labels(list_ly, hard_copy=False):
         Path(fn).stem: np.load(os.path.join(pseudo_labels_dir, 'mlc_label', fn))
         for fn in list_fn if room_scene in fn
     }
-    [ly.recompute_data(phi_coord=ps_labels[ly.idx]) for ly in list_ly]
+    [ly.recompute_data(phi_coords=ps_labels[ly.idx]) for ly in list_ly]
     return list_ly
 
 

@@ -46,7 +46,7 @@ class WrapperHorizonNet:
 
     def estimate_within_list_ly(self, list_ly):
         """
-        Estimates phi_coord (layout boundaries) for all ly defined in list_ly using the passed model instance
+        Estimates phi_coords (layout boundaries) for all ly defined in list_ly using the passed model instance
         """
 
         layout_dataloader = DataLoader(
@@ -68,4 +68,4 @@ class WrapperHorizonNet:
                 data = np.vstack((y_, cor_))
                 evaluated_data[idx] = data
 
-        [ly.recompute_data(phi_coord=evaluated_data[ly.idx]) for ly in list_ly]
+        [ly.recompute_data(phi_coords=evaluated_data[ly.idx]) for ly in list_ly]

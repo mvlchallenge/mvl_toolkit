@@ -123,7 +123,7 @@ def iter_mvl_room_scenes(model, dataset: MVLDataset):
     for room_scene in dataset.list_rooms:
         list_ly = dataset.get_list_ly(room_scene=room_scene)
 
-        # ! Overwrite phi_coord within the list_ly by the estimating new layouts.
+        # ! Overwrite phi_coords within the list_ly by the estimating new layouts.
         model.estimate_within_list_ly(list_ly)
         filter_out_noisy_layouts(
             list_ly=list_ly,

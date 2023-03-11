@@ -24,7 +24,7 @@ class Layout:
         self.pose = np.eye(5)
         self.idx = ""
 
-        self.phi_coord = None
+        self.phi_coords = None
         self.cam_ref = CAM_REF.CC
         self.ceiling_height = None  # ! Must be None by default
         self.camera_height = 1
@@ -96,15 +96,15 @@ class Layout:
         # self.cam2boundary_mask = np.zeros_like(self.cam2boundary)
         # self.cam2boundary_mask = self.cam2boundary < np.quantile(self.cam2boundary, 0.25)
 
-    def recompute_data(self, phi_coord=None):
-        if phi_coord is not None:
-            self.phi_coord = phi_coord
+    def recompute_data(self, phi_coords=None):
+        if phi_coords is not None:
+            self.phi_coords = phi_coords
 
         # ! Compute bearings
         self.bearings_ceiling = phi_coords2xyz(
-            phi_coords=self.phi_coord[0, :])
+            phi_coords=self.phi_coords[0, :])
         self.bearings_floor = phi_coords2xyz(
-            phi_coords=self.phi_coord[1, :])
+            phi_coords=self.phi_coords[1, :])
 
         # ! Compute floor boundary
         ly_scale = self.camera_height / self.bearings_floor[1, :]

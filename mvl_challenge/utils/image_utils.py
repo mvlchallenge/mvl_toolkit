@@ -43,13 +43,13 @@ def draw_boundaries_uv(image, boundary_uv, color=(0, 255, 0), size=2):
     return image
 
 
-def draw_boundaries_phi_coord(image, phi_coord, color=(0, 255, 0), size=2):
+def draw_boundaries_phi_coords(image, phi_coords, color=(0, 255, 0), size=2):
 
     # ! Compute bearings
     bearings_ceiling = phi_coords2xyz(
-        phi_coords=phi_coord[0, :])
+        phi_coords=phi_coords[0, :])
     bearings_floor = phi_coords2xyz(
-        phi_coords=phi_coord[1, :])
+        phi_coords=phi_coords[1, :])
 
     uv_ceiling = xyz2uv(bearings_ceiling)
     uv_floor = xyz2uv(bearings_floor)

@@ -72,9 +72,9 @@ def sph2uv(sph, shape):
     #     np.clip(v, 0, H-1)
     # ))).astype(int)
     theta_coord = sph[0]
-    phi_coord = sph[1]
+    phi_coords = sph[1]
     u = np.clip(np.floor((0.5 * theta_coord / np.pi + 0.5) * shape[1] + 0.5), 0, shape[1] - 1)
-    v = np.clip(np.floor((phi_coord / np.pi + 0.5) * shape[0]+0.5), 0, shape[0] - 1)
+    v = np.clip(np.floor((phi_coords / np.pi + 0.5) * shape[0]+0.5), 0, shape[0] - 1)
     return np.vstack([u, v]).astype(int)
 
 
@@ -98,7 +98,7 @@ def phi_coords2xyz(phi_coords):
 
 
 #! Checked ok!
-def phi_coords2uv(phi_coord, shape=(512, 1024)):
+def phi_coords2uv(phi_coords, shape=(512, 1024)):
     """
     Converts a set of phi_coordinates (2, W), defined by ceiling and floor boundaries encoded as 
     phi coordinates, into uv pixels 
@@ -106,8 +106,8 @@ def phi_coords2uv(phi_coord, shape=(512, 1024)):
     H, W = shape
     u = np.linspace(0, W - 1, W)
     theta_coords = (2 * np.pi * u / W) - np.pi
-    uv_c = sph2uv(np.vstack((theta_coords, phi_coord[0])), shape)
-    uv_f = sph2uv(np.vstack((theta_coords, phi_coord[1])), shape)
+    uv_c = sph2uv(np.vstack((theta_coords, phi_coords[0])), shape)
+    uv_f = sph2uv(np.vstack((theta_coords, phi_coords[1])), shape)
     return uv_c, uv_f
 
 
@@ -137,9 +137,9 @@ def xyz2uv(xyz, shape=(512, 1024)):
 
     normXZ = np.linalg.norm(xyz[(0, 2), :], axis=0, keepdims=True)
 
-    phi_coord = np.arcsin(xyz_n[1, :])
+    phi_coords = np.arcsin(xyz_n[1, :])
     theta_coord = np.sign(xyz[0, :]) * np.arccos(xyz[2, :] / normXZ)
 
     u = np.clip(np.floor((0.5 * theta_coord / np.pi + 0.5) * shape[1] + 0.5), 0, shape[1] - 1)
-    v = np.clip(np.floor((phi_coord / np.pi + 0.5) * shape[0]+0.5), 0, shape[0] - 1)
+    v = np.clip(np.floor((phi_coords / np.pi + 0.5) * shape[0]+0.5), 0, shape[0] - 1)
     return np.vstack((u, v)).astype(int)
