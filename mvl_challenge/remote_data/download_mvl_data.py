@@ -3,8 +3,9 @@ import os
 import gdown
 import pandas as pd
 from mvl_challenge import ASSETS_DIR, ROOT_DIR
-from mvl_challenge.utils.io_utils import create_directory
+from mvl_challenge.utils.io_utils import create_directory, read_txt_file
 from mvl_challenge.config.cfg import set_loggings
+from mvl_challenge import EPILOG
 from tqdm import tqdm
 
 def download_scenes(args):
@@ -12,9 +13,10 @@ def download_scenes(args):
     create_directory(args.output_dir, delete_prev=False)
 
     list_google_scenes = args.ids_file
-    scenes_ids = pd.read_csv(list_google_scenes)
+    lines = read_txt_file(list_google_scenes)
 
-    for gd_id, zip_fn in zip(scenes_ids.Id, scenes_ids.Name):
+    for l in lines:
+        gd_id, zip_fn = [l for l in l.replace(" ",",").split(",") if l != ''][:2]  
         print(f"Downloading... {zip_fn}")
         url = f"https://drive.google.com/uc?id={gd_id}"
         output_file = os.path.join(args.output_dir, zip_fn)
@@ -22,19 +24,27 @@ def download_scenes(args):
 
 
 def get_argparse():
-    parser = argparse.ArgumentParser()
-    
+    desc = "This script Download a set of zip files corresponding to the mvl-data. " + \
+        "This zip files may content geometry_info files, images files, or/and gt npz labels files."
+
+    parser = argparse.ArgumentParser(
+        description=desc,
+        epilog=EPILOG
+    )
+
     parser.add_argument(
         '-o', '--output_dir', 
-        type=str, 
-        default=f"{ASSETS_DIR}/tmp/downloaded_data", 
+        type=str,
+        required=True, 
+        # default=f"{ASSETS_DIR}/tmp/downloaded_data", 
         help='Output dataset directory.'
         )
     
     parser.add_argument(
         "-f", '--ids_file', 
         type=str, 
-        # default=f"{ROOT_DIR}/data/mp3d_fpe/test_google_drive_ids.csv", 
+        required=True,
+        # default=f"{ASSETS_DIR}/mvl_data/pilot__mp3d_fpe/zips/ids_1ORpSP60h34TIOZlYstkuKhQBDaloPR5M.csv", 
         help="lists of IDS to download from GoogleDrive"
         )
     

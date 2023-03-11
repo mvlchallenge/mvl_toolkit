@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 usage() { echo "$0 USAGE:" && grep " .)\ #" $0; exit 0;}
 [ $# -eq 0 ] && usage
-while getopts ":hd:i:" arg; do
+while getopts ":hd:i:c" arg; do
   case $arg in
     d) # Zip directory 
       ZIP_DIR=${OPTARG}
       ;;
     i) # GoogleDrive ID remote directory
       ID_DIR=${OPTARG}
+      ;;
+    c) # Check GoogleDrive ID remote directory
+      CHECK=true
       ;;
     h | *) # Display help.
       usage
@@ -26,10 +29,14 @@ then
       usage
 fi
 
-for filename in "$ZIP_DIR"/*.zip; do
+if [ "$CHECK" = true ]; then
+  gdrive list --query " '$ID_DIR' in parents"
+  exit 0  
+fi
+
+for filename in "$ZIP_DIR"/*; do
     echo "$filename"
     gdrive upload -p "$ID_DIR" "$filename"
 done
 
-gdrive list --query " '$ID_DIR' in parents" > "$ZIP_DIR"/ids_"$ID_DIR".csv
-gdrive upload -p "$ID_DIR" "$ZIP_DIR"/ids_"$ID_DIR".csv
+gdrive list -m 20000 --no-header --query " '$ID_DIR' in parents" > "$ZIP_DIR"/../ids_"$ID_DIR".csv

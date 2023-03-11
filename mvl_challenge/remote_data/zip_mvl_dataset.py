@@ -9,6 +9,9 @@ import os
 from mvl_challenge.remote_data.zip_rgbd_dataset import process_arcname
 from glob import glob
 from tqdm import tqdm
+from shutil import copyfile
+from pathlib import Path
+
     
 def zip_mvl_data(args): 
     #! Get scene list
@@ -24,13 +27,16 @@ def zip_mvl_data(args):
             
             zip_data(args, zf, geo_info_fn)
             zip_data(args, zf, img_fn)
+    
+    copyfile(args.scene_list, os.path.join(args.output_dir, os.path.split(args.scene_list)[-1]))
+
             
 def zip_mvl_labels(args):
-    output_dir = create_directory(args.output_dir + "__labels", delete_prev=True)
+    output_dir = create_directory(args.output_dir, delete_prev=True)
     data_scene = json.load(open(args.scene_list, 'r'))
     for room, scene_list in data_scene.items():
-            
-        gt_label = [os.path.join(args.scene_dir, 'labels', "gt", f"{sc}.npy") for sc in scene_list]
+        
+        gt_label = [os.path.join(args.scene_dir, 'labels', "gt", f"{sc}.npz") for sc in scene_list]
         gt_label_vis = [os.path.join(args.scene_dir, 'labels', "gt_vis", f"{sc}.jpg") for sc in scene_list]
         
         if np.sum([os.path.exists(fn) for fn in gt_label]) != gt_label.__len__(): 
@@ -41,6 +47,7 @@ def zip_mvl_labels(args):
             zip_data(args, zf, gt_label)
             zip_data(args, zf, gt_label_vis)
         
+    copyfile(args.scene_list, os.path.join(args.output_dir, os.path.split(args.scene_list)[-1]))
            
 def zip_data(args, zf, geo_info_fn):
     list_arc_fn = process_arcname(geo_info_fn, args.scene_dir)
@@ -63,28 +70,28 @@ def get_argparse():
 
     parser.add_argument(
         '-d', '--scene_dir',
-        default=f'{ASSETS_DIR}/mvl_data/mp3d_fpe',
+        # default=f'{ASSETS_DIR}/mvl_data/mp3d_fpe',
         type=str,
         help='MVL dataset directory.'
     )
 
     parser.add_argument(
         '-f', '--scene_list',
-        default=f'{DATA_DIR}/mp3d_fpe/mp3d_fpe__test__scene_list.json',
+        # default=f'{DATA_DIR}/mp3d_fpe/mp3d_fpe__test__scene_list.json',
         type=str,
         help='Scene list file which contents all frames encoded in scene_room_idx format.'
     )
 
     parser.add_argument(
         '-o', '--output_dir',
-        default=f"{ASSETS_DIR}/tmp/zip_files",
+        # default=f"{ASSETS_DIR}/tmp/zip_files",
         type=str,
         help='Output directory for the output_file to be created.'
     )
     
     parser.add_argument(
         '--labels',
-        action='store_false',
+        action='store_true',
         help='Different method to zip GT labels.'
     )
     args = parser.parse_args()

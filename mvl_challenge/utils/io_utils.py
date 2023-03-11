@@ -24,7 +24,13 @@ def save_json_dict(filename, dict_data):
     with open(filename, 'w') as outfile:
         json.dump(dict_data, outfile, indent='\t')
 
+def read_txt_file(filename):
 
+    with open (filename, "r") as fn:
+        data = fn.read().splitlines()
+    
+    return data
+    
 def read_csv_file(filename):
     with open(filename) as f:
         csvreader = csv.reader(f)
