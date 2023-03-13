@@ -192,3 +192,6 @@ def save_compressed_phi_coords(phi_coords, filename):
 def process_arcname(list_fn, base_dir):
     return [os.path.relpath(fn, start=base_dir) for fn in list_fn]
 
+def load_gt_label(fn):
+    assert os.path.exists(fn), f"Not found {fn}"
+    return np.load(fn)['phi_coords']

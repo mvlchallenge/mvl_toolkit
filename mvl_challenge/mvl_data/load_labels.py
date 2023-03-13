@@ -10,7 +10,7 @@ from mvl_challenge.utils.image_utils import draw_boundaries_phi_coords
 from imageio import imwrite
 from mvl_challenge.models.wrapper_horizon_net import WrapperHorizonNet
 import numpy as np
-from mvl_challenge.utils.io_utils import create_directory, get_scene_room_from_scene_room_idx
+from mvl_challenge.utils.io_utils import create_directory, get_scene_room_from_scene_room_idx, load_gt_label
 from mvl_challenge.utils.image_utils import plot_image
 
 
@@ -20,10 +20,6 @@ def get_cfg_from_args(args):
     cfg.scene_list = args.scene_list
     return cfg
 
-
-def load_gt_label(fn):
-    assert os.path.exists(fn), f"Not found {fn}"
-    return np.load(fn)['phi_coords']
 
 
 def main(args):
