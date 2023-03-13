@@ -15,6 +15,7 @@ from tqdm import tqdm
 import zipfile
 import json
 
+
 def zip_results(args):
     list_fn = os.listdir(args.results_dir)
     # ! if scene_list is passed
