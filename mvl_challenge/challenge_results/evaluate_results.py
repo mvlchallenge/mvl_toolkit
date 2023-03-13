@@ -69,9 +69,8 @@ def main(args):
     
 
 def get_argparse():
-    desc = "This script evaluates 2d-IoU, 3d-IoU and H for a set of estimated phi_coords from HorizonNet. " + \
+    desc = "This script evaluates 2d-IoU, 3d-IoU from a set of estimated phi_coords. " + \
         "Note that this script assumes you have access to some GT labels" + \
-        "For H metric, you do not need GT annotations " + \
         "The passed cfg file is the yaml configuration with all hyperparameters set to default values."
 
     parser = argparse.ArgumentParser(
