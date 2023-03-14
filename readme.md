@@ -70,6 +70,8 @@ See `python mvl_challenge/mvl_data/load_mvl_dataset.py -h` for more detail.
 
 While running the program, you should see a sequence of panorama images (i.e., the dataset images) showing up on the screen.
 
+![Alt text](markdown/toolkit_load_data.gif)
+
 ### 3. Evaluate
 Now we can load the data and evaluate them by the pre-trained model of HorizonNet.
 ```bash
@@ -80,4 +82,8 @@ See `mvl_challenge/mvl_data/load_and_eval_mvl_dataset.py -h` for more detail.
 
 While running the program, you should see a sequence of panorama images with the layout prediction predicted by HorizonNet showing up on the screen.
 
+![Alt text](markdown/toolkit_evaluate.gif)
+
 In the end, it will pop out a window showing the point cloud of all the layout estimation in 3D.
+
+![Alt text](markdown/toolkit_point_cloud.gif)
