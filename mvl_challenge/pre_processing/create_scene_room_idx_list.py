@@ -181,7 +181,7 @@ def get_argparse():
         # required=True,
         default=5,
         type=int,
-        help='Minimum number of frames per room.'
+        help='Minimum number of frames per room. (Default: 5)'
     )
 
     parser.add_argument(
@@ -189,7 +189,7 @@ def get_argparse():
         # required=True,
         # default=f"{ASSETS_DIR}/mvl_data/geometry_info",
         default=None,
-        help='MVL directory of files saved in scene_room_idx format.'
+        help='MVL directory of files saved in scene_room_idx format. (Default: None)'
     )
     
     args = parser.parse_args()

@@ -52,7 +52,7 @@ def get_cfg(args):
         
         
 def get_argparse():
-    desc = "This script computes the geometry information per frame from a given MV dataset. " + \
+    desc = "This script computes the geometry information per frame from a scene_list in scene_room_idx format. " + \
         "The geometry info is the geometrical information for each frame, i.e., camera pose and camera height."
 
     parser = argparse.ArgumentParser(

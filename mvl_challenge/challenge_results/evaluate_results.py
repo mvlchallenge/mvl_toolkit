@@ -70,7 +70,7 @@ def main(args):
 
 def get_argparse():
     desc = "This script evaluates 2d-IoU, 3d-IoU from a set of estimated phi_coords. " + \
-        "Note that this script assumes you have access to some GT labels" + \
+        "Note that this script assumes you have access to some GT labels. " + \
         "The passed cfg file is the yaml configuration with all hyperparameters set to default values."
 
     parser = argparse.ArgumentParser(
@@ -101,7 +101,7 @@ def get_argparse():
 
     parser.add_argument(
         "--ckpt",
-        default="zind",
+        default="mp3d",
         help="Pretrained model ckpt (Default: mp3d)"
     )
 
