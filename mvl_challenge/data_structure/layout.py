@@ -8,6 +8,21 @@ from imageio import imread
 
 
 class Layout:
+    
+    @property
+    def phi_coords(self):
+        return self.__phi_coords
+
+    @phi_coords.setter
+    def phi_coords(self, value):
+        self.__phi_coords = value
+        if value is None:
+            return
+        self.recompute_ly_geometry()
+
+    def set_phi_coords(self, phi_coords):
+        self.phi_coords = phi_coords
+        
     def __init__(self, cfg):
         self.cfg = cfg
 
@@ -21,7 +36,7 @@ class Layout:
         self.bearings_ceiling = None
 
         self.img_fn = ""
-        self.pose = np.eye(5)
+        self.pose = np.eye(4)
         self.idx = ""
 
         self.phi_coords = None
@@ -96,10 +111,8 @@ class Layout:
         # self.cam2boundary_mask = np.zeros_like(self.cam2boundary)
         # self.cam2boundary_mask = self.cam2boundary < np.quantile(self.cam2boundary, 0.25)
 
-    def recompute_data(self, phi_coords=None):
-        if phi_coords is not None:
-            self.phi_coords = phi_coords
-
+    def recompute_ly_geometry(self):
+    
         # ! Compute bearings
         self.bearings_ceiling = phi_coords2xyz(
             phi_coords=self.phi_coords[0, :])

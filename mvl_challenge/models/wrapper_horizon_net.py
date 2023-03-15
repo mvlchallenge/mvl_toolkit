@@ -67,5 +67,4 @@ class WrapperHorizonNet:
             for y_, cor_, idx in zip(y_bon_.cpu(), y_cor_.cpu(), x['idx']):
                 data = np.vstack((y_, cor_))
                 evaluated_data[idx] = data
-
-        [ly.recompute_data(phi_coords=evaluated_data[ly.idx]) for ly in list_ly]
+        [ly.set_phi_coords(phi_coords=evaluated_data[ly.idx]) for ly in list_ly]
