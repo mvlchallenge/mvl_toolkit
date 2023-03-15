@@ -6,6 +6,7 @@ import yaml
 import json
 from pathlib import Path
 from mvl_challenge.utils.io_utils import save_json_dict, create_directory
+from mvl_challenge.pre_processing.prune_scene_list import prune_list_frames
 from mvl_challenge.config.cfg import set_loggings
 import numpy as np
 from tqdm import tqdm
@@ -51,13 +52,13 @@ def get_list_rooms_idx_from_mvl_labels(mvl_labels_filename):
     Returns:
         [list room_idx]: List of room_idx
     """
-    
+
     mvl_data = json.load(open(mvl_labels_filename, "r"))
     list_room_idx = []
     for room, list_kf in enumerate(mvl_data['list_kf']):
         [
-         list_room_idx.append(f"room{room}_{kf}")
-         for kf in list_kf
+            list_room_idx.append(f"room{room}_{kf}")
+            for kf in list_kf
         ]
     return list_room_idx
 
@@ -83,7 +84,7 @@ def get_list_scene_room_idx(args):
 
         if os.path.exists(os.path.join(scene, "mvl_challenge_labels.json")):
             # ! If mvl_challenge_labels exists for this scene
-            mvl_labels_fn  = os.path.join(scene, "mvl_challenge_labels.json")
+            mvl_labels_fn = os.path.join(scene, "mvl_challenge_labels.json")
             list_room_idx = get_list_rooms_idx_from_mvl_labels(mvl_labels_fn)
         # ! Check multi-room scenes
         elif os.path.exists(os.path.join(scene, "metadata")):
@@ -94,7 +95,7 @@ def get_list_scene_room_idx(args):
             # ! defining room_scene_idx from rgb images directly
             list_idx = get_list_idx_from_dir(os.path.join(scene, "rgb"))
             list_room_idx = [f"room0_{idx}" for idx in list_idx]
-            
+
         [list_scene_version_room_frames.append(f"{filename}_{room_idx}")
          for room_idx in list_room_idx
          ]
@@ -133,6 +134,8 @@ def scene_list_from_rgbd_dataset(args):
     data_dict = {}
     for room in tqdm(list_rooms, desc="List rooms..."):
         list_frames = [fr for fr in list_scene_room_idx if f"{room}_" in fr]
+        if args.max_fr is not None:
+            prune_list_frames(list_frames, args.max_fr)
         if list_frames.__len__() > args.min_fr:
             data_dict[room] = list_frames
 
@@ -154,8 +157,8 @@ def get_argparse():
         '-d', '--scene_dir',
         # required=True,
         # default=None,
-        default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/",
-        # default="/media/public_dataset/HM3D-MVL/test/BHXhpBwSMLh",
+        # default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/",
+        default="/media/public_dataset/HM3D-MVL/train",
         type=str,
         help='RGBD dataset directory.'
     )
@@ -171,7 +174,7 @@ def get_argparse():
     parser.add_argument(
         '-o', '--output_dir',
         # required=True,
-        default=f"{ASSETS_DIR}/tmp",
+        default=f"{ASSETS_DIR}/tmp/test",
         type=str,
         help=f'Output directory for the output_file to be created. (Default: "{ASSETS_DIR}/tmp")'
     )
@@ -191,7 +194,15 @@ def get_argparse():
         default=None,
         help='MVL directory of files saved in scene_room_idx format. (Default: None)'
     )
-    
+
+    parser.add_argument(
+        '--max_fr',
+        # required=True,
+        # default=f"{ASSETS_DIR}/mvl_data/geometry_info",
+        default=50,
+        help='MVL directory of files saved in scene_room_idx format. (Default: None)'
+    )
+
     args = parser.parse_args()
     return args
 
