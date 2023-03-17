@@ -18,25 +18,30 @@ With the aim of providing support to the participants of the mvl-challenge at th
 
 ## Installation
 
-This is only for the current branch
-```bash
-git clone https://github.com/mvlchallenge/mvl_toolkit.git
-git branch -f mvl_chellenge_dev origin/mvl_chellenge_dev
-git checkout mvl_chellenge_dev
-git submodule update --init --recursive
-```
-You should see a non-empty `HorizonNet` folder under `mvl_challenge/models`.
+1. Prepare a conda env
 
-## Environment
-
-### 1. Prepare conda env
 ```bash
 conda create -n mvl-challenge python=3.9
 ```
+2. Clone the `mvl-tookit`:
 
-### 2. Install mvl-toolkit
+```bash
+git clone https://github.com/mvlchallenge/mvl_toolkit.git
+cd mvl_toolkit
+git submodule update --init --recursive
+```
+
+Note that we have included `HorizonNet` as a submodule. This submodule is intended solely as an out-of-the-box layout estimation example. You will find a non-empty folder named `HorizonNet` located within the `mvl_challenge/models` directory.
+
+
+3. Install `mvl-toolkit`
 ```bash
 pip install -e .
+```
+
+4. Test installation. 
+```bash
+python  mvl_challenge/test_toolkit.py
 ```
 
 ## Usage
