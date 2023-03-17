@@ -87,15 +87,15 @@ def get_list_scene_room_idx(args):
             mvl_labels_fn = os.path.join(scene, "mvl_challenge_labels.json")
             list_room_idx = get_list_rooms_idx_from_mvl_labels(mvl_labels_fn)
         # ! Check multi-room scenes
-        # elif os.path.exists(os.path.join(scene, "metadata")):
-        #     # ! If metadata exists
-        #     metadata_filename = os.path.join(scene, "metadata", "room_gt_v0.0.yaml")
-        #     list_room_idx = get_list_rooms_idx_from_metadata(metadata_filename)
+        elif os.path.exists(os.path.join(scene, "metadata")):
+            # ! If metadata exists
+            metadata_filename = os.path.join(scene, "metadata", "room_gt_v0.0.yaml")
+            list_room_idx = get_list_rooms_idx_from_metadata(metadata_filename)
         else:
-            continue
-        #     # ! defining room_scene_idx from rgb images directly
-        #     list_idx = get_list_idx_from_dir(os.path.join(scene, "rgb"))
-        #     list_room_idx = [f"room0_{idx}" for idx in list_idx]
+            # continue
+            # ! defining room_scene_idx from rgb images directly
+            list_idx = get_list_idx_from_dir(os.path.join(scene, "rgb"))
+            list_room_idx = [f"room0_{idx}" for idx in list_idx]
 
         [list_scene_version_room_frames.append(f"{filename}_{room_idx}")
          for room_idx in list_room_idx
@@ -105,10 +105,10 @@ def get_list_scene_room_idx(args):
 
 
 def scene_list_from_mvl_directory(args):
-    assert os.path.exists(args.mvl_dir), f"No directory found {args.mvl_dir}"
+    assert os.path.exists(args.scene_dir), f"No directory found {args.scene_dir}"
 
     set_loggings()
-    list_mvl_fn = os.listdir(args.mvl_dir)
+    list_mvl_fn = os.listdir(args.scene_dir)
     list_rooms = np.unique([get_scene_room_from_scene_room_idx(Path(fn).stem) for fn in list_mvl_fn]).tolist()
     data_dict = {}
     for room in tqdm(list_rooms, desc="List rooms..."):
@@ -192,8 +192,9 @@ def get_argparse():
         '-x', '--mvl_dir',
         # required=True,
         # default=f"{ASSETS_DIR}/mvl_data/geometry_info",
-        default=None,
-        help='MVL directory of files saved in scene_room_idx format. (Default: None)'
+        # default=None,
+        action='store_true',
+        help='is the passed scene_dir a MVL directory? (data stored in  scene_room_idx format). Default: False'
     )
 
     parser.add_argument(
@@ -210,7 +211,7 @@ def get_argparse():
 
 if __name__ == '__main__':
     args = get_argparse()
-    if args.mvl_dir is None:
+    if not args.mvl_dir:
         scene_list_from_rgbd_dataset(args)
     else:
         scene_list_from_mvl_directory(args)
