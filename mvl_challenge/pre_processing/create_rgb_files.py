@@ -2,7 +2,7 @@ import argparse
 from mvl_challenge import CFG_DIR, ASSETS_DIR, EPILOG
 import os
 from mvl_challenge.config.cfg import read_omega_cfg
-from mvl_challenge.utils.io_utils import get_files_given_a_pattern, get_scene_list
+from mvl_challenge.utils.io_utils import get_files_given_a_pattern, get_all_frames_from_scene_list
 from mvl_challenge.datasets.rgbd_datasets import RGBD_Dataset
 from mvl_challenge.pre_processing.utils.geometry_info_utils import get_geometry_info
 from mvl_challenge.utils.io_utils import save_json_dict, create_directory
@@ -18,7 +18,7 @@ from  imageio import imread, imwrite
 def main(args):
     # ! Reading geometry info
     set_loggings()
-    scene_list = get_scene_list(args.scene_list)
+    scene_list = get_all_frames_from_scene_list(args.scene_list)
     create_directory(args.output_dir, delete_prev=False)
     for scene_room_idx in tqdm(scene_list, desc="list geom info..."):
         scene, version, _, idx = Path(scene_room_idx).stem.split("_")

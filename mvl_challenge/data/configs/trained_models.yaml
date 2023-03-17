@@ -1,5 +1,4 @@
 # ! Pretrained HN models 
-# TODO: generalize this paths
 mp3d:
   ckpt: "/media/NFS/justin/code/360-retraining/models/HorizonNet/ckpt/resnet50_rnn__mp3d.pth"
 

@@ -5,7 +5,7 @@ import os
 import yaml
 import json
 from pathlib import Path
-from mvl_challenge.utils.io_utils import save_json_dict, create_directory
+from mvl_challenge.utils.io_utils import save_json_dict, create_directory, get_scene_list_from_dir
 from mvl_challenge.pre_processing.pre_process_scene_list import prune_list_frames
 from mvl_challenge.config.cfg import set_loggings
 import numpy as np
@@ -104,22 +104,16 @@ def get_list_scene_room_idx(args):
     return list_scene_version_room_frames
 
 
-def scene_list_from_mvl_directory(args):
+def save_scene_list_from_mvl_directory(args):
     assert os.path.exists(args.scene_dir), f"No directory found {args.scene_dir}"
 
     set_loggings()
-    list_mvl_fn = os.listdir(args.scene_dir)
-    list_rooms = np.unique([get_scene_room_from_scene_room_idx(Path(fn).stem) for fn in list_mvl_fn]).tolist()
-    data_dict = {}
-    for room in tqdm(list_rooms, desc="List rooms..."):
-        data_dict[room] = [
-            Path(fn).stem for fn in list_mvl_fn
-            if room in fn
-        ]
+    data_dict = get_scene_list_from_dir(args)
 
     create_directory(args.output_dir, delete_prev=False)
     fn = os.path.join(args.output_dir, Path(f"{args.output_filename}").stem)
     save_json_dict(f"{fn}.json", data_dict)
+
 
 
 def scene_list_from_rgbd_dataset(args):
@@ -214,4 +208,4 @@ if __name__ == '__main__':
     if not args.mvl_dir:
         scene_list_from_rgbd_dataset(args)
     else:
-        scene_list_from_mvl_directory(args)
+        save_scene_list_from_mvl_directory(args)

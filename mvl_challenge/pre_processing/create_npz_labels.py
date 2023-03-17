@@ -9,14 +9,14 @@ from imageio import imread, imwrite
 from mvl_challenge import EPILOG, ASSETS_DIR, CFG_DIR
 from mvl_challenge.utils.io_utils import create_directory
 from mvl_challenge.config.cfg import set_loggings, get_empty_cfg
-from mvl_challenge.utils.io_utils import get_scene_room_from_scene_room_idx, get_scene_list
+from mvl_challenge.utils.io_utils import get_scene_room_from_scene_room_idx, get_all_frames_from_scene_list
 from mvl_challenge.utils.layout_utils import get_boundary_from_list_corners
 from mvl_challenge.utils.spherical_utils import xyz2uv, uv2phi_coords, phi_coords2uv, phi_coords2xyz
 from mvl_challenge.utils.vispy_utils import plot_color_plc
 from mvl_challenge.utils.geometry_utils import tum_pose2matrix44, extend_array_to_homogeneous
 from mvl_challenge.utils.image_utils import draw_boundaries_uv, draw_boundaries_phi_coords
 from mvl_challenge.utils.image_utils import add_caption_to_image
-from mvl_challenge.pre_processing.create_scene_room_idx_list import scene_list_from_mvl_directory
+from mvl_challenge.pre_processing.create_scene_room_idx_list import save_scene_list_from_mvl_directory
 
 
 def save_phi_bound(args, list_corners, scene_room_idx_list):
@@ -80,7 +80,7 @@ def main(args):
     set_loggings()
     
     create_directory(args.output_dir, delete_prev=False)
-    scene_room_idx_list = get_scene_list(args.scene_list)    
+    scene_room_idx_list = get_all_frames_from_scene_list(args.scene_list)    
     
     all_rooms = np.unique([get_scene_room_from_scene_room_idx(room) for room in scene_room_idx_list]).tolist()
     scene_rooms =  np.unique(["_".join(f.split("_")[:2]) for f in all_rooms]).tolist()
@@ -108,7 +108,7 @@ def main(args):
     cfg.mvl_dir = args.output_dir
     cfg.output_dir = Path(args.output_dir).parent.__str__()
     cfg.output_filename = "gt_labels__scene_list"
-    scene_list_from_mvl_directory(cfg)
+    save_scene_list_from_mvl_directory(cfg)
     
             
 def get_argparse():

@@ -19,7 +19,7 @@ runners:
 
 model:
   ly_model: HorizonNet
-  ckpt: ${trained_models.${ckpt}.ckpt}
+  ckpt: ${ckpt}
   optimizer: Adam
   loss: weighted_L1
   min_std: 0.001

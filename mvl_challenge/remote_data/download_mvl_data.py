@@ -17,10 +17,13 @@ def download_scenes(args):
 
     for l in lines:
         gd_id, zip_fn = [l for l in l.replace(" ",",").split(",") if l != ''][:2]  
-        print(f"Downloading... {zip_fn}")
-        url = f"https://drive.google.com/uc?id={gd_id}"
         output_file = os.path.join(args.output_dir, zip_fn)
-        gdown.download(url, output_file, quiet=False)
+        download_google_drive_link(gd_id, output_file)
+
+def download_google_drive_link(gd_id, output_file):
+    print(f"Downloading... {output_file}")
+    url = f"https://drive.google.com/uc?id={gd_id}"
+    gdown.download(url, output_file, quiet=False)
 
 
 def get_argparse():
