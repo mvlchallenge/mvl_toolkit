@@ -2,9 +2,9 @@ import argparse
 from mvl_challenge import CFG_DIR, ASSETS_DIR, EPILOG
 import os
 from mvl_challenge.config.cfg import read_omega_cfg
-from mvl_challenge.utils.io_utils import get_files_given_a_pattern
+from mvl_challenge.utils.io_utils import get_rgbd_scenes_list
 from mvl_challenge.datasets.rgbd_datasets import RGBD_Dataset
-from mvl_challenge.pre_processing.geometry_info_utils import get_geometry_info
+from mvl_challenge.pre_processing.utils.geometry_info_utils import get_geometry_info
 from mvl_challenge.utils.io_utils import save_json_dict, create_directory
 from tqdm import tqdm
 import logging
@@ -20,7 +20,15 @@ def save_geometry_info(cfg, data_dict):
 
 def compute_and_save_geometry_info(cfg):
     logging.info(f"Saving geometric info for {cfg.dataset.scene_dir}")
-    dt = RGBD_Dataset.from_cfg(cfg)
+    try:
+        dt = RGBD_Dataset.from_cfg(cfg)
+    except Exception as err:
+        print(type(err))    # the exception instance
+        print(err.args)     # arguments stored in .args
+        print(err) 
+        return
+        # raise ValueError
+        
     geom_info = get_geometry_info(dt)
     #! save geometry info
     [save_geometry_info(cfg, data) for data in geom_info]
@@ -29,8 +37,9 @@ def compute_and_save_geometry_info(cfg):
 def main(args):
     cfg = get_cfg(args)
     # ! Getting all scenes path define the passed scene_dir
-    list_scenes_dir = get_files_given_a_pattern(
-    args.scene_dir, flag_file="frm_ref.txt", exclude=["rgb", 'depth'])
+    # list_scenes_dir = get_files_given_a_pattern(
+    # args.scene_dir, flag_file="frm_ref.txt", exclude=["rgb", 'depth'])
+    list_scenes_dir = get_rgbd_scenes_list(args)
     
     assert list_scenes_dir.__len__() > 0, "No scenes were found at {args.scene_dir} "
     
@@ -63,17 +72,17 @@ def get_argparse():
     parser.add_argument(
         '-d', '--scene_dir',
         # required=True,
-        # default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/",
+        default="/media/public_dataset/MP3D_360_FPE/MULTI_ROOM_SCENES/",
         # default="/media/public_dataset/HM3D-MVL/test/",
-        default=None,
+        # default=None,
         type=str,
         help='RGBD dataset directory.'
     )
 
     parser.add_argument(
         '-f', '--scene_list',
-        required=True,
-        # default=f"{ASSETS_DIR}/mvl_data/hm3d_mvl_test_scene_list.json",
+        # required=True,
+        default=f"{ASSETS_DIR}/issue_omitted_frames/test_scene_list.json",
         type=str,
         help='Scene list file which contents all frames encoded in scene_room_idx format.'
     )
@@ -81,7 +90,7 @@ def get_argparse():
     parser.add_argument(
         '-o', '--output_dir',
         # required=True,
-        default=f"{ASSETS_DIR}/tmp/geometry_info",
+        default=f"{ASSETS_DIR}/issue_omitted_frames/geometry_info",
         type=str,
         help='Output directory for the output_file to be created.'
     )

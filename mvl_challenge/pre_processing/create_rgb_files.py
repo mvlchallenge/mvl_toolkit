@@ -2,29 +2,32 @@ import argparse
 from mvl_challenge import CFG_DIR, ASSETS_DIR, EPILOG
 import os
 from mvl_challenge.config.cfg import read_omega_cfg
-from mvl_challenge.utils.io_utils import get_files_given_a_pattern
+from mvl_challenge.utils.io_utils import get_files_given_a_pattern, get_scene_list
 from mvl_challenge.datasets.rgbd_datasets import RGBD_Dataset
-from mvl_challenge.pre_processing.geometry_info_utils import get_geometry_info
+from mvl_challenge.pre_processing.utils.geometry_info_utils import get_geometry_info
 from mvl_challenge.utils.io_utils import save_json_dict, create_directory
 from mvl_challenge.config.cfg import set_loggings
 from tqdm import tqdm
 import logging
+import json
 from pathlib import Path
 from shutil import copyfile
 from  imageio import imread, imwrite
 
+
 def main(args):
     # ! Reading geometry info
     set_loggings()
-    list_geom_info = os.listdir(args.geom_info_dir)
+    scene_list = get_scene_list(args.scene_list)
     create_directory(args.output_dir, delete_prev=False)
-    for geom_info in tqdm(list_geom_info, desc="list geom info..."):
-        scene, version, _, idx = Path(geom_info).stem.split("_")
+    for scene_room_idx in tqdm(scene_list, desc="list geom info..."):
+        scene, version, _, idx = Path(scene_room_idx).stem.split("_")
         src = os.path.join(args.scene_dir, scene, version, 'rgb', f'{idx}.jpg')
-        dst = os.path.join(args.output_dir, f'{Path(geom_info).stem}.jpg')
+        dst = os.path.join(args.output_dir, f'{Path(scene_room_idx).stem}.jpg')
         if os.path.exists(src):
             copyfile(src, dst)
             logging.info(f"Img {dst} processed...")
+            continue
         else:
             src = os.path.join(args.scene_dir, scene, version, 'rgb', f'{idx}.png')
             if os.path.exists(src):
@@ -53,7 +56,7 @@ def get_argparse():
     )
 
     parser.add_argument(
-        '-g', '--geom_info_dir',
+        '-f', '--scene_list',
         # required=True,
         default=f"{ASSETS_DIR}/mvl_data/geometry_info",
         type=str,

@@ -6,7 +6,7 @@ import yaml
 import json
 from pathlib import Path
 from mvl_challenge.utils.io_utils import save_json_dict, create_directory
-from mvl_challenge.pre_processing.prune_scene_list import prune_list_frames
+from mvl_challenge.pre_processing.pre_process_scene_list import prune_list_frames
 from mvl_challenge.config.cfg import set_loggings
 import numpy as np
 from tqdm import tqdm
@@ -87,14 +87,15 @@ def get_list_scene_room_idx(args):
             mvl_labels_fn = os.path.join(scene, "mvl_challenge_labels.json")
             list_room_idx = get_list_rooms_idx_from_mvl_labels(mvl_labels_fn)
         # ! Check multi-room scenes
-        elif os.path.exists(os.path.join(scene, "metadata")):
-            # ! If metadata exists
-            metadata_filename = os.path.join(scene, "metadata", "room_gt_v0.0.yaml")
-            list_room_idx = get_list_rooms_idx_from_metadata(metadata_filename)
+        # elif os.path.exists(os.path.join(scene, "metadata")):
+        #     # ! If metadata exists
+        #     metadata_filename = os.path.join(scene, "metadata", "room_gt_v0.0.yaml")
+        #     list_room_idx = get_list_rooms_idx_from_metadata(metadata_filename)
         else:
-            # ! defining room_scene_idx from rgb images directly
-            list_idx = get_list_idx_from_dir(os.path.join(scene, "rgb"))
-            list_room_idx = [f"room0_{idx}" for idx in list_idx]
+            continue
+        #     # ! defining room_scene_idx from rgb images directly
+        #     list_idx = get_list_idx_from_dir(os.path.join(scene, "rgb"))
+        #     list_room_idx = [f"room0_{idx}" for idx in list_idx]
 
         [list_scene_version_room_frames.append(f"{filename}_{room_idx}")
          for room_idx in list_room_idx
@@ -200,7 +201,7 @@ def get_argparse():
         # required=True,
         # default=f"{ASSETS_DIR}/mvl_data/geometry_info",
         default=50,
-        help='MVL directory of files saved in scene_room_idx format. (Default: None)'
+        help='MVL directory of files saved in scene_room_idx format. (Default: 50)'
     )
 
     args = parser.parse_args()

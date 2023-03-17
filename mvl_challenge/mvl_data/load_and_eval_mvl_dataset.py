@@ -55,7 +55,7 @@ def get_argparse():
     parser.add_argument(
         '-d', '--scene_dir',
         type=str,
-        # default=f'{ASSETS_DIR}/mvl_data/mp3d_fpe',
+        default=f'{ASSETS_DIR}/mvl_data/pilot__mp3d_fpe',
         help='MVL dataset directory.'
     )
 
@@ -69,7 +69,7 @@ def get_argparse():
     parser.add_argument(
         "-f", "--scene_list",
         type=str,
-        # default=f"{DATA_DIR}/mp3d_fpe/mp3d_fpe__test__scene_list.json",
+        default=f'{ASSETS_DIR}/mvl_data/pilot__mp3d_fpe/pilot__mp3d_fpe__scene_list.json',
         help="Scene_list of mvl scenes in scene_room_idx format."
     )
 

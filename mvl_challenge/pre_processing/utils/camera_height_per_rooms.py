@@ -1,7 +1,7 @@
 import argparse
 from mvl_challenge.datasets.rgbd_datasets import MP3D_FPE
 from mvl_challenge.config.cfg import get_empty_cfg
-from mvl_challenge.pre_processing.camera_height_utils import estimate_camera_height
+from mvl_challenge.pre_processing.utils.camera_height_utils import estimate_camera_height
 import numpy as np 
 from mvl_challenge.utils.vispy_utils import plot_color_plc
 from mvl_challenge.utils.io_utils import save_json_dict, create_directory, get_files_given_a_pattern

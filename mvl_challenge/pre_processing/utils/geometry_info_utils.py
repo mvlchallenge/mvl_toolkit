@@ -2,8 +2,8 @@ import argparse
 from mvl_challenge.config.cfg import read_omega_cfg
 from mvl_challenge import ASSETS_DIR, CFG_DIR, EPILOG
 from mvl_challenge.datasets.rgbd_datasets import MP3D_FPE, RGBD_Dataset
-from mvl_challenge.pre_processing.camera_height_utils import estimate_camera_height
-from mvl_challenge.pre_processing.camera_height_per_rooms import estimate_cam_height_per_room
+from mvl_challenge.pre_processing.utils.camera_height_utils import estimate_camera_height
+from mvl_challenge.pre_processing.utils.camera_height_per_rooms import estimate_cam_height_per_room
 from mvl_challenge.utils.io_utils import get_idx_from_scene_room_idx
 from mvl_challenge.utils.geometry_utils import get_quaternion_from_matrix
 import logging

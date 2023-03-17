@@ -16,6 +16,18 @@ def get_idx_from_scene_room_idx(fr_name):
     return int(fr_name.split("_")[-1].split(".")[0])
 
 
+def get_scene_list(scene_list_fn):
+    data = json.load(open(scene_list_fn, "r"))
+    list_geom_info = [f for f in data.values()]
+    list_geom_info = [item for sublist in list_geom_info for item in sublist]
+    return list_geom_info
+
+
+def get_rgbd_scenes_list(args):
+    dir_data  = args.scene_dir
+    scene_list = get_scene_list(args.scene_list)
+    return np.unique([os.path.join(dir_data, f.split("_")[0], f.split("_")[1]) for f in scene_list]).tolist()
+
 def get_scene_room_from_scene_room_idx(fr_name):
     return "_".join(fr_name.split("_")[:-1])
 
@@ -60,8 +72,9 @@ def create_directory(output_dir, delete_prev=True):
         logging.warning(f"This directory will be deleted: {output_dir}")
         input("This directory will be deleted. PRESS ANY KEY TO CONTINUE...")
         shutil.rmtree(output_dir, ignore_errors=True)
-    logging.info(f"Dir created: {output_dir}")
-    os.makedirs(output_dir, exist_ok=True)
+    if not os.path.exists(output_dir):
+        logging.info(f"Dir created: {output_dir}")
+        os.makedirs(output_dir, exist_ok=True)
     return Path(output_dir).resolve()
 
 
@@ -187,10 +200,11 @@ def read_ply(fn):
 
 def save_compressed_phi_coords(phi_coords, filename):
     np.savez_compressed(filename, phi_coords=phi_coords)
-    
+
 
 def process_arcname(list_fn, base_dir):
     return [os.path.relpath(fn, start=base_dir) for fn in list_fn]
+
 
 def load_gt_label(fn):
     assert os.path.exists(fn), f"Not found {fn}"

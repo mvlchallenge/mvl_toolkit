@@ -118,6 +118,24 @@ def uv2phi_coords(uv, shape=(512, 1024), type_bound='floor'):
     v = []
     for u in u_coords:
         v_idx = np.where(uv[0] == u)[0]
+        if v_idx.size == 0:
+            for i in range(5):
+                v_idx = np.where(uv[0] == (u + i)% shape[1])[0]
+                if v_idx.size > 0:
+                    break
+                v_idx = np.where(uv[0] == (u - i)% shape[1])[0]
+                if v_idx.size > 0:
+                    break
+            # for i in range(5):
+            #     v_idx = np.where(uv[0] == (u - i)% shape[1])[0]
+            #     if v_idx.size > 0:
+            #         break
+            #     v_idx = np.where(uv[0] == (u + i)% shape[1])[0]
+            #     if v_idx.size > 0:
+            #         break
+        if v_idx.size == 0:
+            return None
+            
         if type_bound == 'floor':
             v.append(np.max(uv[1, v_idx]))
         elif type_bound == 'ceiling':
