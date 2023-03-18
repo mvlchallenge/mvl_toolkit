@@ -1,6 +1,7 @@
 import os
 import json
 import argparse
+import numpy as np
 from mvl_challenge.utils.io_utils import save_json_dict
 from mvl_challenge.config.cfg import get_empty_cfg
 from pathlib import Path
@@ -73,9 +74,23 @@ def split_scene_list(scene_data, split_list):
                 new_scene_data[split] = {k: v for k, v in scene_data.items() if k.split("_room")[0] in scenes}
                 
     return new_scene_data
+
+def sampling_scene_list(scene_data, ratio):
+    list_rooms = list(scene_data.keys())
+    if ratio > 1:
+        room_number = int(ratio)
+    else:
+        room_number = int(ratio * list_rooms.__len__())
+    np.random.shuffle(list_rooms)
+    return {r: scene_data[r] for r in list_rooms[:room_number]} 
+    
+    
     
 def main(args):
-    if args.action == "split": 
+    if args.r > 0: 
+        scene_data = json.load(open(args.scene_list))
+        new_scene_data = sampling_scene_list(scene_data, args.r)    
+    elif args.action == "split": 
         scene_data = json.load(open(args.scene_list))
         split_list = json.load(open(args.x))
         new_scene_data  = split_scene_list(scene_data, split_list)
@@ -83,7 +98,6 @@ def main(args):
             fn = os.path.join(os.path.dirname(args.scene_list), f"{Path(args.o).stem}__{key}.json")
             save_json_dict(fn, data)
             print(f"Scene List saved as {fn}")
-        
         return
             
     elif args.action == "merge": 
@@ -147,13 +161,20 @@ def get_argparse():
         '-o',
         default="pruned_scene_list",
         type=str,
-        help='Output scene_list filename.'
+        help='Output scene_list name.'
         )
 
     parser.add_argument(
         '-a', "--action",
         type=str,
         help='Actions over the passed files [merge, split, diff, intersect, complement].'
+    )
+    
+    parser.add_argument(
+        '-r', 
+        default=-1,
+        type=float,
+        help='Random sampling.'
     )
     
     parser.add_argument(

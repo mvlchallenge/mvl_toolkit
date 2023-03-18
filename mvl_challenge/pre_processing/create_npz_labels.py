@@ -103,12 +103,12 @@ def main(args):
                 
                 save_phi_bound(args, list_corners, [g for g in scene_room_idx_list if room_name in g])
         
-    # ! Save scene_list for GT labels
-    cfg = get_empty_cfg()
-    cfg.mvl_dir = args.output_dir
-    cfg.output_dir = Path(args.output_dir).parent.__str__()
-    cfg.output_filename = "gt_labels__scene_list"
-    save_scene_list_from_mvl_directory(cfg)
+    # # ! Save scene_list for GT labels
+    # cfg = get_empty_cfg()
+    # cfg.mvl_dir = args.output_dir
+    # cfg.output_dir = Path(args.output_dir).parent.__str__()
+    # cfg.output_filename = "gt_labels__scene_list"
+    # save_scene_list_from_mvl_directory(cfg)
     
             
 def get_argparse():
