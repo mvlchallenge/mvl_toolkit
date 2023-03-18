@@ -18,3 +18,4 @@ torchvision
 PyQt5
 PyOpenGL-accelerate
 pyransac3d
+python-dateutil==2.8.1
