@@ -6,7 +6,7 @@ import yaml
 import json
 from pathlib import Path
 from mvl_challenge.utils.io_utils import save_json_dict, create_directory, get_scene_list_from_dir
-from mvl_challenge.pre_processing.pre_process_scene_list import prune_list_frames
+from mvl_challenge.scene_list__operate_info import prune_list_frames
 from mvl_challenge.config.cfg import set_loggings
 import numpy as np
 from tqdm import tqdm
