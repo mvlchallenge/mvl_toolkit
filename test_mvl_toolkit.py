@@ -9,6 +9,8 @@ from mvl_challenge.datasets.mvl_dataset import MVLDataset, iter_mvl_room_scenes
 from mvl_challenge.models.wrapper_horizon_net import WrapperHorizonNet
 from mvl_challenge.challenge_results.create_zip_results import zip_results
 
+GOOGLE_IDS_EXAMPLE_SCENE ='gdrive_ids__example_scene.csv'
+
 def main(args):
     
     list_logs = []
@@ -19,7 +21,7 @@ def main(args):
         example_scene_zip_dir = os.path.join(args.output_dir, "zips", "example_data")
         create_directory(example_scene_zip_dir, delete_prev=False)
         cfg.output_dir = example_scene_zip_dir
-        cfg.ids_file = os.path.join(DATA_DIR, "example_mvl_scene__google_ids.csv")
+        cfg.ids_file = os.path.join(DATA_DIR, GOOGLE_IDS_EXAMPLE_SCENE)
         download_scenes(cfg)
         
         # ! Unzipping mvl-data
@@ -68,6 +70,7 @@ def main(args):
         cfg.results_dir = npz_estimations_dir
         cfg.scene_list = scene_list_fn
         zip_results(cfg)
+        
         
         
     except Exception as err: 
