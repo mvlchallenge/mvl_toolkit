@@ -41,7 +41,7 @@ pip install -e .
 
 4. Test installation. 
 ```bash
-python  mvl_challenge/test_toolkit.py
+python  test_toolkit.py
 ```
 
 ## Usage
