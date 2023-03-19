@@ -20,6 +20,7 @@ def download_scenes(args):
         output_file = os.path.join(args.output_dir, zip_fn)
         download_google_drive_link(gd_id, output_file)
 
+
 def download_google_drive_link(gd_id, output_file):
     print(f"Downloading... {output_file}")
     url = f"https://drive.google.com/uc?id={gd_id}"
