@@ -63,34 +63,34 @@ Besides, we provide scene list files that define the training, testing, and pilo
 
 ## Tutorial
 
-**Downlaod the dataset**
+### Downlaod the dataset
 ```sh
 python download_mvl_data.py -o {MVL_DATA_DIR} -split {SPLIT}
 ```
 Note that you can always use `-h` to see more details.
 
-**Check data with scene list files**
-```sh
-python check_scene_list.py
-```
-
-**Load the data and visualize them**
+### Check data with scene list
 
 The JSON files under `mvl_challenge/data/scene_list/` are the scene lists. Each scene list will be the key to let you access different types of the existing data.  
 For example, with `scene_list__warm_up_pilot_set.json`, it allows you to access the data of pilot set in warm-up phase.
 
-Now we can load the data that we just downloaded and visualize them:
+Run the following command to make sure the data has been correctly downloaded and whether you can access it by scene list:
+
+```sh
+python check_scene_list.py -d {MVL_DATA_DIR} -f {SCENE_LIST}
+```
+
+### Load the data and visualize
 
 ```bash
 python mvl_challenge/mvl_data/load_mvl_dataset.py -d {MVL_DATA_DIR} -f {SCENE_LIST}
 ```
 
-
 You should see a sequence of panorama images showing up on the screen. These images are exactly the set of data that you just specified in the scene list.
 
 ![](https://user-images.githubusercontent.com/67839539/226287033-baedde2a-1775-4c94-9102-86022df0eaa1.gif)
 
-**Estimate layouts**
+### Estimate layouts
 
 We can load the data, and moreover, estimate the layout by the pre-trained model of HorizonNet:
 
@@ -107,12 +107,12 @@ In the end, it will pop out a window showing the point cloud of all the layout e
 
 ![](https://user-images.githubusercontent.com/67839539/226287093-289e2b5c-79cc-40d9-accb-68ed97c7bb46.gif)
 
-**Save estimations**
+### Save estimations
 
 In order to submit to [EvalAI](https://eval.ai/web/challenges/challenge-page/1906/) and evalute, we further save the prediction result into *.npz files. Each image frame will have a correspinding *.npz file containing the layout estimation output. These *.npz files will be stored in `{RESULT_DIR}`.
 
 ```bash
-python mvl_challenge/challenge_results/create_npz_files.py -d {MVL_DATA_DIR} -f {SCENE_LIST} -o {RESULT_DIR}
+python mvl_challenge/challenge_results/create_npz_files.py -d {MVL_DATA_DIR} -f {SCENE_LIST} -o {RESULT_DIR} --ckpt {CHECK_POINT}
 ```
 
 Next, we will zip all the predicted *.npz files.
@@ -123,8 +123,7 @@ python mvl_challenge/challenge_results/create_zip_results.py -d {YOUR_RESULT} -f
 
 ⚠️ This zip file is the only file that will be submitted to the EvalAI server.
 
-
-**Submit to [EvalAI](https://eval.ai/web/challenges/challenge-page/1906/)**
+### Submit to [EvalAI](https://eval.ai/web/challenges/challenge-page/1906/)
 
 We recommend you to submit the file using CLI. Find more details on [EvalAI](https://eval.ai/web/challenges/challenge-page/1906/) website.
 
@@ -139,13 +138,13 @@ evalai set_token {YOUR_TOKEN}
 evalai challenge 1906 phase 3801 submit --file {YOUR_RESULT_ZIP} --large
 ```
 
-**Check evaluation result**
+### Check evaluation result
 
 We provide `pilot split` to let you double check if the evaluation result in your local computer agrees with the one on EvalAI.
 
 Evaluate on your local computer:
 ```bash
-python mvl_challenge/challenge_results/evaluate_results.py -d {MVL_DATA_DIR} -f {PILOT_SCENE_LIST} -o {PILOT_EVAL_DIR}
+python mvl_challenge/challenge_results/evaluate_results.py -d {MVL_DATA_DIR} -f {PILOT_SCENE_LIST} -o {PILOT_EVAL_DIR} --ckpt {CHECK_POINT}
 ```
 
 If the evaluation result is matching, congratulations! You've already completed the submission!
