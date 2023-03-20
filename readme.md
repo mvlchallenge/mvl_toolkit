@@ -1,6 +1,6 @@
 ## General Information
 
-This toolkit is part of the Multi-view Layout Estimation Challenge (mvl-challenge) of the [Omnidirectional Computer Vision (OmniCV) workshop](https://sites.google.com/view/omnicv2023/home?authuser=0) at [CVPR'23](https://cvpr2023.thecvf.com/). To participate and submit results join us at the [EvalAi mvl-challenege](https://eval.ai/web/challenges/challenge-page/1906/). 
+This toolkit is part of the Multi-view Layout Estimation Challenge (mvl-challenge) of the [Omnidirectional Computer Vision (OmniCV) workshop](https://sites.google.com/view/omnicv2023/home?authuser=0) at [CVPR'23](https://cvpr2023.thecvf.com/). To participate and submit results join us at the [EvalAi mvl-challenge](https://eval.ai/web/challenges/challenge-page/1906/). 
 For more information visit our official site [mvl-challege](https://sites.google.com/view/omnicv2023/challenges/multi-view-layout-challenge?authuser=0)
 
 The tentative dates for this challenge are described as follows: 
@@ -19,7 +19,7 @@ With the aim of providing support to the participants of the mvl-challenge, the 
 2. Load and register the data as an instance `<Layout class>`, that simplifies camera and layout projection for you. 
 3. Load and retrive multiple `<Layout class>` instances associated to a query room. 
 5. Provide examples of how to evaluate a layout estimation using `<Layout class>` instances. 
-6. Provide methods to save, zip and submit layout estimates to evaluation in EvalAi. 
+6. Provide methods to save, zip and submit layout estimates to EvalAI. 
 
 ## Installation
 
@@ -36,7 +36,7 @@ cd mvl_toolkit
 git submodule update --init --recursive
 ```
 
-Note that we have included `HorizonNet` as a submodule. This submodule is intended solely as an out-of-the-box layout estimation example. You will find a non-empty folder named `HorizonNet` located within the `mvl_challenge/models` directory.
+Note that we have included [`HorizonNet`](https://github.com/sunset1995/HorizonNet) as a submodule. This submodule is intended solely as an out-of-the-box layout estimation example. You will find a non-empty folder named `HorizonNet` located within the `mvl_challenge/models` directory.
 
 
 3. Install `mvl-toolkit`
@@ -46,7 +46,7 @@ pip install -e .
 
 4. Test installation. 
 ```bash
-python  test_toolkit.py
+python test_toolkit.py
 ```
 
 ## Usage
