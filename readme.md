@@ -27,7 +27,7 @@ Note that we have included [`HorizonNet`](https://github.com/sunset1995/HorizonN
 
 Aferwards, run the following command to test installation.
 ```bash
-python test_toolkit.py
+python test_mvl_toolkit.py
 ```
 
 ## Datasets
