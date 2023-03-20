@@ -14,3 +14,4 @@ __pycache__/
 *ckpt/
 *.egg-info
 assets/
+*tmp*

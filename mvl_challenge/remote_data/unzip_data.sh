@@ -29,5 +29,5 @@ fi
 
 for filename in "$ZIP_DIR"/*.zip; do
     echo "$filename"
-    unzip "$filename" -d "$OUTPUT_DIR"
+    unzip "$filename" -d "$OUTPUT_DIR" -o
 done

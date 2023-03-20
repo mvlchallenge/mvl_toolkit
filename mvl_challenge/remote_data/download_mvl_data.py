@@ -1,11 +1,12 @@
 import argparse
 import os
-import gdown
+# import gdown
 import pandas as pd
 from mvl_challenge import ASSETS_DIR, ROOT_DIR
 from mvl_challenge.utils.io_utils import create_directory, read_txt_file
 from mvl_challenge.config.cfg import set_loggings
 from mvl_challenge import EPILOG
+from mvl_challenge.utils.download_utils import download_file_from_google_drive
 from tqdm import tqdm
 
 def download_scenes(args):
@@ -23,8 +24,11 @@ def download_scenes(args):
 
 def download_google_drive_link(gd_id, output_file):
     print(f"Downloading... {output_file}")
-    url = f"https://drive.google.com/uc?id={gd_id}"
-    gdown.download(url, output_file, quiet=False)
+    # url = f"https://drive.google.com/uc?id={gd_id}"
+    # gdown.download(url, output_file, quiet=False)
+    # url= f"https://docs.google.com/uc?export=download&confirm=t&id={gd_id}"
+    # wget.download(url, out=output_file)
+    download_file_from_google_drive(gd_id, output_file)
 
 
 def get_argparse():
