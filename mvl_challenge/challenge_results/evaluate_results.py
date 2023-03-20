@@ -62,7 +62,7 @@ def main(args):
     
     results["total__m2dIoU"] =_2dIoU
     results["total__m3dIoU"] =_3dIoU
-    fn = os.path.join(output_dir, f"{Path(args.scene_list).stem}__{args.ckpt}.json")
+    fn = os.path.join(output_dir, f"{Path(args.scene_list).stem}__{Path(args.ckpt).stem}.json")
     save_json_dict(filename=fn, dict_data=results)
      
     print(f"2d-IoU: {_2dIoU:2.3f}\t3d-IoU: {_3dIoU:2.3f}")  
