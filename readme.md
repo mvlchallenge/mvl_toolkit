@@ -1,15 +1,17 @@
 ## General Information
 
-This toolkit is part of the Multi-view Layout Estimation Challenge (mvl-challenge) of the [Omnidirectional Computer Vision (OmniCV) workshop](https://sites.google.com/view/omnicv2023/home?authuser=0) at [CVPR'23](https://cvpr2023.thecvf.com/). To participate and submit results join us at the [EvalAi mvl-challenge](https://eval.ai/web/challenges/challenge-page/1906/). 
+This toolkit is part of the Multi-view Layout Estimation Challenge (mvl-challenge) of the [Omnidirectional Computer Vision (OmniCV) workshop](https://sites.google.com/view/omnicv2023/home?authuser=0) at [CVPR'23](https://cvpr2023.thecvf.com/). To participate and submit results join us on [EvalAi](https://eval.ai/web/challenges/challenge-page/1906/). 
 For more information visit our official site [mvl-challege](https://sites.google.com/view/omnicv2023/challenges/multi-view-layout-challenge?authuser=0)
 
 The tentative dates for this challenge are described as follows: 
 * Warm-up Phase Open - March 20, 2023
-* Challenge Phase Open - April 20, 2023
+* Challenge Phase Open - May 1, 2023
 * Challenge Phase Deadline - June 1, 2023
 * Winner notification - June 6, 2023
 
-Please don't hesitate to join us in our [Slack workspace](https://join.slack.com/t/mvl-challenge/shared_invite/zt-1m95ef0hy-ViG7fSeTt1EqiosRlZoDvQ) for public queries and discussion.
+Note that this challenge proposes two phases, warm-up and challenge phases. The former plays the role of a playground stage, where participants can evalaute their models without any restriction of number of submissions. The latter, aims to evalaute the parteicipant models in a selected testing set which will be released later in the challenge phase opening on May 1st, 2023.
+
+For public queries and discussion, please don't hesitate to join us in our [Slack workspace](https://join.slack.com/t/mvl-challenge/shared_invite/zt-1m95ef0hy-ViG7fSeTt1EqiosRlZoDvQ).
 
 ## What can you do with this toolkit?
 
@@ -51,9 +53,49 @@ python test_toolkit.py
 
 ## Datasets
 
-For this challenge two multi-view datsets are used, [MP3D-FPE](https://github.com/EnriqueSolarte/direct_360_FPE), and [HM3D-MVL](https://github.com/mvlchallenge/mvl_toolkit/edit/mvl_chellenge_dev). Both collected in equirectangular camera projection. To make them easier to work with, we have organized both datasets into a standardized and more user-friendly format. The naming convention for each frame is `${scene_name}_${version}_${room}_${idx}`, e.g., `E9uDoFAP3SH_1_room0_982`. 
+For this challenge, two multi-view datsets are used, [MP3D-FPE](https://github.com/EnriqueSolarte/direct_360_FPE), and [HM3D-MVL](https://github.com/mvlchallenge/mvl_toolkit/edit/mvl_chellenge_dev), both collected in equirectangular camera projection. To make them easier to work with, we have organized both datasets into a standardized and more user-friendly format. The naming convention for each frame is `${scene_name}_${version}_${room}_${idx}`, e.g., `E9uDoFAP3SH_1_room0_982`. 
+
+The whole dataset for this challenge is presented in the following structure:
+```
+└── ${MVL_DATA_DIR}/
+    ├── geometry_info/
+    │    └── pa4otMbVnkk_0_room0_109.json
+    │    └── k1cupFYWXJ6_1_room10_98.json
+    │    └── ...
+    ├── img/
+    │    └── pa4otMbVnkk_0_room0_109.jpg
+    │    └── k1cupFYWXJ6_1_room10_98.jpg
+    │    └── ...
+    └── labels/
+          └── gt/
+          │    └── pa4otMbVnkk_0_room0_109.jpg
+          │    └── k1cupFYWXJ6_1_room10_98.jpg
+          │    └── ...
+          └── gt_vis/
+               └── pa4otMbVnkk_0_room0_109.jpg
+               └── k1cupFYWXJ6_1_room10_98.jpg
+               └── ...
+```
+In relation to this dataset, there exists a group of JSON files, refered as scene list files, which contain an organized sequence of frames. These files define the training, testing, and pilot splits for each phase challenge. 
+It is crucial to keep in mind that no ground truth labels are disclosed for this challeneg, except for the pilot split.
+
+All of the scene list files predifined for this challenge can be found at `mvl_challenge/data/scene_list`
+
+## Download the dataset
+
 
 ## Usage
+
+### Cheking data using scene list files
+
+### Loading a set of data as `List <Layou class>`
+
+### Example how to estimate layout within a `List <Layou class>`
+
+### Save estimations
+
+### Submit estimations to [Eval Ai](https://eval.ai/web/challenges/challenge-page/1906/)
+
 
 ### 1. Download the dataset
 The csv files under `mvl_challenge/data/mp3d_fpe/` specify the ID of each data. We will use these IDs to download the data from Google Drive (zip format) and store them into `{ZIP_DIR}`.
@@ -73,10 +115,12 @@ bash mvl_challenge/remote_data/unzip_data.sh -d {ZIP_DIR} -o {MVL_DATA_DIR}
 
 The expected structure:   
 
+``
 | - {MVL_DATA_DIR}/  
 &emsp;| - geometry_info/  
 &emsp;| - img/  
-&emsp;| - labels/  
+&emsp;| - labels/
+```
 
 In all the sub-directory above, the data (file name) is in `{scene}_{version}_{room}_{frame}` format, for example, `E9uDoFAP3SH_1_room0_982`. And we call this `MVL_DATA_FORMAT`. 
 
