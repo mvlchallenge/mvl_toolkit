@@ -19,9 +19,11 @@ def plot_list_ly(list_ly=None, ceil_or_floor="", save_at=None):
         return
 
     # ! Setting up vispy
-    canvas = vispy.scene.SceneCanvas(keys="interactive", bgcolor="white", create_native=True)
+    canvas = vispy.scene.SceneCanvas(
+        keys="interactive", bgcolor="white", create_native=True
+    )
     res = 1024 * 2
-    canvas.size = res, res//2
+    canvas.size = res, res // 2
     canvas.show()
 
     t1 = Text(room_scene, parent=canvas.scene, color="black")
@@ -52,13 +54,15 @@ def plot_list_ly(list_ly=None, ceil_or_floor="", save_at=None):
         [raw.append(ly.boundary_ceiling) for ly in list_ly]
     elif ceil_or_floor == "ceil":
         [raw.append(ly.boundary_ceiling) for ly in list_ly]
-    elif ceil_or_floor == 'floor':
+    elif ceil_or_floor == "floor":
         [raw.append(ly.boundary_floor) for ly in list_ly]
 
     pcl_raw = np.hstack(raw)
-    max_size = np.max(pcl_raw - np.mean(pcl_raw, axis=1, keepdims=True), axis=1, keepdims=True)
+    max_size = np.max(
+        pcl_raw - np.mean(pcl_raw, axis=1, keepdims=True), axis=1, keepdims=True
+    )
 
-    vb1.camera.scale_factor = np.max(max_size)*2.5
+    vb1.camera.scale_factor = np.max(max_size) * 2.5
     vb1.camera.center = np.mean(pcl_raw, axis=1, keepdims=True)
 
     # print(max_size)
@@ -109,19 +113,17 @@ def get_color_list(array_colors=None, fr=0.1, return_list=False, number_of_color
     return hsv_to_rgb(colors.T).T
 
 
-def setting_viewer(return_canvas=False, main_axis=True, bgcolor='black', caption=''):
-    canvas = vispy.scene.SceneCanvas(keys='interactive',
-                                     show=True,
-                                     bgcolor=bgcolor)
+def setting_viewer(return_canvas=False, main_axis=True, bgcolor="black", caption=""):
+    canvas = vispy.scene.SceneCanvas(keys="interactive", show=True, bgcolor=bgcolor)
     size_win = 1024
-    canvas.size = 2*size_win, size_win
+    canvas.size = 2 * size_win, size_win
 
-    t1 = Text(caption, parent=canvas.scene, color='white')
+    t1 = Text(caption, parent=canvas.scene, color="white")
     t1.font_size = 24
     t1.pos = canvas.size[0] // 2, canvas.size[1] // 10
 
     view = canvas.central_widget.add_view()
-    view.camera = 'arcball'  # turntable / arcball / fly / perspective
+    view.camera = "arcball"  # turntable / arcball / fly / perspective
 
     if main_axis:
         visuals.XYZAxis(parent=view.scene)
@@ -133,32 +135,33 @@ def setting_viewer(return_canvas=False, main_axis=True, bgcolor='black', caption
 
 def setting_pcl(view, size=5, edge_width=2, antialias=0):
     scatter = visuals.Markers()
-    scatter.set_gl_state('translucent',
-                         depth_test=True,
-                         blend=True,
-                         blend_func=('src_alpha', 'one_minus_src_alpha'))
+    scatter.set_gl_state(
+        "translucent",
+        depth_test=True,
+        blend=True,
+        blend_func=("src_alpha", "one_minus_src_alpha"),
+    )
     # scatter.set_gl_state(depth_test=True)
     scatter.antialias = 0
     view.add(scatter)
     return partial(scatter.set_data, size=size, edge_width=edge_width)
 
 
-def plot_color_plc(points,
-                   color=(0, 0, 0, 1),
-                   return_view=False,
-                   size=0.5,
-                   plot_main_axis=False,
-                   background="white",
-                   scale_factor=15,
-                   caption=''
-                   ):
+def plot_color_plc(
+    points,
+    color=(0, 0, 0, 1),
+    return_view=False,
+    size=0.5,
+    plot_main_axis=False,
+    background="white",
+    scale_factor=15,
+    caption="",
+):
 
     view = setting_viewer(main_axis=plot_main_axis, bgcolor=background, caption=caption)
-    view.camera = vispy.scene.TurntableCamera(elevation=90,
-                                              azimuth=90,
-                                              roll=0,
-                                              fov=0,
-                                              up='-y')
+    view.camera = vispy.scene.TurntableCamera(
+        elevation=90, azimuth=90, roll=0, fov=0, up="-y"
+    )
     # view.camera = vispy.scene.TurntableCamera(elevation=90,
     #                                           azimuth=0,
     #                                           roll=0,

@@ -18,12 +18,13 @@ def download_dirs(args):
     lines = read_txt_file(list_google_scenes)
 
     for l in lines:
-        gd_id, dir_path = [l for l in l.replace(" ",",").split(",") if l != ''][:2]  
+        gd_id, dir_path = [l for l in l.replace(" ", ",").split(",") if l != ""][:2]
         output_dir = os.path.join(args.output_dir)
         count = f"{lines.index(l)+1}/{lines.__len__()}"
         print(f"Downloading...{count} {output_dir}")
-        gdown.download_folder(id=gd_id,output=output_dir, quiet=False)
-    
+        gdown.download_folder(id=gd_id, output=output_dir, quiet=False)
+
+
 def download_file(args):
     set_loggings()
     create_directory(args.output_dir, delete_prev=False)
@@ -32,9 +33,11 @@ def download_file(args):
     lines = read_txt_file(list_google_scenes)
 
     for l in lines:
-        gd_id, zip_fn = [l for l in l.replace(" ",",").split(",") if l != ''][:2]  
+        gd_id, zip_fn = [l for l in l.replace(" ", ",").split(",") if l != ""][:2]
         output_file = os.path.join(args.output_dir, zip_fn)
-        download_google_drive_link(gd_id, output_file, f"{lines.index(l)+1}/{lines.__len__()}")
+        download_google_drive_link(
+            gd_id, output_file, f"{lines.index(l)+1}/{lines.__len__()}"
+        )
 
 
 def download_google_drive_link(gd_id, output_file, count=""):
@@ -47,35 +50,36 @@ def download_google_drive_link(gd_id, output_file, count=""):
 
 
 def get_argparse():
-    desc = "This script Download a set of zip files corresponding to the mvl-data. " + \
-        "This zip files may content geometry_info files, images files, or/and gt npz labels files."
+    desc = (
+        "This script Download a set of zip files corresponding to the mvl-data. "
+        + "This zip files may content geometry_info files, images files, or/and gt npz labels files."
+    )
 
-    parser = argparse.ArgumentParser(
-        description=desc,
-        epilog=EPILOG
+    parser = argparse.ArgumentParser(description=desc, epilog=EPILOG)
+
+    parser.add_argument(
+        "-o",
+        "--output_dir",
+        type=str,
+        # required=True,
+        default=f"{ASSETS_DIR}/tmp/downloaded_data",
+        help="Output dataset directory.",
     )
 
     parser.add_argument(
-        '-o', '--output_dir', 
+        "-f",
+        "--ids_file",
         type=str,
-        # required=True, 
-        default=f"{ASSETS_DIR}/tmp/downloaded_data", 
-        help='Output dataset directory.'
-        )
-    
-    parser.add_argument(
-        "-f", '--ids_file', 
-        type=str, 
         # required=True,
-        default="/media/NFS/kike/360_Challenge/mvl_toolkit/mvl_challenge/data/gdrive_files/gdrive_ids__warm_up_training_set_folders.csv", 
-        help="lists of IDS to download from GoogleDrive"
-        )
-    
+        default="/media/NFS/kike/360_Challenge/mvl_toolkit/mvl_challenge/data/gdrive_files/gdrive_ids__warm_up_training_set_folders.csv",
+        help="lists of IDS to download from GoogleDrive",
+    )
+
     args = parser.parse_args()
     return args
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = get_argparse()
     # download_scenes(args)
     download_dirs(args)

@@ -7,7 +7,7 @@ from mvl_challenge.utils.vispy_utils import plot_color_plc
 
 
 def main(args):
-    
+
     if args.dataset_name == "":
         dt = RGBD_Dataset.from_args(args)
     if args.dataset_name == "mp3d_fpe":
@@ -16,34 +16,35 @@ def main(args):
         dt = HM3D_MVL.from_args(args)
     else:
         raise ValueError()
-    
+
     list_fr = dt.get_list_frames()
-    pcl  = np.hstack([fr.get_pcl() for fr in list_fr[:50]])
+    pcl = np.hstack([fr.get_pcl() for fr in list_fr[:50]])
     plot_color_plc(points=pcl[0:3, :].T, color=pcl[3:].T)
+
 
 def get_args():
     parser = argparse.ArgumentParser()
     # * Input Directory (-s)
     parser.add_argument(
-        '--scene_dir',
+        "--scene_dir",
         # required=True,
         default="/media/public_dataset/HM3D-MVL/test/BHXhpBwSMLh/0/",
         type=str,
-        help='Input Directory (scene directory defined until version scene)'
+        help="Input Directory (scene directory defined until version scene)",
     )
-    
+
     parser.add_argument(
-        '--dataset_name',
+        "--dataset_name",
         # required=True,
         default="",
         type=str,
-        help='dataset name [mp3d_fpe or hmd3d_mvl]'
+        help="dataset name [mp3d_fpe or hmd3d_mvl]",
     )
 
     args = parser.parse_args()
     return args
-    
-if __name__ == '__main__':
+
+
+if __name__ == "__main__":
     args = get_args()
     main(args)
-    

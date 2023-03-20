@@ -53,8 +53,12 @@ class CamPose:
 
     @t.setter
     def t(self, value):
-        assert value.reshape(3, ).shape == (3, )
-        self.__t = value.reshape(3, )
+        assert value.reshape(
+            3,
+        ).shape == (3,)
+        self.__t = value.reshape(
+            3,
+        )
         self.__pose[:3, 3] = value
 
     def SE3_scaled(self):

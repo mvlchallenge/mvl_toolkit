@@ -18,9 +18,14 @@ class SphericalCamera:
 
     def project_pcl_from_depth_and_rgb_maps(self, color_map, depth_map, scaler=1):
         from mvl_challenge.utils.image_utils import get_color_array
+
         color_pixels = get_color_array(color_map=color_map) / 255
         mask = depth_map.flatten() > 0
-        pcl = self.default_bearings[:, mask] * scaler * get_color_array(color_map=depth_map)[0][mask]
+        pcl = (
+            self.default_bearings[:, mask]
+            * scaler
+            * get_color_array(color_map=depth_map)[0][mask]
+        )
         return pcl, color_pixels[:, mask]
 
 
@@ -62,6 +67,7 @@ def sph2xyz(sph):
 
     return np.vstack((x, y, z))
 
+
 #! Checked OK
 def sph2uv(sph, shape):
     # H, W = shape
@@ -73,14 +79,16 @@ def sph2uv(sph, shape):
     # ))).astype(int)
     theta_coord = sph[0]
     phi_coords = sph[1]
-    u = np.clip(np.floor((0.5 * theta_coord / np.pi + 0.5) * shape[1] + 0.5), 0, shape[1] - 1)
-    v = np.clip(np.floor((phi_coords / np.pi + 0.5) * shape[0]+0.5), 0, shape[0] - 1)
+    u = np.clip(
+        np.floor((0.5 * theta_coord / np.pi + 0.5) * shape[1] + 0.5), 0, shape[1] - 1
+    )
+    v = np.clip(np.floor((phi_coords / np.pi + 0.5) * shape[0] + 0.5), 0, shape[0] - 1)
     return np.vstack([u, v]).astype(int)
 
 
 def sphere_normalization(xyz):
     norm = np.linalg.norm(xyz, axis=0)
-    return xyz/norm
+    return xyz / norm
 
 
 #! Checked ok!
@@ -100,8 +108,8 @@ def phi_coords2xyz(phi_coords):
 #! Checked ok!
 def phi_coords2uv(phi_coords, shape=(512, 1024)):
     """
-    Converts a set of phi_coordinates (2, W), defined by ceiling and floor boundaries encoded as 
-    phi coordinates, into uv pixels 
+    Converts a set of phi_coordinates (2, W), defined by ceiling and floor boundaries encoded as
+    phi coordinates, into uv pixels
     """
     H, W = shape
     u = np.linspace(0, W - 1, W)
@@ -112,7 +120,7 @@ def phi_coords2uv(phi_coords, shape=(512, 1024)):
 
 
 #! Checked ok!
-def uv2phi_coords(uv, shape=(512, 1024), type_bound='floor'):
+def uv2phi_coords(uv, shape=(512, 1024), type_bound="floor"):
     # _, idx, count = np.unique(uv[0], return_index=True, return_counts=True)
     u_coords = np.linspace(0, shape[1] - 1, shape[1]).astype(np.int16)
     v = []
@@ -120,10 +128,10 @@ def uv2phi_coords(uv, shape=(512, 1024), type_bound='floor'):
         v_idx = np.where(uv[0] == u)[0]
         if v_idx.size == 0:
             for i in range(5):
-                v_idx = np.where(uv[0] == (u + i)% shape[1])[0]
+                v_idx = np.where(uv[0] == (u + i) % shape[1])[0]
                 if v_idx.size > 0:
                     break
-                v_idx = np.where(uv[0] == (u - i)% shape[1])[0]
+                v_idx = np.where(uv[0] == (u - i) % shape[1])[0]
                 if v_idx.size > 0:
                     break
             # for i in range(5):
@@ -135,16 +143,17 @@ def uv2phi_coords(uv, shape=(512, 1024), type_bound='floor'):
             #         break
         if v_idx.size == 0:
             return None
-            
-        if type_bound == 'floor':
+
+        if type_bound == "floor":
             v.append(np.max(uv[1, v_idx]))
-        elif type_bound == 'ceiling':
+        elif type_bound == "ceiling":
             v.append(np.min(uv[1, v_idx]))
-        else: 
+        else:
             raise ValueError("wrong type_bound")
-    
+
     phi_bon = (np.array(v) / shape[0] - 0.5) * np.pi
     return phi_bon
+
 
 #! Checked ok!
 def xyz2uv(xyz, shape=(512, 1024)):
@@ -158,6 +167,8 @@ def xyz2uv(xyz, shape=(512, 1024)):
     phi_coords = np.arcsin(xyz_n[1, :])
     theta_coord = np.sign(xyz[0, :]) * np.arccos(xyz[2, :] / normXZ)
 
-    u = np.clip(np.floor((0.5 * theta_coord / np.pi + 0.5) * shape[1] + 0.5), 0, shape[1] - 1)
-    v = np.clip(np.floor((phi_coords / np.pi + 0.5) * shape[0]+0.5), 0, shape[0] - 1)
+    u = np.clip(
+        np.floor((0.5 * theta_coord / np.pi + 0.5) * shape[1] + 0.5), 0, shape[1] - 1
+    )
+    v = np.clip(np.floor((phi_coords / np.pi + 0.5) * shape[0] + 0.5), 0, shape[0] - 1)
     return np.vstack((u, v)).astype(int)

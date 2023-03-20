@@ -1,4 +1,3 @@
-
 import numpy as np
 from mvl_challenge.models.HorizonNet.misc import panostretch
 import logging
@@ -11,12 +10,10 @@ from mvl_challenge.utils.vispy_utils import plot_color_plc
 def label_cor2ly_phi_coord(label_cor_path, shape=(512, 1024)):
     """
     Implementation taken from HorizonNet (CVPR 2019)
-    https://sunset1995.github.io/HorizonNet/ 
+    https://sunset1995.github.io/HorizonNet/
     """
     with open(label_cor_path) as f:
-        cor = np.array(
-            [line.strip().split() for line in f if line.strip()], np.float32
-        )
+        cor = np.array([line.strip().split() for line in f if line.strip()], np.float32)
     return corners_uv2ly_phi_coord(corners=cor, shape=shape)
 
 
@@ -90,8 +87,8 @@ def cor_2_1d(cor, H, W):
 
 def filter_out_noisy_layouts(list_ly, max_room_factor_size=2):
     """
-    Filters out the passed list_ly based on the cam2boundary instances defined for each ly. 
-    All layouts which have an estimation greater than max_room_factor_size x median( of all cam distances) are filtered out  
+    Filters out the passed list_ly based on the cam2boundary instances defined for each ly.
+    All layouts which have an estimation greater than max_room_factor_size x median( of all cam distances) are filtered out
     Args:
         list_ly (list): List of Layout instances
         max_room_factor_size (int, optional): max ly size allowed. Defaults to 2.
@@ -99,7 +96,9 @@ def filter_out_noisy_layouts(list_ly, max_room_factor_size=2):
     # ! Filtering out noisy estimation
     logging.info(f"Filtering noisy layouts: initial #{list_ly.__len__()}")
     mean_ = np.median([ly.cam2boundary.max() for ly in list_ly])
-    list_ly = [ly for ly in list_ly if ly.cam2boundary.max() < max_room_factor_size*mean_]
+    list_ly = [
+        ly for ly in list_ly if ly.cam2boundary.max() < max_room_factor_size * mean_
+    ]
     logging.info(f"Filtering noisy layouts: final #{list_ly.__len__()}")
 
 
@@ -128,11 +127,12 @@ def load_pseudo_labels(list_ly, hard_copy=False):
         list_ly = [deepcopy(ly) for ly in list_ly]
 
     pseudo_labels_dir = cfg.mlc_labels[cfg.mlc_data].labels_dir
-    list_fn = os.listdir(os.path.join(pseudo_labels_dir, 'mlc_label'))
+    list_fn = os.listdir(os.path.join(pseudo_labels_dir, "mlc_label"))
     # Select only the pseudo labels which belong to the current room
     ps_labels = {
-        Path(fn).stem: np.load(os.path.join(pseudo_labels_dir, 'mlc_label', fn))
-        for fn in list_fn if room_scene in fn
+        Path(fn).stem: np.load(os.path.join(pseudo_labels_dir, "mlc_label", fn))
+        for fn in list_fn
+        if room_scene in fn
     }
     [ly.recompute_data(phi_coords=ps_labels[ly.idx]) for ly in list_ly]
     return list_ly
@@ -141,11 +141,14 @@ def load_pseudo_labels(list_ly, hard_copy=False):
 def get_boundary_from_list_corners(list_corner):
     boundary = []
     for idx in range(list_corner.__len__()):
-        direction = (list_corner[(idx +1) % list_corner.__len__()] - list_corner[idx]).reshape(3, 1)
+        direction = (
+            list_corner[(idx + 1) % list_corner.__len__()] - list_corner[idx]
+        ).reshape(3, 1)
         wall_long = np.linalg.norm(direction)
         resolution = int(wall_long / 0.001)
-        bound_points = list_corner[idx].reshape(
-            3, 1) + direction * np.linspace(0, 1, resolution)
+        bound_points = list_corner[idx].reshape(3, 1) + direction * np.linspace(
+            0, 1, resolution
+        )
         boundary.append(bound_points)
-        
+
     return np.hstack(boundary)

@@ -26,7 +26,7 @@ def eval_2d3d_iuo(phi_coords_est, phi_coords_gt_bon, ch=1):
     try:
         est_poly = Polygon(zip(est_pcl_floor[0], est_pcl_floor[2]))
         gt_poly = Polygon(zip(gt_pcl_floor[0], gt_pcl_floor[2]))
-            
+
         if not gt_poly.is_valid:
             print("[ERROR] Skip ground truth invalid")
             return -1, -1
@@ -51,7 +51,5 @@ def eval_2d3d_iuo(phi_coords_est, phi_coords_gt_bon, ch=1):
     except:
         iou2d = 0
         iou3d = 0
-        
+
     return iou2d, iou3d
-
-

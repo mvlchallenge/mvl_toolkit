@@ -16,7 +16,6 @@ import json
 
 
 class RGBD_Dataset:
-
     @classmethod
     def from_args(clc, args):
         assert os.path.exists(args.scene_dir)
@@ -29,7 +28,7 @@ class RGBD_Dataset:
     @classmethod
     def from_cfg(clc, cfg):
         # MP3D-FPE dataset has a vo* directory
-        vo_dir = glob.glob(os.path.join(cfg.dataset.scene_dir, 'vo*'))
+        vo_dir = glob.glob(os.path.join(cfg.dataset.scene_dir, "vo*"))
         if vo_dir.__len__() == 0:
             # HM3D-MVL dataset
             dt = HM3D_MVL(cfg)
@@ -64,8 +63,12 @@ class RGBD_Dataset:
         self.load_camera_poses()
 
         # ! List of files
-        self.rgb_files = [os.path.join(self.rgb_dir, f'{f}.{self.rgb_ext}') for f in self.kf_list]
-        self.depth_files = [os.path.join(self.depth_dir, f'{f}.tiff') for f in self.kf_list]
+        self.rgb_files = [
+            os.path.join(self.rgb_dir, f"{f}.{self.rgb_ext}") for f in self.kf_list
+        ]
+        self.depth_files = [
+            os.path.join(self.depth_dir, f"{f}.tiff") for f in self.kf_list
+        ]
 
     def load_camera_poses(self):
         """
@@ -73,16 +76,15 @@ class RGBD_Dataset:
         """
 
         # ! Loading GT camera poses
-        gt_poses_file = os.path.join(
-            self.scene_dir,
-            'frm_ref.txt')
+        gt_poses_file = os.path.join(self.scene_dir, "frm_ref.txt")
 
         assert os.path.isfile(
             gt_poses_file
-        ), f'Cam pose file {gt_poses_file} does not exist'
+        ), f"Cam pose file {gt_poses_file} does not exist"
 
-        self.gt_poses = np.stack(
-            list(read_trajectory(gt_poses_file).values()))[self.idx, :, :]
+        self.gt_poses = np.stack(list(read_trajectory(gt_poses_file).values()))[
+            self.idx, :, :
+        ]
 
     def set_paths(self):
         self.scene_dir = Path(self.cfg.dataset.scene_dir).resolve().__str__()
@@ -109,7 +111,10 @@ class RGBD_Dataset:
 
     def get_list_frames(self):
         list_fr = []
-        for rgb_fn, depth_fn, pose in tqdm(zip(self.rgb_files, self.depth_files, self.gt_poses), desc="Loading frames..."):
+        for rgb_fn, depth_fn, pose in tqdm(
+            zip(self.rgb_files, self.depth_files, self.gt_poses),
+            desc="Loading frames...",
+        ):
             fr = Frame(self)
             fr.rgb_file = rgb_fn
             fr.depth_map_file = depth_fn
@@ -120,7 +125,7 @@ class RGBD_Dataset:
 
     def iter_rooms_scenes(self):
         """
-        Create a iter obj which yield per room the list of fr on it. 
+        Create a iter obj which yield per room the list of fr on it.
         This function is only available for the MP3D-FPE dataset
         """
         # ! scene_room_idx definition file
@@ -135,30 +140,30 @@ class RGBD_Dataset:
         for room in room_names:
             logging.info(f"Reading room data {room}")
             #! list of indexes defined in the room
-            list_frm_idx = [get_idx_from_scene_room_idx(fr_name) for fr_name in scenes_room[room]]
+            list_frm_idx = [
+                get_idx_from_scene_room_idx(fr_name) for fr_name in scenes_room[room]
+            ]
             room_list_fr = [fr for fr in list_fr if fr.idx in list_frm_idx]
             if room_list_fr.__len__() == 0:
                 continue
             # ! Set the room the corresponding room information
             initial_pose = room_list_fr[0].pose.copy()
-            [r.set_room_data(room.replace(".", ""), initial_pose)
-             for r in room_list_fr
-             ]
+            [r.set_room_data(room.replace(".", ""), initial_pose) for r in room_list_fr]
 
             yield room_list_fr
 
 
 class MP3D_FPE(RGBD_Dataset):
     def __init__(self, cfg):
-        self.rgb_ext = 'png'
+        self.rgb_ext = "png"
         super().__init__(cfg)
 
     def set_list_of_frames(self):
-        self.vo_dir = glob.glob(os.path.join(self.scene_dir, 'vo*'))[0]
-        list_keyframe_fn = os.path.join(self.vo_dir, 'keyframe_list.txt')
+        self.vo_dir = glob.glob(os.path.join(self.scene_dir, "vo*"))[0]
+        list_keyframe_fn = os.path.join(self.vo_dir, "keyframe_list.txt")
         assert os.path.exists(list_keyframe_fn), f"{list_keyframe_fn}"
 
-        with open(list_keyframe_fn, 'r') as f:
+        with open(list_keyframe_fn, "r") as f:
             self.kf_list = sorted([int(kf) for kf in f.read().splitlines()])
         self.idx = np.array(self.kf_list) - 1
 
@@ -172,7 +177,9 @@ class HM3D_MVL(RGBD_Dataset):
         super().__init__(cfg)
 
     def set_list_of_frames(self):
-        self.kf_list = sorted([int(os.path.basename(f).split(".")[0]) for f in os.listdir(self.rgb_dir)])
+        self.kf_list = sorted(
+            [int(os.path.basename(f).split(".")[0]) for f in os.listdir(self.rgb_dir)]
+        )
         self.idx = np.array(self.kf_list)
 
     def __str__(self):
@@ -184,11 +191,11 @@ def get_default_args():
 
     # * Input Directory (-s)
     parser.add_argument(
-        '-scene_dir',
+        "-scene_dir",
         # required=True,
         default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/2t7WUuJeko7/0",
         type=str,
-        help='Input Directory (scene directory defined until version scene)'
+        help="Input Directory (scene directory defined until version scene)",
     )
 
     args = parser.parse_args()
@@ -203,6 +210,6 @@ def main(args):
     plot_color_plc(points=pcl[0:3, :].T, color=pcl[3:].T)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = get_default_args()
     main(args)

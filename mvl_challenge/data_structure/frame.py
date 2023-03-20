@@ -8,7 +8,6 @@ from mvl_challenge.utils.image_utils import load_depth_map
 
 
 class Frame:
-
     def __init__(self, dt):
         self.dt = dt
         self.pose = None
@@ -39,10 +38,9 @@ class Frame:
                 color_map=self.get_rgb(),
                 depth_map=self.get_depth(),
             )
-            self.pcl = np.vstack((
-                self.pose[:3, :] @ extend_array_to_homogeneous(pcl),
-                color
-            ))
+            self.pcl = np.vstack(
+                (self.pose[:3, :] @ extend_array_to_homogeneous(pcl), color)
+            )
         return self.pcl
 
     def set_room_data(self, room_name, pose_ref):
@@ -52,4 +50,3 @@ class Frame:
         # ! This function is mainly implemented for MP3D-FPE dataset
         self.room_name = room_name
         self.pose = np.linalg.inv(pose_ref) @ self.pose
-        
