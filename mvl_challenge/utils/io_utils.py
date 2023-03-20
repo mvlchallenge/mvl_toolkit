@@ -79,10 +79,11 @@ def load_obj(filename):
     return dill.load(open(filename, "rb"))
 
 
-def create_directory(output_dir, delete_prev=True):
+def create_directory(output_dir, delete_prev=True, ignore_request=False):
     if os.path.exists(output_dir) and delete_prev:
-        logging.warning(f"This directory will be deleted: {output_dir}")
-        input("This directory will be deleted. PRESS ANY KEY TO CONTINUE...")
+        if not ignore_request:
+            logging.warning(f"This directory will be deleted: {output_dir}")
+            input("This directory will be deleted. PRESS ANY KEY TO CONTINUE...")
         shutil.rmtree(output_dir, ignore_errors=True)
     if not os.path.exists(output_dir):
         logging.info(f"Dir created: {output_dir}")

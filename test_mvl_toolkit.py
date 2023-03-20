@@ -3,7 +3,7 @@ import subprocess
 import argparse
 from mvl_challenge import ASSETS_DIR, GDRIVE_DIR, ROOT_DIR, EPILOG, CFG_DIR
 from mvl_challenge.config.cfg import get_empty_cfg, read_omega_cfg
-from mvl_challenge.remote_data.download_mvl_data import download_scenes, download_google_drive_link
+from mvl_challenge.remote_data.download_mvl_data import download_file, download_google_drive_link
 from mvl_challenge.utils.io_utils import create_directory, save_compressed_phi_coords
 from mvl_challenge.datasets.mvl_dataset import MVLDataset, iter_mvl_room_scenes
 from mvl_challenge.models.wrapper_horizon_net import WrapperHorizonNet
@@ -22,7 +22,7 @@ def main(args):
         create_directory(example_scene_zip_dir, delete_prev=False)
         cfg.output_dir = example_scene_zip_dir
         cfg.ids_file = os.path.join(GDRIVE_DIR, GOOGLE_IDS_EXAMPLE_SCENE)
-        download_scenes(cfg)
+        download_file(cfg)
         
         # ! Unzipping mvl-data
         list_logs.append("Unzip example_scene.zip as mvl-data")    
