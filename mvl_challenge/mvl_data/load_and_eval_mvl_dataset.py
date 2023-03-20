@@ -75,7 +75,7 @@ def get_argparse():
 
     parser.add_argument(
         "--ckpt",
-        default="mp3d",
+        default="Path to ckpt pretrained model",
         help="Pretrained model ckpt (Default: mp3d)"
     )
 

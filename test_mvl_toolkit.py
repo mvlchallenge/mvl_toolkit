@@ -1,7 +1,7 @@
 import os
 import subprocess
 import argparse
-from mvl_challenge import ASSETS_DIR, DATA_DIR, ROOT_DIR, EPILOG, CFG_DIR
+from mvl_challenge import ASSETS_DIR, GDRIVE_DIR, ROOT_DIR, EPILOG, CFG_DIR
 from mvl_challenge.config.cfg import get_empty_cfg, read_omega_cfg
 from mvl_challenge.remote_data.download_mvl_data import download_scenes, download_google_drive_link
 from mvl_challenge.utils.io_utils import create_directory, save_compressed_phi_coords
@@ -21,7 +21,7 @@ def main(args):
         example_scene_zip_dir = os.path.join(args.output_dir, "zips", "example_data")
         create_directory(example_scene_zip_dir, delete_prev=False)
         cfg.output_dir = example_scene_zip_dir
-        cfg.ids_file = os.path.join(DATA_DIR, GOOGLE_IDS_EXAMPLE_SCENE)
+        cfg.ids_file = os.path.join(GDRIVE_DIR, GOOGLE_IDS_EXAMPLE_SCENE)
         download_scenes(cfg)
         
         # ! Unzipping mvl-data
@@ -70,8 +70,6 @@ def main(args):
         cfg.results_dir = npz_estimations_dir
         cfg.scene_list = scene_list_fn
         zip_results(cfg)
-        
-        
         
     except Exception as err: 
         [print(f"[PASSED]:\t{log}") for log in list_logs[:-1]]

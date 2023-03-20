@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import os
 import subprocess
 import argparse
-from mvl_challenge import ASSETS_DIR, DATA_DIR, ROOT_DIR, EPILOG, CFG_DIR
+from mvl_challenge import ASSETS_DIR, ROOT_DIR, EPILOG, CFG_DIR, GDRIVE_DIR
 from mvl_challenge.config.cfg import get_empty_cfg, read_omega_cfg
 from mvl_challenge.remote_data.download_mvl_data import download_scenes, download_google_drive_link
 from mvl_challenge.utils.io_utils import create_directory, save_compressed_phi_coords
@@ -48,34 +48,34 @@ def download(gdrive_fn, zip_dir):
     create_directory(zip_dir, delete_prev=False)
     cfg = get_empty_cfg()
     cfg.output_dir = zip_dir
-    cfg.ids_file = os.path.join(DATA_DIR, gdrive_fn)
+    cfg.ids_file = os.path.join(GDRIVE_DIR, gdrive_fn)
     download_scenes(cfg)
     
 def main(args):
     if args.split == 'pilot':
         data_split = DataSplit(
-            GDRIVE_IDS_MVL_DATA_FN=os.path.join(DATA_DIR, 'gdrive_ids__pilot_set.csv'),
-            GDRIVE_IDS_LABELS_FN=os.path.join(DATA_DIR, 'gdrive_ids__pilot_labels.csv'),
+            GDRIVE_IDS_MVL_DATA_FN=os.path.join(GDRIVE_DIR, 'gdrive_ids__pilot_set.csv'),
+            GDRIVE_IDS_LABELS_FN=os.path.join(GDRIVE_DIR, 'gdrive_ids__pilot_labels.csv'),
             TYPE='pilot_set',
             GT_LABELS=True
-            
         )
+        
     elif args.split == 'warm_up_testing':
         data_split = DataSplit(
-            GDRIVE_IDS_MVL_DATA_FN=os.path.join(DATA_DIR, 'gdrive_ids__warm_up_testing_set.csv'),
+            GDRIVE_IDS_MVL_DATA_FN=os.path.join(GDRIVE_DIR, 'gdrive_ids__warm_up_testing_set.csv'),
             GDRIVE_IDS_LABELS_FN="",
             TYPE='warm_up_testing_set',
             GT_LABELS=False
-            
         )
+        
     elif args.split == 'warm_up_training':
             data_split = DataSplit(
-            GDRIVE_IDS_MVL_DATA_FN=os.path.join(DATA_DIR, 'gdrive_ids__warm_up_training_set.csv'),
+            GDRIVE_IDS_MVL_DATA_FN=os.path.join(GDRIVE_DIR, 'gdrive_ids__warm_up_training_set.csv'),
             GDRIVE_IDS_LABELS_FN="",
             TYPE='warm_up_training_set',
             GT_LABELS=False
-            
         )
+            
     else:
         raise ValueError(f"Not implemented split: {args.split}")
         
