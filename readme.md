@@ -137,7 +137,7 @@ python mvl_challenge/challenge_results/create_zip_results.py -d {YOUR_RESULT} -f
 
 ### Submit to EvalAI
 
-We recommend you to submit the file using CLI. Find more details on [EvalAI](https://eval.ai/web/challenges/challenge-page/1906/) website.
+We recommend you to submit the file using CLI. You should [participate](https://eval.ai/web/challenges/challenge-page/1906/participate) in adavance to submit.
 
 ```bash
 # Install evalai-cli
