@@ -1,7 +1,7 @@
 import os
 import subprocess
 import argparse
-from mvl_challenge import ASSETS_DIR, GDRIVE_DIR, ROOT_DIR, EPILOG, CFG_DIR
+from mvl_challenge import ASSETS_DIR, GDRIVE_DIR, ROOT_DIR, EPILOG, CFG_DIR, DEFAULT_MVL_DIR
 from mvl_challenge.config.cfg import get_empty_cfg, read_omega_cfg
 from mvl_challenge.remote_data.download_mvl_data import download_file, download_google_drive_link
 from mvl_challenge.utils.io_utils import create_directory, save_compressed_phi_coords
@@ -93,9 +93,9 @@ def get_argparse():
 
     parser.add_argument(
         '-o', '--output_dir',
-        default=f"{ASSETS_DIR}/data",
+        default=f"{DEFAULT_MVL_DIR}",
         type=str,
-        help=f'Output directory by default it will store at {ASSETS_DIR}/mvl_data.'
+        help=f'Output directory by default it will store at {DEFAULT_MVL_DIR}.'
     )
 
     args = parser.parse_args()

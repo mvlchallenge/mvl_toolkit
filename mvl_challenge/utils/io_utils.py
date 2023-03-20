@@ -24,9 +24,10 @@ def get_all_frames_from_scene_list(scene_list_fn):
 
 
 def get_rgbd_scenes_list(args):
-    dir_data  = args.scene_dir
+    dir_data = args.scene_dir
     scene_list = get_all_frames_from_scene_list(args.scene_list)
     return np.unique([os.path.join(dir_data, f.split("_")[0], f.split("_")[1]) for f in scene_list]).tolist()
+
 
 def get_scene_room_from_scene_room_idx(fr_name):
     return "_".join(fr_name.split("_")[:-1])
@@ -41,8 +42,9 @@ def get_scene_list_from_dir(args):
             Path(fn).stem for fn in list_mvl_fn
             if room in fn
         ]
-        
+
     return data_dict
+
 
 def save_json_dict(filename, dict_data):
     with open(filename, 'w') as outfile:
