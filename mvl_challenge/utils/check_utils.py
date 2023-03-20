@@ -51,31 +51,5 @@ def check_mvl_dataset(args):
              for scene_list in tqdm(data_scene.values(), desc=f"loading and checking {args.scene_dir}")
              ]
     return data_scene, np.sum(check) == check.__len__()
-
-
-def check_scene_list(args):
-    data = json.load(open(args.scene_list, "r"))
-    list_frames = [f for f in data.values()]
-    list_frames = [item for sublist in list_frames for item in sublist]
-    
-    list_imgs = [os.path.join(args.data_dir, 'img', f"{fn}.jpg") for fn in list_frames]
-    list_geom_info = [os.path.join(args.data_dir, 'geometry_info', f"{fn}.json") for fn in list_frames]
-    list_labels = [os.path.join(args.data_dir, 'labels', 'gt', f"{fn}.npz") for fn in list_frames]
-    
-    print(f" - Scene list: {args.scene_list} - total rooms:{list(data.keys()).__len__()} - total frames:{list_frames.__len__()}")
-    if np.sum([os.path.isfile(fn) for fn in list_imgs]) == list_imgs.__len__():
-        print(f" - * check images:\tPASSED")
-    else:
-        print(f" - * check images:\tFAILED")
-    
-    if np.sum([os.path.isfile(fn) for fn in list_geom_info]) == list_imgs.__len__():
-        print(f" - * check geometry_info:\tPASSED")
-    else:
-        print(f" - * check geometry_info:\tFAILED")
-     
-    if np.sum([os.path.isfile(fn) for fn in list_labels]) == list_imgs.__len__():
-        print(f" - * check labels:\tPASSED")
-    else:
-        print(f" - * check labels:\tFAILED")
         
     
