@@ -49,6 +49,10 @@ pip install -e .
 python test_toolkit.py
 ```
 
+## Datasets
+
+For this challenge two multi-view datsets are used, [MP3D-FPE](https://github.com/EnriqueSolarte/direct_360_FPE), and [HM3D-MVL](https://github.com/mvlchallenge/mvl_toolkit/edit/mvl_chellenge_dev). Both collected in equirectangular camera projection. To make them easier to work with, we have organized both datasets into a standardized and more user-friendly format. The naming convention for each frame is `${scene_name}_${version}_${room}_${idx}`, e.g., `E9uDoFAP3SH_1_room0_982`. 
+
 ## Usage
 
 ### 1. Download the dataset
