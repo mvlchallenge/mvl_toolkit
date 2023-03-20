@@ -5,15 +5,16 @@ Please visit our official site [mvl-challege](https://sites.google.com/view/omni
 
 For public queries, discussion, and free access tutorials please join us in our [Slack workspace](https://join.slack.com/t/mvl-challenge/shared_invite/zt-1m95ef0hy-ViG7fSeTt1EqiosRlZoDvQ).
 
-## Usage
+## What can you do with this toolkit?
 
 This implementation offers the following capabilities to support the mvl-challenge:
 
-- Download the training, testing and pilot datasets used in this challenge.
-- Load and register the data as an instance `<Layout class>`, that simplifies camera and layout projection.
-- Load and retrive multiple `<Layout class>` instances associated to a query room.
-- Provide examples of how to evaluate a layout estimation using `<Layout class>` instances.
-- Provide methods to save, zip and submit layout estimates to EvalAI.
+- Download the training, testing and pilot datasets used in this challenge. 
+- Load and register the data as an instance of `<Layout class>`, which simplifies camera and layout projection for you. 
+- Load and retrive multiple `<Layout class>` instances associated to a query room. 
+- Provide examples of how to evaluate a layout estimation using `<Layout class>` instances. 
+- Provide methods to save, zip and submit layout estimates to EvalAI. 
+
 
 ## Installation
 
@@ -32,7 +33,7 @@ python test_toolkit.py
 
 ## Datasets
 
-In this challenge, two multi-view datsets are included, 1) [MP3D-FPE](https://github.com/EnriqueSolarte/direct_360_FPE), and 2) [HM3D-MVL](https://github.com/mvlchallenge/mvl_toolkit/edit/mvl_chellenge_dev), both collected in equirectangular camera projection.
+In this challenge, two multi-view datasets are included, 1) [MP3D-FPE](https://github.com/EnriqueSolarte/direct_360_FPE), and 2) [HM3D-MVL](https://github.com/mvlchallenge/mvl_toolkit/edit/mvl_chellenge_dev), both collected in equirectangular camera projection.
 
 We have reorganized both datasets into a standard naming convention as `${scene_name}_${version}_${room}_${idx}`, e.g., `E9uDoFAP3SH_1_room0_982`, and the data structure is listed as follows:
 ```
@@ -47,24 +48,26 @@ We have reorganized both datasets into a standard naming convention as `${scene_
     │    └── ...
     └── labels/
           └── gt/
-          │    └── pa4otMbVnkk_0_room0_109.jpg
-          │    └── k1cupFYWXJ6_1_room10_98.jpg
+          │    └── pa4otMbVnkk_0_room0_109.npz
+          │    └── k1cupFYWXJ6_1_room10_98.npz
           │    └── ...
           └── gt_vis/
                └── pa4otMbVnkk_0_room0_109.jpg
                └── k1cupFYWXJ6_1_room10_98.jpg
                └── ...
 ```
+
 Besides, we provide scene list files that define the training, testing, and pilot splits for each phase in this challenge at `mvl_challenge/data/scene_list`.
 
-⚠️ No ground truths are included for this challenge, except for the pilot split.
+⚠️ No ground truths are included for this challenge, except for the pilot split. Since the pilot split is used to let you double check if the evaluation result in your local computer agrees with the one on EvalAI.
 
-## Setup
+## Tutorial
 
 **Downlaod the dataset**
 ```sh
-python download_mvl_data.py
+python download_mvl_data.py -o {MVL_DATA_DIR} -split {SPLIT}
 ```
+Note that you can always use `-h` to see more details.
 
 **Check data with scene list files**
 ```sh
@@ -72,73 +75,76 @@ python check_scene_list.py
 ```
 
 **Load the data and visualize them**
+
+The JSON files under `mvl_challenge/data/scene_list/` are the scene lists. Each scene list will be the key to let you access different types of the existing data.  
+For example, with `scene_list__warm_up_pilot_set.json`, it allows you to access the data of pilot set in warm-up phase.
+
+Now we can load the data that we just downloaded and visualize them:
+
 ```bash
-# You can change the scene list json files to load different data
-python mvl_challenge/mvl_data/load_mvl_dataset.py -d {MVL_DATA_DIR} -f mvl_challenge/data/mp3d_fpe/test__gt_labels__scene_list.json
+python mvl_challenge/mvl_data/load_mvl_dataset.py -d {MVL_DATA_DIR} -f {SCENE_LIST}
 ```
 
-You should see the visualization of a sequence of panorama images.
+You should see a sequence of panorama images showing up on the screen. These images are exactly the set of data that you just specified in the scene list.
 
-![Alt text](markdown/toolkit_load_data.gif)
-
+![](https://user-images.githubusercontent.com/67839539/226287033-baedde2a-1775-4c94-9102-86022df0eaa1.gif)
 
 **Estimate layouts**
 
-The following command loads the data and estimates layouts using the pre-trained HorizonNet model.
+We can load the data, and moreover, estimate the layout by the pre-trained model of HorizonNet:
+
 ```bash
-python mvl_challenge/mvl_data/load_and_eval_mvl_dataset.py -d {MVL_DATA_DIR} -f mvl_challenge/data/mp3d_fpe/test__mp3d_fpe__scene_list.json
+python mvl_challenge/mvl_data/load_and_eval_mvl_dataset.py -d {MVL_DATA_DIR} -f {SCENE_LIST} --ckpt {CHECK_POINT}
 ```
+P.S. For the {CHECK_POINT}, we provide an example under `mvl_challenge/assets/ckpt/`. You can use your own one for sure.
 
 You should see the visualization of a sequence of panorama images with the green layout predicted by HorizonNet.
 
-![Alt text](markdown/toolkit_evaluate.gif)
+![](https://user-images.githubusercontent.com/67839539/226287069-1b338e93-5f39-479f-b880-59ad8ea0b916.gif)
 
 In the end, it will pop out a window showing the point cloud of all the layout estimations in 3D.
 
-![Alt text](markdown/toolkit_point_cloud.gif)
+![](https://user-images.githubusercontent.com/67839539/226287093-289e2b5c-79cc-40d9-accb-68ed97c7bb46.gif)
 
 **Save estimations**
 
-In order to submit to [EvalAI](https://eval.ai/web/challenges/challenge-page/1906/) and evalute, we further save the prediction result into *.npz files. Each image frame will have a correspinding *.npz file containing the layout estimation output. These *.npz files will be stored in `{RESULTS_DIR}`.
+In order to submit to [EvalAI](https://eval.ai/web/challenges/challenge-page/1906/) and evalute, we further save the prediction result into *.npz files. Each image frame will have a correspinding *.npz file containing the layout estimation output. These *.npz files will be stored in `{RESULT_DIR}`.
 
 ```bash
-python mvl_challenge/challenge_results/create_npz_files.py -d {MVL_DATA_DIR} -f mvl_challenge/data/mp3d_fpe/pilot_split__mp3d_fpe__scene_list.json -o {RESULTS_DIR}
+python mvl_challenge/challenge_results/create_npz_files.py -d {MVL_DATA_DIR} -f {SCENE_LIST} -o {RESULT_DIR}
 ```
 
 Next, we will zip all the predicted *.npz files.
 
 ```bash
-python mvl_challenge/challenge_results/create_zip_results.py -d {RESULTS_DIR} -f mvl_challenge/data/mp3d_fpe/pilot_split__mp3d_fpe__scene_list.json
+python mvl_challenge/challenge_results/create_zip_results.py -d {YOUR_RESULT} -f {SCENE_LIST}
 ```
 
-⚠️ The resulting zip file is the only file that will be submmitted to the EvalAI server.
+⚠️ This zip file is the only file that will be submitted to the EvalAI server.
 
 
 **Submit to [EvalAI](https://eval.ai/web/challenges/challenge-page/1906/)**
 
-We recommend you to submmit the file using CLI.
+We recommend you to submit the file using CLI. Find more details on [EvalAI](https://eval.ai/web/challenges/challenge-page/1906/) website.
 
 ```bash
 # Install evalai-cli
 pip install evalai
 
 # Add your EvalAI account token to evalai-cli
-# You can get {YOUR_TOKEN} on EvalAI
 evalai set_token {YOUR_TOKEN}
 
-# Submit the file
-# Take warmup phase for example
-evalai challenge 1906 phase 3801 submit --file {RESULTS_ZIP_FILE} --large
+# Submit the file, take warm-up phase for example
+evalai challenge 1906 phase 3801 submit --file {YOUR_RESULT_ZIP} --large
 ```
-
-Find out more details (e.g., changing the phase) on [EvalAI](https://eval.ai/web/challenges/challenge-page/1906/) website.
 
 **Check evaluation result**
 
-We provide a `pilot split` for you to double check if the evaluation result in your local computer agrees with the one on EvalAI.
+We provide `pilot split` to let you double check if the evaluation result in your local computer agrees with the one on EvalAI.
 
+Evaluate on your local computer:
 ```bash
-python mvl_challenge/challenge_results/evaluate_results.py -d {MVL_DATA_DIR} -f mvl_challenge/data/mp3d_fpe/pilot_split__mp3d_fpe__scene_list.json -o {PILOT_EVAL_DIR}
+python mvl_challenge/challenge_results/evaluate_results.py -d {MVL_DATA_DIR} -f {PILOT_SCENE_LIST} -o {PILOT_EVAL_DIR}
 ```
 
-P.S. this can be done because we release 1% of the ground truth labels in `pilot split`.
+If the evaluation result is matching, congratulations! You've already completed the submission!
