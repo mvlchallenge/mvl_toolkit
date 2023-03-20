@@ -28,7 +28,7 @@ Note that we have included [`HorizonNet`](https://github.com/sunset1995/HorizonN
 
 Aferwards, run the following command to test installation.
 ```bash
-python test_toolkit.py
+python test_mvl_toolkit.py
 ```
 
 ## Datasets
@@ -84,6 +84,7 @@ Now we can load the data that we just downloaded and visualize them:
 ```bash
 python mvl_challenge/mvl_data/load_mvl_dataset.py -d {MVL_DATA_DIR} -f {SCENE_LIST}
 ```
+
 
 You should see a sequence of panorama images showing up on the screen. These images are exactly the set of data that you just specified in the scene list.
 
