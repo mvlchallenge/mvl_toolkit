@@ -79,7 +79,7 @@ python mvl_challenge/mvl_data/load_mvl_dataset.py -d {MVL_DATA_DIR} -f mvl_chall
 
 You should see the visualization of a sequence of panorama images.
 
-![Alt text](markdown/toolkit_load_data.gif)
+![](https://user-images.githubusercontent.com/67839539/226287033-baedde2a-1775-4c94-9102-86022df0eaa1.gif)
 
 
 **Estimate layouts**
@@ -91,11 +91,11 @@ python mvl_challenge/mvl_data/load_and_eval_mvl_dataset.py -d {MVL_DATA_DIR} -f 
 
 You should see the visualization of a sequence of panorama images with the green layout predicted by HorizonNet.
 
-![Alt text](markdown/toolkit_evaluate.gif)
+![](https://user-images.githubusercontent.com/67839539/226287069-1b338e93-5f39-479f-b880-59ad8ea0b916.gif)
 
 In the end, it will pop out a window showing the point cloud of all the layout estimations in 3D.
 
-![Alt text](markdown/toolkit_point_cloud.gif)
+![](https://user-images.githubusercontent.com/67839539/226287093-289e2b5c-79cc-40d9-accb-68ed97c7bb46.gif)
 
 **Save estimations**
 
