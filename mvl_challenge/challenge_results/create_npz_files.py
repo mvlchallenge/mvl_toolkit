@@ -1,5 +1,5 @@
 import argparse
-from mvl_challenge import DATA_DIR, ROOT_DIR, CFG_DIR, EPILOG, ASSETS_DIR
+from mvl_challenge import DATA_DIR, ROOT_DIR, CFG_DIR, EPILOG, ASSETS_DIR, DEFAULT_MVL_DIR, DEFAULT_NPZ_DIR, SCENE_LIST_DIR
 from mvl_challenge.config.cfg import read_omega_cfg
 from mvl_challenge.datasets.mvl_dataset import MVLDataset, iter_mvl_room_scenes
 from mvl_challenge.utils.vispy_utils import plot_list_ly
@@ -11,7 +11,6 @@ from mvl_challenge.utils.image_utils import plot_image
 import numpy as np
 import os
 from pathlib import Path
-
 
 
 def get_cfg_from_args(args):
@@ -29,13 +28,14 @@ def main(args):
     hn = WrapperHorizonNet(cfg)
 
     # ! Join the output_dir and the scene_list
-    output_dir = create_directory(os.path.join(args.output_dir, Path(args.scene_list).stem), delete_prev=False)
+    output_dir = create_directory(os.path.join(
+        args.output_dir, Path(args.scene_list).stem), delete_prev=False)
     for list_ly in iter_mvl_room_scenes(model=hn, dataset=mvl):
-        for ly in list_ly:            
+        for ly in list_ly:
             fn = os.path.join(output_dir, ly.idx)
             # ! IMPORTANT: Use ALWAYS save_compressed_phi_coords()
             save_compressed_phi_coords(ly.phi_coords, fn)
-            
+
 
 def get_argparse():
     desc = "This script saves the evaluations (phi_coords) of HorizonNet given a MVL dataset, scene list and cfg file. " + \
@@ -51,7 +51,7 @@ def get_argparse():
     parser.add_argument(
         '-d', '--scene_dir',
         type=str,
-        # default=f'{ASSETS_DIR}/mvl_data/mp3d_fpe',
+        default=f'{DEFAULT_MVL_DIR}',
         help='MVL dataset directory.'
     )
 
@@ -65,13 +65,13 @@ def get_argparse():
     parser.add_argument(
         "-f", "--scene_list",
         type=str,
-        # default=f"{DATA_DIR}/mp3d_fpe/mp3d_fpe__test__scene_list.json",
+        default=f"{SCENE_LIST_DIR}/scene_list__warm_up_pilot_set.json",
         help="Scene_list of mvl scenes in scene_room_idx format."
     )
 
     parser.add_argument(
         "--ckpt",
-        default="mp3d",
+        default=f"{ASSETS_DIR}/ckpt/hn_mp3d.path",
         help="Pretrained model ckpt (Default: mp3d)"
     )
 
@@ -84,7 +84,7 @@ def get_argparse():
 
     parser.add_argument(
         "-o", "--output_dir",
-        required=True,
+        default=f"{DEFAULT_NPZ_DIR}",
         help="Output directory where to store phi_coords estimations."
     )
     args = parser.parse_args()

@@ -1,5 +1,5 @@
 import argparse
-from mvl_challenge import DATA_DIR, ROOT_DIR, CFG_DIR, EPILOG, ASSETS_DIR
+from mvl_challenge import DATA_DIR, ROOT_DIR, CFG_DIR, EPILOG, ASSETS_DIR, DEFAULT_NPZ_DIR, SCENE_LIST_DIR
 from mvl_challenge.config.cfg import read_omega_cfg
 from mvl_challenge.datasets.mvl_dataset import MVLDataset, iter_mvl_room_scenes
 from mvl_challenge.utils.vispy_utils import plot_list_ly
@@ -30,7 +30,7 @@ def zip_results(args):
 
     output_dir = Path(args.results_dir).parent
     results_name = Path(args.results_dir).stem
-    zip_results_fn = os.path.join(output_dir, f"{results_name}.zip") 
+    zip_results_fn = os.path.join(output_dir, f"{results_name}.zip")
     with zipfile.ZipFile(file=zip_results_fn, mode='w') as zf:
         list_arc_fn = process_arcname(results_fn, args.results_dir)
         [(print(f"zipping {fn}"),
@@ -39,7 +39,7 @@ def zip_results(args):
                    arcname=fn))
          for fn in tqdm(list_arc_fn)
          ]
-        
+
 
 def get_argparse():
     desc = "This script create a results.zip file from a directory of npz files (estimation files), which can be submitted to EvalAi. "
@@ -52,16 +52,15 @@ def get_argparse():
     parser.add_argument(
         '-d', '--results_dir',
         type=str,
-        default=f'{ASSETS_DIR}/tmp/results/test__mp3d_fpe__scene_list',
+        default=f'{DEFAULT_NPZ_DIR}/scene_list__warm_up_pilot_set',
         help='Results directory where *.npz files were stored.'
     )
 
     parser.add_argument(
         "-f", "--scene_list",
-        default="",
-        # default=f"{DATA_DIR}/mp3d_fpe/mp3d_fpe__test__scene_list.json",
-        help="JSON scene_list file of mvl scenes in scene_room_idx format. " + \
-            "If no scene_list is passed, then all npz files in results_dir will be used."
+        default=f"{SCENE_LIST_DIR}/scene_list__warm_up_pilot_set.json",
+        help="JSON scene_list file of mvl scenes in scene_room_idx format. " +
+        "If no scene_list is passed, then all npz files in results_dir will be used."
     )
 
     args = parser.parse_args()

@@ -1,5 +1,5 @@
 import argparse
-from mvl_challenge import DATA_DIR, ROOT_DIR, CFG_DIR, EPILOG, ASSETS_DIR
+from mvl_challenge import DATA_DIR, DEFAULT_MVL_DIR, ROOT_DIR, CFG_DIR, EPILOG, ASSETS_DIR, SCENE_LIST_DIR
 from mvl_challenge.config.cfg import read_omega_cfg
 from mvl_challenge.datasets.mvl_dataset import MVLDataset, iter_mvl_room_scenes
 from mvl_challenge.utils.vispy_utils import plot_list_ly
@@ -12,7 +12,6 @@ from mvl_challenge.utils.eval_utils import eval_2d3d_iuo
 import numpy as np
 import os
 from pathlib import Path
-
 
 
 def get_cfg_from_args(args):
@@ -32,41 +31,43 @@ def main(args):
     # ! Join the output_dir and the scene_list
     output_dir = create_directory(args.output_dir, delete_prev=False)
     results = {}
-        
+
     for list_ly in iter_mvl_room_scenes(model=hn, dataset=mvl):
-        for ly in list_ly:            
-            
+        for ly in list_ly:
+
             phi_coords_gt = load_gt_label(os.path.join(
                 args.scene_dir, "labels", "gt", f"{ly.idx}.npz"
             ))
-            
+
             phi_coords_est = ly.phi_coords
-            
+
             results_2d3d_iou = eval_2d3d_iuo(
                 phi_coords_est=phi_coords_est,
                 phi_coords_gt_bon=phi_coords_gt,
                 ch=ly.camera_height
             )
-            
+
             if np.min(results_2d3d_iou) < 0:
-                # ! IoU evaluation failed, then IoU is 0 (the highest penalty) 
+                # ! IoU evaluation failed, then IoU is 0 (the highest penalty)
                 results[f"{ly.idx}__2dIoU"] = 0
                 results[f"{ly.idx}__3dIoU"] = 0
-            
-            results[f"{ly.idx}__2dIoU"] = results_2d3d_iou[0]
-            results[f"{ly.idx}__3dIoU"] = results_2d3d_iou[1] 
 
-            
-    _2dIoU = np.mean([value for key, value in results.items() if "2dIoU" in key])
-    _3dIoU = np.mean([value for key, value in results.items() if "3dIoU" in key])
-    
-    results["total__m2dIoU"] =_2dIoU
-    results["total__m3dIoU"] =_3dIoU
-    fn = os.path.join(output_dir, f"{Path(args.scene_list).stem}__{Path(args.ckpt).stem}.json")
+            results[f"{ly.idx}__2dIoU"] = results_2d3d_iou[0]
+            results[f"{ly.idx}__3dIoU"] = results_2d3d_iou[1]
+
+    _2dIoU = np.mean(
+        [value for key, value in results.items() if "2dIoU" in key])
+    _3dIoU = np.mean(
+        [value for key, value in results.items() if "3dIoU" in key])
+
+    results["total__m2dIoU"] = _2dIoU
+    results["total__m3dIoU"] = _3dIoU
+    fn = os.path.join(
+        output_dir, f"{Path(args.scene_list).stem}__{Path(args.ckpt).stem}.json")
     save_json_dict(filename=fn, dict_data=results)
-     
-    print(f"2d-IoU: {_2dIoU:2.3f}\t3d-IoU: {_3dIoU:2.3f}")  
-    
+
+    print(f"2d-IoU: {_2dIoU:2.3f}\t3d-IoU: {_3dIoU:2.3f}")
+
 
 def get_argparse():
     desc = "This script evaluates 2d-IoU, 3d-IoU from a set of estimated phi_coords. " + \
@@ -81,7 +82,7 @@ def get_argparse():
     parser.add_argument(
         '-d', '--scene_dir',
         type=str,
-        default=f'{ASSETS_DIR}/tmp/mvl_data/',
+        default=f"{DEFAULT_MVL_DIR}",
         help='MVL dataset directory.'
     )
 
@@ -95,13 +96,13 @@ def get_argparse():
     parser.add_argument(
         "-f", "--scene_list",
         type=str,
-        default=f"{DATA_DIR}/mp3d_fpe/test__gt_labels__scene_list.json",
+        default=f"{SCENE_LIST_DIR}/scene_list__warm_up_pilot_set.json",
         help="Scene_list of mvl scenes in scene_room_idx format."
     )
 
     parser.add_argument(
         "--ckpt",
-        default="mp3d",
+        default=f"{ASSETS_DIR}/ckpt/hn_mp3d.path",
         help="Pretrained model ckpt (Default: mp3d)"
     )
 
@@ -114,8 +115,7 @@ def get_argparse():
 
     parser.add_argument(
         "-o", "--output_dir",
-        # required=True,
-        default=f'{ASSETS_DIR}/tmp/results/',
+        default=f"{ASSETS_DIR}/results",
         help="Output directory where to store phi_coords estimations."
     )
     args = parser.parse_args()

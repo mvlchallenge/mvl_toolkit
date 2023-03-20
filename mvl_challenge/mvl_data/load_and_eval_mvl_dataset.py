@@ -1,5 +1,5 @@
 import argparse
-from mvl_challenge import DATA_DIR, ROOT_DIR, CFG_DIR, EPILOG, ASSETS_DIR
+from mvl_challenge import DATA_DIR, ROOT_DIR, CFG_DIR, EPILOG, ASSETS_DIR, DEFAULT_MVL_DIR, SCENE_LIST_DIR
 from mvl_challenge.config.cfg import read_omega_cfg
 from mvl_challenge.datasets.mvl_dataset import MVLDataset, iter_mvl_room_scenes
 import logging
@@ -33,7 +33,7 @@ def main(args):
             draw_boundaries_phi_coords(
                 img,
                 phi_coords=np.vstack([ly.phi_coords[0], ly.phi_coords[1]])
-                )
+            )
             plot_image(
                 image=img,
                 caption=ly.idx
@@ -55,7 +55,7 @@ def get_argparse():
     parser.add_argument(
         '-d', '--scene_dir',
         type=str,
-        default=f'{ASSETS_DIR}/mvl_data/pilot__mp3d_fpe',
+        default=f'{DEFAULT_MVL_DIR}',
         help='MVL dataset directory.'
     )
 
@@ -69,14 +69,14 @@ def get_argparse():
     parser.add_argument(
         "-f", "--scene_list",
         type=str,
-        default=f'{ASSETS_DIR}/mvl_data/pilot__mp3d_fpe/pilot__mp3d_fpe__scene_list.json',
+        default=f"{SCENE_LIST_DIR}/scene_list__warm_up_pilot_set.json",
         help="Scene_list of mvl scenes in scene_room_idx format."
     )
 
     parser.add_argument(
         "--ckpt",
-        default="Path to ckpt pretrained model",
-        help="Pretrained model ckpt (Default: mp3d)"
+        default=f"{ASSETS_DIR}/ckpt/hn_mp3d.path",
+        help="Path to ckpt pretrained model (Default: mp3d)"
     )
 
     parser.add_argument(
