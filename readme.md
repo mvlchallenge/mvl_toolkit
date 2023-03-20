@@ -1,4 +1,7 @@
-## Comming soon. For more information see [mvl-challege](https://mvlchallenge.github.io/)
+## General Information
+
+This toolkit is part of the Multi-view Layout Estimation Challenge (mvl-challenge) of the [Omnidirectional Computer Vision (OmniCV) workshop](https://sites.google.com/view/omnicv2023/home?authuser=0) at [CVPR'23](https://cvpr2023.thecvf.com/). To participate and submit results join us at the [EvalAi mvl-challenege](https://eval.ai/web/challenges/challenge-page/1906/). 
+For more information visit our official site [mvl-challege](https://sites.google.com/view/omnicv2023/challenges/multi-view-layout-challenge?authuser=0)
 
 The tentative dates for this challenge are described as follows: 
 * Warm-up Phase Open - March 20, 2023
@@ -6,15 +9,17 @@ The tentative dates for this challenge are described as follows:
 * Challenge Phase Deadline - June 1, 2023
 * Winner notification - June 6, 2023
 
+Please don't hesitate to join us in our [Slack workspace](https://join.slack.com/t/mvl-challenge/shared_invite/zt-1m95ef0hy-ViG7fSeTt1EqiosRlZoDvQ) for public queries and discussion.
+
 ## What can you do with this toolkit?
 
-With the aim of providing support to the participants of the mvl-challenge at the OmniCV workshop during CVPR2023, the present implementation was created as a toolkit that offers the following capabilities:
+With the aim of providing support to the participants of the mvl-challenge, the present implementation offers the following capabilities:
 
-1. Download the training, testing and pilot datasets used in the challenge. 
-2. Load and register the downloaded data as an instance `class Layout`, that simplifies camera and layout projection for you. 
-3. Load and retrive multiple `Layout` instances associated to a particular room. 
-5. Provide examples of how to evaluate a layout estimation using `Layout` instances. 
-6. Provide methods to save, zip and submit layout estimates to evaluation in Eval Ai. 
+1. Download the training, testing and pilot datasets used in this challenge. 
+2. Load and register the data as an instance `<Layout class>`, that simplifies camera and layout projection for you. 
+3. Load and retrive multiple `<Layout class>` instances associated to a query room. 
+5. Provide examples of how to evaluate a layout estimation using `<Layout class>` instances. 
+6. Provide methods to save, zip and submit layout estimates to evaluation in EvalAi. 
 
 ## Installation
 
