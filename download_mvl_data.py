@@ -2,7 +2,14 @@ from dataclasses import dataclass
 import os
 import subprocess
 import argparse
-from mvl_challenge import ASSETS_DIR, ROOT_DIR, EPILOG, CFG_DIR, GDRIVE_DIR, DEFAULT_DOWNLOAD_DIR
+from mvl_challenge import (
+    ASSETS_DIR,
+    ROOT_DIR,
+    EPILOG,
+    CFG_DIR,
+    GDRIVE_DIR,
+    DEFAULT_DOWNLOAD_DIR,
+)
 from mvl_challenge.config.cfg import get_empty_cfg, read_omega_cfg
 from mvl_challenge.remote_data.download_mvl_data import download_file, download_dirs
 from mvl_challenge.utils.io_utils import create_directory, save_compressed_phi_coords
@@ -33,7 +40,7 @@ def download_data_split_by_folders(args, data_split: DataSplit):
 
     # list_dir_path = os.listdir()
     # # ! Unzipping mvl-data
-    output_dir = os.path.join(args.output_dir, 'mvl_data')
+    output_dir = os.path.join(args.output_dir, "mvl_data")
     unzip(zip_dir, output_dir)
 
 
@@ -43,14 +50,14 @@ def download_data_split(args, data_split: DataSplit):
     download_gdrive_file(data_split.GDRIVE_IDS_MVL_DATA_FN, zip_dir)
 
     # ! Unzipping mvl-data
-    output_dir = os.path.join(args.output_dir, 'mvl_data')
+    output_dir = os.path.join(args.output_dir, "mvl_data")
     unzip(zip_dir, output_dir)
 
     if data_split.GT_LABELS:
         zip_dir = os.path.join(args.output_dir, "zips_labels", data_split.TYPE)
         download_gdrive_file(data_split.GDRIVE_IDS_LABELS_FN, zip_dir)
 
-        output_dir = os.path.join(args.output_dir, 'mvl_data')
+        output_dir = os.path.join(args.output_dir, "mvl_data")
         unzip(zip_dir, output_dir)
 
     print(f"** \tzip dir for {data_split.TYPE}:\t\t{zip_dir}")
@@ -60,8 +67,16 @@ def download_data_split(args, data_split: DataSplit):
 
 def unzip(zip_dir, output_dir):
     create_directory(output_dir, delete_prev=False)
-    subprocess.run(["bash", f"{ROOT_DIR}/remote_data/unzip_data.sh",
-                    "-d", f"{zip_dir}", "-o", f"{output_dir}"])
+    subprocess.run(
+        [
+            "bash",
+            f"{ROOT_DIR}/remote_data/unzip_data.sh",
+            "-d",
+            f"{zip_dir}",
+            "-o",
+            f"{output_dir}",
+        ]
+    )
 
 
 def download_gdrive_file(gdrive_fn, zip_dir):
@@ -73,33 +88,37 @@ def download_gdrive_file(gdrive_fn, zip_dir):
 
 
 def main(args):
-    if args.split == 'pilot':
+    if args.split == "pilot":
         data_split = DataSplit(
             GDRIVE_IDS_MVL_DATA_FN=os.path.join(
-                GDRIVE_DIR, 'gdrive_ids__pilot_set.csv'),
+                GDRIVE_DIR, "gdrive_ids__pilot_set.csv"
+            ),
             GDRIVE_IDS_LABELS_FN=os.path.join(
-                GDRIVE_DIR, 'gdrive_ids__pilot_labels.csv'),
-            TYPE='pilot_set',
-            GT_LABELS=True
+                GDRIVE_DIR, "gdrive_ids__pilot_labels.csv"
+            ),
+            TYPE="pilot_set",
+            GT_LABELS=True,
         )
 
-    elif args.split == 'warm_up_testing':
+    elif args.split == "warm_up_testing":
         data_split = DataSplit(
             GDRIVE_IDS_MVL_DATA_FN=os.path.join(
-                GDRIVE_DIR, 'gdrive_ids__warm_up_testing_set.csv'),
+                GDRIVE_DIR, "gdrive_ids__warm_up_testing_set.csv"
+            ),
             GDRIVE_IDS_LABELS_FN="",
-            TYPE='warm_up_testing_set',
-            GT_LABELS=False
+            TYPE="warm_up_testing_set",
+            GT_LABELS=False,
         )
 
-    elif args.split == 'warm_up_training':
+    elif args.split == "warm_up_training":
         data_split = DataSplit(
             # GDRIVE_IDS_MVL_DATA_FN=os.path.join(GDRIVE_DIR, 'gdrive_ids__warm_up_training_set.csv'),
             GDRIVE_IDS_MVL_DATA_FN=os.path.join(
-                GDRIVE_DIR, 'gdrive_ids__warm_up_training_set_folders.csv'),
+                GDRIVE_DIR, "gdrive_ids__warm_up_training_set_folders.csv"
+            ),
             GDRIVE_IDS_LABELS_FN="",
-            TYPE='warm_up_training_set',
-            GT_LABELS=False
+            TYPE="warm_up_training_set",
+            GT_LABELS=False,
         )
         download_data_split_by_folders(args, data_split)
         return
@@ -112,29 +131,27 @@ def main(args):
 def get_argparse():
     desc = "This script helps you to automatically download mvl-dataset in a passed output dir."
 
-    parser = argparse.ArgumentParser(
-        description=desc,
-        epilog=EPILOG
-    )
+    parser = argparse.ArgumentParser(description=desc, epilog=EPILOG)
 
     parser.add_argument(
-        '-o', '--output_dir',
+        "-o",
+        "--output_dir",
         default=f"{DEFAULT_DOWNLOAD_DIR}",
         type=str,
-        help=f'Output directory by default it will store at {DEFAULT_DOWNLOAD_DIR}.'
+        help=f"Output directory by default it will store at {DEFAULT_DOWNLOAD_DIR}.",
     )
 
     parser.add_argument(
-        '-split',
+        "-split",
         default="pilot",
         type=str,
-        help="Defines the split data you want to download. Options: 'pilot', 'warm_up_testing', 'warm_up_training', 'challenge_testing', 'challenge_training' "
+        help="Defines the split data you want to download. Options: 'pilot', 'warm_up_testing', 'warm_up_training', 'challenge_testing', 'challenge_training' ",
     )
 
     args = parser.parse_args()
     return args
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = get_argparse()
     main(args)

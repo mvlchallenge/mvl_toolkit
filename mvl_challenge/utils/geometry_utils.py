@@ -3,12 +3,15 @@ import math
 import numpy as np
 from pyquaternion import Quaternion
 
+
 def get_quaternion_from_matrix(matrix):
     """
     Returns the [qx, qy, qz qw] quaternion vector for the passed matrix (SE3 or SO3)
     """
     q = Quaternion(matrix=matrix)
-    return np.array((q.x, q.y, q.z, q.w)) if q.w > 0 else -np.array((q.x, q.y, q.z, q.w)) 
+    return (
+        np.array((q.x, q.y, q.z, q.w)) if q.w > 0 else -np.array((q.x, q.y, q.z, q.w))
+    )
 
 
 def tum_pose2matrix44(l, seq="xyzw"):
@@ -24,7 +27,7 @@ def tum_pose2matrix44(l, seq="xyzw"):
     """
     t = l[1:4]
     q = np.array(l[4:8], dtype=np.float64, copy=True)
-    if seq == 'wxyz':
+    if seq == "wxyz":
         if q[0] < 0:
             q *= -1
         q = Quaternion(w=q[0], x=q[1], y=q[2], z=q[3])
@@ -59,9 +62,7 @@ def get_xyz_from_phi_coords(phi_coords):
     """
     Computes the xyz PCL from the ly_data (bearings_phi / phi_coords)
     """
-    bearings_floor = get_bearings_from_phi_coords(
-        phi_coords=phi_coords[1, :]
-    )
+    bearings_floor = get_bearings_from_phi_coords(phi_coords=phi_coords[1, :])
 
     # ! Projecting bearing to 3D as pcl --> boundary
     # > Forcing ly-scale = 1
@@ -88,7 +89,7 @@ def stack_camera_poses(list_poses):
     Stack a list of camera poses using Kronecker product
     https://en.wikipedia.org/wiki/Kronecker_product
     """
-    M = np.zeros((list_poses.__len__()*3, list_poses.__len__()*4))
+    M = np.zeros((list_poses.__len__() * 3, list_poses.__len__() * 4))
     for idx in range(list_poses.__len__()):
         aux = np.zeros((list_poses.__len__(), list_poses.__len__()))
         aux[idx, idx] = 1
@@ -139,36 +140,46 @@ def extend_vector_to_homogeneous_transf(vector):
 def eulerAnglesToRotationMatrix(angles):
     theta = np.zeros((3))
 
-    if angles.__class__.__name__ == 'dict':
-        theta[0] = angles['x']
-        theta[1] = angles['y']
-        theta[2] = angles['z']
+    if angles.__class__.__name__ == "dict":
+        theta[0] = angles["x"]
+        theta[1] = angles["y"]
+        theta[2] = angles["z"]
     else:
         theta[0] = angles[0]
         theta[1] = angles[1]
         theta[2] = angles[2]
 
-    R_x = np.array([[1, 0, 0], [0, math.cos(theta[0]), -math.sin(theta[0])],
-                    [0, math.sin(theta[0]),
-                     math.cos(theta[0])]])
+    R_x = np.array(
+        [
+            [1, 0, 0],
+            [0, math.cos(theta[0]), -math.sin(theta[0])],
+            [0, math.sin(theta[0]), math.cos(theta[0])],
+        ]
+    )
 
-    R_y = np.array([[math.cos(theta[1]), 0,
-                     math.sin(theta[1])], [0, 1, 0],
-                    [-math.sin(theta[1]), 0,
-                     math.cos(theta[1])]])
+    R_y = np.array(
+        [
+            [math.cos(theta[1]), 0, math.sin(theta[1])],
+            [0, 1, 0],
+            [-math.sin(theta[1]), 0, math.cos(theta[1])],
+        ]
+    )
 
-    R_z = np.array([[math.cos(theta[2]), -math.sin(theta[2]), 0],
-                    [math.sin(theta[2]),
-                     math.cos(theta[2]), 0], [0, 0, 1]])
+    R_z = np.array(
+        [
+            [math.cos(theta[2]), -math.sin(theta[2]), 0],
+            [math.sin(theta[2]), math.cos(theta[2]), 0],
+            [0, 0, 1],
+        ]
+    )
 
     R = np.dot(R_z, np.dot(R_y, R_x))
     return R
 
 
 def rotationMatrixToEulerAngles(R):
-    """rotationMatrixToEulerAngles retuns the euler angles of a SO3 matrix
-    """
-    assert (isRotationMatrix(R))
+    """rotationMatrixToEulerAngles retuns the euler angles of a SO3 matrix"""
+    assert isRotationMatrix(R)
 
     sy = math.sqrt(R[0, 0] * R[0, 0] + R[1, 0] * R[1, 0])
 

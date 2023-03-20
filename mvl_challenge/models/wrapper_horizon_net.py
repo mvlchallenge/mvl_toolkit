@@ -1,4 +1,3 @@
-
 import json
 import logging
 import os
@@ -28,13 +27,15 @@ class WrapperHorizonNet:
 
         # ! Setting cuda-device
         self.device = torch.device(
-            f"cuda:{cfg.cuda}" if torch.cuda.is_available() else 'cpu')
+            f"cuda:{cfg.cuda}" if torch.cuda.is_available() else "cpu"
+        )
 
         # Loaded trained model
         assert os.path.isfile(cfg.model.ckpt), "Not found {cfg.model.ckpt}"
         logging.info("Loading HorizonNet...")
-        self.net = hn_utils.load_trained_model(
-            HorizonNet, cfg.model.ckpt).to(self.device)
+        self.net = hn_utils.load_trained_model(HorizonNet, cfg.model.ckpt).to(
+            self.device
+        )
         logging.info(f"ckpt: {cfg.model.ckpt}")
         logging.info("HorizonNet Wrapper Successfully initialized")
 
@@ -55,16 +56,16 @@ class WrapperHorizonNet:
             shuffle=False,
             drop_last=False,
             num_workers=self.cfg.runners.mvl.num_workers,
-            pin_memory=True if self.device != 'cpu' else False,
+            pin_memory=True if self.device != "cpu" else False,
             worker_init_fn=lambda x: np.random.seed(),
         )
         self.net.eval()
         evaluated_data = {}
         for x in tqdm(layout_dataloader, desc=f"Estimating layout..."):
             with torch.no_grad():
-                y_bon_, y_cor_ = self.net(x['images'].to(self.device))
+                y_bon_, y_cor_ = self.net(x["images"].to(self.device))
                 # y_bon_, y_cor_ = net(x[0].to(device))
-            for y_, cor_, idx in zip(y_bon_.cpu(), y_cor_.cpu(), x['idx']):
+            for y_, cor_, idx in zip(y_bon_.cpu(), y_cor_.cpu(), x["idx"]):
                 data = np.vstack((y_, cor_))
                 evaluated_data[idx] = data
         [ly.set_phi_coords(phi_coords=evaluated_data[ly.idx]) for ly in list_ly]

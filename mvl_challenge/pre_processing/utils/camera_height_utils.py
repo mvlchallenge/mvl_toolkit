@@ -23,7 +23,9 @@ def get_masked_pcl(cfg, list_fr):
         return None, None
     pcl = np.hstack(pcl)
     color = pcl[3:, :]
-    pcl = np.linalg.inv(list_fr[0].pose)[:3, :] @ extend_array_to_homogeneous(pcl[:3, :])
+    pcl = np.linalg.inv(list_fr[0].pose)[:3, :] @ extend_array_to_homogeneous(
+        pcl[:3, :]
+    )
     # masking around the first camera frame
     mask = np.linalg.norm(pcl[(0, 2), :], axis=0) < cfg.xz_radius
     pcl = pcl[:, mask]
@@ -34,9 +36,9 @@ def get_masked_pcl(cfg, list_fr):
     color = color[:, mask]
     # plot_color_plc(points=pcl[0:3, :].T, color=color.T)
 
-    idx = np.linspace(0, pcl.shape[1]-1,  pcl.shape[1]).astype(np.int32)
+    idx = np.linspace(0, pcl.shape[1] - 1, pcl.shape[1]).astype(np.int32)
     np.random.shuffle(idx)
-    return pcl[:3, idx[:cfg.min_samples]], color[:, idx[:cfg.min_samples]]
+    return pcl[:3, idx[: cfg.min_samples]], color[:, idx[: cfg.min_samples]]
 
 
 def estimate_camera_height(cfg, list_fr):
@@ -49,7 +51,7 @@ def estimate_camera_height(cfg, list_fr):
         np.random.shuffle(list_fr)
         logging.info(f"Cam-h estimation trial: {iteration+1}")
         logging.info(f"Number fr: {list_fr.__len__()}")
-    
+
         pcl, color = get_masked_pcl(cfg, list_fr)
         if pcl is None:
             continue
@@ -87,23 +89,23 @@ def get_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        '--scene_dir',
+        "--scene_dir",
         # required=True,
         default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/2t7WUuJeko7/0/",
         type=str,
-        help='Directory of all scene in the dataset'
+        help="Directory of all scene in the dataset",
     )
 
     parser.add_argument(
-        '--cfg',
+        "--cfg",
         default=f"{CFG_DIR}/camera_height.yaml",
-        help='Cfg tp compute camera height'
+        help="Cfg tp compute camera height",
     )
 
     args = parser.parse_args()
     return args
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = get_args()
     main(args)

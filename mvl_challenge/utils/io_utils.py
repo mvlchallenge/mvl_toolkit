@@ -26,7 +26,9 @@ def get_all_frames_from_scene_list(scene_list_fn):
 def get_rgbd_scenes_list(args):
     dir_data = args.scene_dir
     scene_list = get_all_frames_from_scene_list(args.scene_list)
-    return np.unique([os.path.join(dir_data, f.split("_")[0], f.split("_")[1]) for f in scene_list]).tolist()
+    return np.unique(
+        [os.path.join(dir_data, f.split("_")[0], f.split("_")[1]) for f in scene_list]
+    ).tolist()
 
 
 def get_scene_room_from_scene_room_idx(fr_name):
@@ -35,20 +37,19 @@ def get_scene_room_from_scene_room_idx(fr_name):
 
 def get_scene_list_from_dir(args):
     list_mvl_fn = os.listdir(args.scene_dir)
-    list_rooms = np.unique([get_scene_room_from_scene_room_idx(Path(fn).stem) for fn in list_mvl_fn]).tolist()
+    list_rooms = np.unique(
+        [get_scene_room_from_scene_room_idx(Path(fn).stem) for fn in list_mvl_fn]
+    ).tolist()
     data_dict = {}
     for room in tqdm(list_rooms, desc="List rooms..."):
-        data_dict[room] = [
-            Path(fn).stem for fn in list_mvl_fn
-            if room in fn
-        ]
+        data_dict[room] = [Path(fn).stem for fn in list_mvl_fn if room in fn]
 
     return data_dict
 
 
 def save_json_dict(filename, dict_data):
-    with open(filename, 'w') as outfile:
-        json.dump(dict_data, outfile, indent='\t')
+    with open(filename, "w") as outfile:
+        json.dump(dict_data, outfile, indent="\t")
 
 
 def read_txt_file(filename):
@@ -69,7 +70,7 @@ def read_csv_file(filename):
     return lines
 
 
-def save_csv_file(filename, data, flag='w'):
+def save_csv_file(filename, data, flag="w"):
     with open(filename, flag) as f:
         writer = csv.writer(f)
         for line in data:
@@ -98,21 +99,33 @@ def save_obj(filename, obj):
     print(f" >> OBJ saved: {filename}")
 
 
-def get_files_given_a_pattern(data_dir, flag_file, exclude="", include_flag_file=False, isDir=False):
+def get_files_given_a_pattern(
+    data_dir, flag_file, exclude="", include_flag_file=False, isDir=False
+):
     """
     Searches in the the @data_dir, recurrently, the sub-directories which content the @flag_file.
     exclude directories can be passed to speed up the searching
     """
     scenes_paths = []
-    for root, dirs, files in tqdm(os.walk(data_dir), desc=f"Walking through {data_dir}..."):
+    for root, dirs, files in tqdm(
+        os.walk(data_dir), desc=f"Walking through {data_dir}..."
+    ):
         dirs[:] = [d for d in dirs if d not in exclude]
         if not isDir:
             if include_flag_file:
-                [scenes_paths.append(os.path.join(root, f)) for f in files if flag_file in f]
+                [
+                    scenes_paths.append(os.path.join(root, f))
+                    for f in files
+                    if flag_file in f
+                ]
             else:
                 [scenes_paths.append(root) for f in files if flag_file in f]
         else:
-            [scenes_paths.append(os.path.join(root, flag_file)) for d in dirs if flag_file in d]
+            [
+                scenes_paths.append(os.path.join(root, flag_file))
+                for d in dirs
+                if flag_file in d
+            ]
 
     return scenes_paths
 
@@ -164,8 +177,11 @@ def read_trajectory(filename, matrix=True, traj_gt_keys_sorted=[], seq="xyzw"):
     file = open(filename)
     data = file.read()
     lines = data.replace(",", " ").replace("\t", " ").split("\n")
-    list = [[float(v.strip()) for v in line.split(" ") if v.strip() != ""]
-            for line in lines if len(line) > 0 and line[0] != "#"]
+    list = [
+        [float(v.strip()) for v in line.split(" ") if v.strip() != ""]
+        for line in lines
+        if len(line) > 0 and line[0] != "#"
+    ]
     list_ok = []
     for i, l in enumerate(list):
         if l[4:8] == [0, 0, 0, 0]:
@@ -178,7 +194,9 @@ def read_trajectory(filename, matrix=True, traj_gt_keys_sorted=[], seq="xyzw"):
         if isnan:
             sys.stderr.write(
                 "Warning: line {} of file {} has NaNs, skipping line\n".format(
-                    i, filename))
+                    i, filename
+                )
+            )
             continue
         list_ok.append(l)
     if matrix:
@@ -199,8 +217,9 @@ def read_json_label(fn):
             room_corners.append(corners)
         axis_corners = d["axis_corners"]
         if axis_corners.__len__() > 0:
-            axis_corners = np.asarray([[float(x[0]), float(x[1])]
-                                       for x in axis_corners])
+            axis_corners = np.asarray(
+                [[float(x[0]), float(x[1])] for x in axis_corners]
+            )
     return room_corners, axis_corners
 
 
@@ -209,7 +228,7 @@ def read_ply(fn):
     v = np.array([list(x) for x in plydata.elements[0]])
     points = np.ascontiguousarray(v[:, :3])
     points[:, 0:3] = points[:, [0, 2, 1]]
-    colors = np.ascontiguousarray(v[:, 6:9], dtype=np.float32)/255
+    colors = np.ascontiguousarray(v[:, 6:9], dtype=np.float32) / 255
     return np.concatenate((points, colors), axis=1).T
 
 
@@ -223,4 +242,4 @@ def process_arcname(list_fn, base_dir):
 
 def load_gt_label(fn):
     assert os.path.exists(fn), f"Not found {fn}"
-    return np.load(fn)['phi_coords']
+    return np.load(fn)["phi_coords"]

@@ -13,7 +13,7 @@ def load_auto_loading(cfg):
     """
     Loads automatically the yaml files described under the key "auto_loading" to the root node
     """
-    if 'auto_loading' not in cfg.keys():
+    if "auto_loading" not in cfg.keys():
         # No auto loading has been  defined
         return
     a_cfg = cfg.auto_loading
@@ -28,7 +28,7 @@ def short_decode_id(list_keys, *, _parent_):
     """
     Decodes (in a short way) a set of keys as a unique string
     """
-    decoded_id = ''
+    decoded_id = ""
     for key in list_keys:
         path_keys = key.split(".")
         __nested_value = _parent_
@@ -43,7 +43,7 @@ def decode_id(list_keys, *, _parent_):
     """
     Decodes (in a short way) a set of keys as a unique string
     """
-    decoded_id = ''
+    decoded_id = ""
     for key in list_keys:
         path_keys = key.split(".")
         __nested_value = _parent_
@@ -78,12 +78,12 @@ def linspace(range_info, *, _parent_):
     return ListConfig([float(n) for n in np_range])
 
 
-OmegaConf.register_new_resolver('decode', decode_id)
-OmegaConf.register_new_resolver('short_decode', short_decode_id)
-OmegaConf.register_new_resolver('rel_path', rel_path)
-OmegaConf.register_new_resolver('encode_list', encode_list)
-OmegaConf.register_new_resolver('range', range)
-OmegaConf.register_new_resolver('linspace', linspace)
+OmegaConf.register_new_resolver("decode", decode_id)
+OmegaConf.register_new_resolver("short_decode", short_decode_id)
+OmegaConf.register_new_resolver("rel_path", rel_path)
+OmegaConf.register_new_resolver("encode_list", encode_list)
+OmegaConf.register_new_resolver("range", range)
+OmegaConf.register_new_resolver("linspace", linspace)
 
 
 def get_default(cfg):
@@ -100,7 +100,7 @@ def get_default(cfg):
 
 def add_git_commit(cfg):
     repo = git.Repo(search_parent_directories=True)
-    cfg['git_commit'] = repo.head._get_commit().name_rev
+    cfg["git_commit"] = repo.head._get_commit().name_rev
     return cfg
 
 
@@ -113,11 +113,11 @@ def update_cfg(d, u):
     return d
 
 
-def set_loggings():    
+def set_loggings():
     logging.basicConfig(
-        format='[%(levelname)s] [%(asctime)s]:  %(message)s',
-        level=logging.INFO
+        format="[%(levelname)s] [%(asctime)s]:  %(message)s", level=logging.INFO
     )
+
 
 def read_omega_cfg(cfg_file):
     assert os.path.exists(cfg_file), f"File does not exist {cfg_file}"
@@ -147,16 +147,16 @@ def read_omega_cfg(cfg_file):
 
 def get_empty_cfg():
     logging.basicConfig(
-        format='[%(levelname)s] [%(asctime)s]:  %(message)s',
-        level=logging.INFO
+        format="[%(levelname)s] [%(asctime)s]:  %(message)s", level=logging.INFO
     )
-    cfg_dict= dict()
-    
+    cfg_dict = dict()
+
     # ! add git commit
     cfg_dict = add_git_commit(cfg_dict)
 
     cfg = OmegaConf.create(cfg_dict)
     return cfg
+
 
 def read_config(cfg_file):
     cfg = read_omega_cfg(cfg_file)
@@ -173,5 +173,5 @@ def set_cfg(cfg):
 
 
 def save_cfg(cfg_file, cfg):
-    with open(cfg_file, 'w') as fn:
+    with open(cfg_file, "w") as fn:
         OmegaConf.save(config=cfg, f=fn)
