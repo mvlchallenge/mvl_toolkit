@@ -10,7 +10,7 @@ from mvl_challenge.utils.download_utils import download_file_from_google_drive
 from tqdm import tqdm
 import threading
 from google_drive_downloader import GoogleDriveDownloader as gdd
-
+import subprocess
 
 def download_dirs(args):
     set_loggings()
