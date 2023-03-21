@@ -85,16 +85,16 @@ def download_gdrive_file(gdrive_fn, zip_dir):
     cfg.output_dir = zip_dir
     cfg.ids_file = os.path.join(GDRIVE_DIR, gdrive_fn)
     # download_file(cfg)
-    # download_file_by_threads(cfg)
-    subprocess.run(
-        [
-            "sh",
-            f"{ROOT_DIR}/remote_data/download_gdrive_ids.sh",
-            f"{cfg.ids_file}",
-            f"{cfg.output_dir}/",
-            "2>&1", "&"
-        ]
-    )
+    download_file_by_threads(cfg)
+    # subprocess.run(
+    #     [
+    #         "sh",
+    #         f"{ROOT_DIR}/remote_data/download_gdrive_ids.sh",
+    #         f"{cfg.ids_file}",
+    #         f"{cfg.output_dir}/",
+    #         "2>&1", "&"
+    #     ]
+    # )
 
 def main(args):
     if args.split == "pilot":

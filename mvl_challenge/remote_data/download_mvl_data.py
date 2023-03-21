@@ -26,6 +26,15 @@ def download_dirs(args):
         print(f"Downloading...{count} {output_dir}")
         gdown.download_folder(id=gd_id, output=output_dir, quiet=False)
 
+def callback_curl_downloading(gd_id, output_dir):
+    subprocess.run(
+        [
+            "sh",
+            f"{ROOT_DIR}/remote_data/download_gdrive_ids_file.sh",
+            f"{gd_id}",
+            f"{output_dir}"]
+    )
+
 def download_file_by_threads(args):
     set_loggings()
     create_directory(args.output_dir, delete_prev=False)
@@ -39,11 +48,13 @@ def download_file_by_threads(args):
         output_file = os.path.join(args.output_dir, zip_fn)
         list_threads.append(
             threading.Thread(
-                target=download_google_drive_link,
-                args=(gd_id, output_file, f"{lines.index(l)+1}/{lines.__len__()}"))
+                # target=download_google_drive_link,
+                # args=(gd_id, output_file, f"{lines.index(l)+1}/{lines.__len__()}"))
             # threading.Thread(
             #     target=download_file_from_google_drive,
             #     args=(gd_id, output_file))
+            target=callback_curl_downloading, 
+            args=(gd_id, output_file))
             )
     [t.start() for t in list_threads]
     [t.join() for t in list_threads]
