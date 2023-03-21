@@ -11,7 +11,7 @@ from mvl_challenge import (
     DEFAULT_DOWNLOAD_DIR,
 )
 from mvl_challenge.config.cfg import get_empty_cfg, read_omega_cfg
-from mvl_challenge.remote_data.download_mvl_data import download_file, download_dirs
+from mvl_challenge.remote_data.download_mvl_data import download_file, download_dirs, download_file_by_threads
 from mvl_challenge.utils.io_utils import create_directory, save_compressed_phi_coords
 from mvl_challenge.datasets.mvl_dataset import MVLDataset, iter_mvl_room_scenes
 from mvl_challenge.models.wrapper_horizon_net import WrapperHorizonNet
@@ -84,8 +84,8 @@ def download_gdrive_file(gdrive_fn, zip_dir):
     cfg = get_empty_cfg()
     cfg.output_dir = zip_dir
     cfg.ids_file = os.path.join(GDRIVE_DIR, gdrive_fn)
-    download_file(cfg)
-
+    # download_file(cfg)
+    download_file_by_threads(cfg)
 
 def main(args):
     if args.split == "pilot":
@@ -114,14 +114,16 @@ def main(args):
         data_split = DataSplit(
             # GDRIVE_IDS_MVL_DATA_FN=os.path.join(GDRIVE_DIR, 'gdrive_ids__warm_up_training_set.csv'),
             GDRIVE_IDS_MVL_DATA_FN=os.path.join(
-                GDRIVE_DIR, "gdrive_ids__warm_up_training_set_folders.csv"
+                # GDRIVE_DIR, "gdrive_ids__warm_up_training_set_folders.csv"
+                GDRIVE_DIR, "gdrive_ids__warm_up_training_set.csv"
+                
             ),
             GDRIVE_IDS_LABELS_FN="",
             TYPE="warm_up_training_set",
             GT_LABELS=False,
         )
-        download_data_split_by_folders(args, data_split)
-        return
+        # download_data_split_by_folders(args, data_split)
+        # return
     else:
         raise ValueError(f"Not implemented split: {args.split}")
 
