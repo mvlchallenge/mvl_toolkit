@@ -7,7 +7,7 @@ from mvl_challenge import (
     ROOT_DIR,
     EPILOG,
     CFG_DIR,
-    DEFAULT_MVL_DIR,
+    DEFAULT_DOWNLOAD_DIR,
 )
 from mvl_challenge.config.cfg import get_empty_cfg, read_omega_cfg
 from mvl_challenge.remote_data.download_mvl_data import (
@@ -111,9 +111,9 @@ def get_argparse():
     parser.add_argument(
         "-o",
         "--output_dir",
-        default=f"{DEFAULT_MVL_DIR}",
+        default=f"{DEFAULT_DOWNLOAD_DIR}",
         type=str,
-        help=f"Output directory by default it will store at {DEFAULT_MVL_DIR}.",
+        help=f"Output directory by default it will store at {DEFAULT_DOWNLOAD_DIR}.",
     )
 
     args = parser.parse_args()
