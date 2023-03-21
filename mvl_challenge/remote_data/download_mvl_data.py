@@ -38,12 +38,12 @@ def download_file_by_threads(args):
         gd_id, zip_fn = [l for l in l.replace(" ", ",").split(",") if l != ""][:2]
         output_file = os.path.join(args.output_dir, zip_fn)
         list_threads.append(
-            # threading.Thread(
-            #     target=download_google_drive_link,
-            #     args=(gd_id, output_file, f"{lines.index(l)+1}/{lines.__len__()}"))
             threading.Thread(
-                target=download_file_from_google_drive,
-                args=(gd_id, output_file))
+                target=download_google_drive_link,
+                args=(gd_id, output_file, f"{lines.index(l)+1}/{lines.__len__()}"))
+            # threading.Thread(
+            #     target=download_file_from_google_drive,
+            #     args=(gd_id, output_file))
             )
     [t.start() for t in list_threads]
     [t.join() for t in list_threads]
