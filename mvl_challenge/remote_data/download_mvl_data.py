@@ -8,7 +8,9 @@ from mvl_challenge.config.cfg import set_loggings
 from mvl_challenge import EPILOG
 from mvl_challenge.utils.download_utils import download_file_from_google_drive
 from tqdm import tqdm
-
+import threading
+from google_drive_downloader import GoogleDriveDownloader as gdd
+import subprocess
 
 def download_dirs(args):
     set_loggings()
@@ -24,6 +26,39 @@ def download_dirs(args):
         print(f"Downloading...{count} {output_dir}")
         gdown.download_folder(id=gd_id, output=output_dir, quiet=False)
 
+def callback_curl_downloading(gd_id, output_dir):
+    subprocess.run(
+        [
+            "sh",
+            f"{ROOT_DIR}/remote_data/download_gdrive_ids_file.sh",
+            f"{gd_id}",
+            f"{output_dir}"]
+    )
+
+def download_file_by_threads(args):
+    set_loggings()
+    create_directory(args.output_dir, delete_prev=False)
+
+    list_threads = []
+    list_google_scenes = args.ids_file
+    lines = read_txt_file(list_google_scenes)
+
+    for l in lines:
+        gd_id, zip_fn = [l for l in l.replace(" ", ",").split(",") if l != ""][:2]
+        output_file = os.path.join(args.output_dir, zip_fn)
+        list_threads.append(
+            threading.Thread(
+                # target=download_google_drive_link,
+                # args=(gd_id, output_file, f"{lines.index(l)+1}/{lines.__len__()}"))
+            # threading.Thread(
+            #     target=download_file_from_google_drive,
+            #     args=(gd_id, output_file))
+            target=callback_curl_downloading, 
+            args=(gd_id, output_file))
+            )
+    [t.start() for t in list_threads]
+    [t.join() for t in list_threads]
+
 
 def download_file(args):
     set_loggings()
@@ -38,6 +73,14 @@ def download_file(args):
         download_google_drive_link(
             gd_id, output_file, f"{lines.index(l)+1}/{lines.__len__()}"
         )
+
+
+
+def download_google_drive_link_by_request(gd_id, output_file, count=""):
+    print(f"Downloading...{count} {output_file}")
+    gdd.download_file_from_google_drive(file_id=gd_id,
+                                    dest_path=output_file,
+                                    unzip=False)
 
 
 def download_google_drive_link(gd_id, output_file, count=""):

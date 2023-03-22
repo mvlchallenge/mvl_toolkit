@@ -57,7 +57,7 @@ We have reorganized both datasets into a standard naming convention as `${scene_
                └── ...
 ```
 
-Besides, we provide scene list files that define the training, testing, and pilot splits for each phase in this challenge at `mvl_challenge/data/scene_list`.
+Besides, we provide scene list files that define the training, testing, and pilot splits for each phase in this challenge at `mvl_challenge/data/scene_list/`.
 
 ⚠️ No ground truths are included for this challenge, except for the pilot split.
 
@@ -96,9 +96,9 @@ You should see a sequence of panorama images, which are specified in the scene l
 
 ![](https://user-images.githubusercontent.com/67839539/226287033-baedde2a-1775-4c94-9102-86022df0eaa1.gif)
 
-### Estimate layouts
+### Estimate the layouts and visualize
 
-We can load the data, and moreover, estimate the layout by the pre-trained model of HorizonNet:
+Load the data, and moreover, estimate the layout by the pre-trained model of HorizonNet:
 
 ```bash
 python mvl_challenge/mvl_data/load_and_eval_mvl_dataset.py
@@ -133,7 +133,7 @@ python mvl_challenge/challenge_results/create_zip_results.py
 python mvl_challenge/challenge_results/create_zip_results.py -d {YOUR_RESULT} -f {SCENE_LIST}
 ```
 
-⚠️ This zip file is the only file that will be submitted to the EvalAI server.
+⚠️ This zip file is the only file that will be submitted to the EvalAI server. It is stored in `mvl_challenge/assets/npz/` by default.
 
 ### Submit to EvalAI
 
