@@ -8,6 +8,7 @@ from mvl_challenge import (
     EPILOG,
     CFG_DIR,
     DEFAULT_DOWNLOAD_DIR,
+    DEFAULT_NPZ_DIR
 )
 from mvl_challenge.config.cfg import get_empty_cfg, read_omega_cfg
 from mvl_challenge.remote_data.download_mvl_data import (
@@ -77,7 +78,7 @@ def main(args):
 
         # ! Saving npz estimations
         list_logs.append("Save *.npz estimations")
-        npz_estimations_dir = os.path.join(cfg_mvl.scene_dir, "results")
+        npz_estimations_dir = os.path.join(DEFAULT_NPZ_DIR, "example_data")
         create_directory(npz_estimations_dir, delete_prev=False)
         for ly in list_ly:
             fn = os.path.join(npz_estimations_dir, ly.idx)
