@@ -33,7 +33,7 @@ python test_mvl_toolkit.py
 
 ## Datasets
 
-In this challenge, two multi-view datasets are included, 1) [MP3D-FPE](https://github.com/EnriqueSolarte/direct_360_FPE), and 2) [HM3D-MVL](https://github.com/mvlchallenge/mvl_toolkit/edit/mvl_chellenge_dev), both collected in equirectangular camera projection.
+In this challenge, two multi-view datasets are included, 1) [MP3D-FPE](https://github.com/EnriqueSolarte/direct_360_FPE), and 2) [HM3D-MVL](https://aihabitat.org/), both collected in equirectangular camera projection.
 
 We have reorganized both datasets into a standard naming convention as `${scene_name}_${version}_${room}_${idx}`, e.g., `E9uDoFAP3SH_1_room0_982`, and the data structure is listed as follows:
 ```
