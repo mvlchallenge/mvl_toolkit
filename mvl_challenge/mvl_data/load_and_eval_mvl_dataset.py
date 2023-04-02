@@ -29,7 +29,7 @@ def get_cfg_from_args(args):
     cfg.scene_dir = args.scene_dir
     cfg.scene_list = args.scene_list
     cfg.ckpt = args.ckpt
-    cfg.cuda = args.cuda
+    cfg.cuda_device = args.cuda_device
     return cfg
 
 
@@ -87,7 +87,7 @@ def get_argparse():
         help="Path to ckpt pretrained model (Default: mp3d)",
     )
 
-    parser.add_argument("--cuda", default=0, type=int, help="Cuda device. (Default: 0)")
+    parser.add_argument("--cuda_device", default=0, type=int, help="Cuda device. (Default: 0)")
 
     args = parser.parse_args()
     return args
