@@ -243,3 +243,9 @@ def process_arcname(list_fn, base_dir):
 def load_gt_label(fn):
     assert os.path.exists(fn), f"Not found {fn}"
     return np.load(fn)["phi_coords"]
+
+
+def print_cfg_information(cfg):
+    logging.info(f"Experiment ID: {cfg.id_exp}")
+    logging.info(f"Output_dir: {cfg.output_dir}")
+    
