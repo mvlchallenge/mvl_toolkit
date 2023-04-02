@@ -42,7 +42,7 @@ def get_scene_list_from_dir(args):
     ).tolist()
     data_dict = {}
     for room in tqdm(list_rooms, desc="List rooms..."):
-        data_dict[room] = [Path(fn).stem for fn in list_mvl_fn if room in fn]
+        data_dict[room] = [Path(fn).stem for fn in list_mvl_fn if f"{room}_" in fn]
 
     return data_dict
 
