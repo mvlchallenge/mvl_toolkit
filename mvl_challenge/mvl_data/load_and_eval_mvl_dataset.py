@@ -83,7 +83,7 @@ def get_argparse():
 
     parser.add_argument(
         "--ckpt",
-        default=f"{ASSETS_DIR}/ckpt/hn_mp3d.path",
+        default=f"{ASSETS_DIR}/ckpt/hn_mp3d.pth",
         help="Path to ckpt pretrained model (Default: mp3d)",
     )
 
