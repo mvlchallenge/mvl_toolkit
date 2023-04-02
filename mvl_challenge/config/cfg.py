@@ -77,14 +77,12 @@ def linspace(range_info, *, _parent_):
     np_range = np.linspace(range_info[0], range_info[1], range_info[2])
     return ListConfig([float(n) for n in np_range])
 
-
-OmegaConf.register_new_resolver("decode", decode_id)
-OmegaConf.register_new_resolver("short_decode", short_decode_id)
-OmegaConf.register_new_resolver("rel_path", rel_path)
-OmegaConf.register_new_resolver("encode_list", encode_list)
-OmegaConf.register_new_resolver("range", range)
-OmegaConf.register_new_resolver("linspace", linspace)
-
+OmegaConf.register_new_resolver("decode", decode_id, replace=True)
+OmegaConf.register_new_resolver("short_decode", short_decode_id, replace=True)
+OmegaConf.register_new_resolver("rel_path", rel_path, replace=True)
+OmegaConf.register_new_resolver("encode_list", encode_list, replace=True)
+OmegaConf.register_new_resolver("range", range, replace=True)
+OmegaConf.register_new_resolver("linspace", linspace, replace=True)
 
 def get_default(cfg):
     df = OmegaConf.create(dict(default_cfg=cfg["default_cfg"]))
