@@ -1,5 +1,9 @@
 import argparse
-from mvl_challenge import ASSETS_DIR, EPILOG
+from mvl_challenge import (
+    ASSETS_DIR,
+    EPILOG,
+    DEFAULT_MVL_DIR,
+)
 from mvl_challenge.utils.io_utils import (
     get_files_given_a_pattern,
     get_scene_room_from_scene_room_idx,
@@ -13,6 +17,7 @@ from mvl_challenge.utils.io_utils import (
     create_directory,
     get_scene_list_from_dir,
 )
+from mvl_challenge.config.cfg import get_empty_cfg
 from mvl_challenge.scene_list__edit_info import prune_list_frames
 from mvl_challenge.config.cfg import set_loggings
 import numpy as np
@@ -109,10 +114,14 @@ def get_list_scene_room_idx(args):
 
 
 def save_scene_list_from_mvl_directory(args):
-    assert os.path.exists(args.scene_dir), f"No directory found {args.scene_dir}"
+    mvl_dirs = ["geometry_info", 'img']
+    for d in mvl_dirs:
+        assert os.path.exists(os.path.join(args.scene_dir, d)), f"No directory found {args.scene_dir}"
 
     set_loggings()
-    data_dict = get_scene_list_from_dir(args)
+    cfg = get_empty_cfg()
+    cfg.scene_dir = os.path.join(args.scene_dir, "geometry_info")
+    data_dict = get_scene_list_from_dir(cfg)
 
     create_directory(args.output_dir, delete_prev=False)
     fn = os.path.join(args.output_dir, Path(f"{args.output_filename}").stem)
@@ -155,7 +164,8 @@ def get_argparse():
         # required=True,
         # default=None,
         # default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/",
-        default="/media/public_dataset/HM3D-MVL/train",
+        # default="/media/public_dataset/HM3D-MVL/train",
+        default=f"{DEFAULT_MVL_DIR}",
         type=str,
         help="RGBD dataset directory.",
     )
@@ -173,9 +183,9 @@ def get_argparse():
         "-o",
         "--output_dir",
         # required=True,
-        default=f"{ASSETS_DIR}/tmp/test",
+        default=f"{ASSETS_DIR}/tmp/scene_lists",
         type=str,
-        help=f'Output directory for the output_file to be created. (Default: "{ASSETS_DIR}/tmp")',
+        help=f'Output directory for the output_file to be created. (Default: "{ASSETS_DIR}/tmp/scene_lists")',
     )
 
     parser.add_argument(

@@ -58,7 +58,7 @@ def main(args):
         ckpt_mp3d_id = "1W2A-_WU9d5KAwEQiTywJud2mRO3hLXqL"
         fn = os.path.join(ASSETS_DIR, "ckpt")
         fn = create_directory(fn, delete_prev=False)
-        ckpt_fn = os.path.join(fn, "hn_mp3d.path")
+        ckpt_fn = os.path.join(fn, "hn_mp3d.pth")
         download_google_drive_link(ckpt_mp3d_id, ckpt_fn)
 
         # ! Loading List of Layout instances

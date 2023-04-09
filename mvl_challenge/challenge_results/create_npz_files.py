@@ -12,7 +12,7 @@ from mvl_challenge import (
 from mvl_challenge.config.cfg import read_omega_cfg
 from mvl_challenge.datasets.mvl_dataset import MVLDataset, iter_mvl_room_scenes
 from mvl_challenge.utils.vispy_utils import plot_list_ly
-from mvl_challenge.utils.image_utils import draw_boundaries_phi_coords
+from mvl_challenge.utils.image_utils import draw_boundaries_phi_coords, add_caption_to_image
 from imageio import imwrite
 from mvl_challenge.models.wrapper_horizon_net import WrapperHorizonNet
 from mvl_challenge.utils.io_utils import (
@@ -31,7 +31,7 @@ def get_cfg_from_args(args):
     cfg.scene_dir = args.scene_dir
     cfg.scene_list = args.scene_list
     cfg.ckpt = args.ckpt
-    cfg.cuda = args.cuda
+    cfg.cuda_device = args.cuda_device
     return cfg
 
 
@@ -44,11 +44,29 @@ def main(args):
     output_dir = create_directory(
         os.path.join(args.output_dir, Path(args.scene_list).stem), delete_prev=False
     )
+    
+    if args.vis:   
+        output_dir_vis = create_directory(
+            os.path.join(args.output_dir, Path(args.scene_list).stem + "_vis"), delete_prev=False
+        )
+        
     for list_ly in iter_mvl_room_scenes(model=hn, dataset=mvl):
         for ly in list_ly:
             fn = os.path.join(output_dir, ly.idx)
             # ! IMPORTANT: Use ALWAYS save_compressed_phi_coords()
             save_compressed_phi_coords(ly.phi_coords, fn)
+
+            if args.vis:
+                # ! Save visualizations
+                img = ly.get_rgb()
+                draw_boundaries_phi_coords(
+                    img, phi_coords=np.vstack([ly.phi_coords[0], ly.phi_coords[1]])
+                )
+                img = add_caption_to_image(img, ly.idx)
+
+                fn = os.path.join(output_dir_vis, f"{ly.idx}.jpg")
+                imwrite(fn, img)
+                
 
 
 def get_argparse():
@@ -86,16 +104,22 @@ def get_argparse():
 
     parser.add_argument(
         "--ckpt",
-        default=f"{ASSETS_DIR}/ckpt/hn_mp3d.path",
+        default=f"{ASSETS_DIR}/ckpt/hn_mp3d.pth",
         help="Pretrained model ckpt (Default: mp3d)",
     )
 
-    parser.add_argument("--cuda", default=0, type=int, help="Cuda device. (Default: 0)")
+    parser.add_argument("--cuda_device", default=0, type=int, help="Cuda device. (Default: 0)")
 
     parser.add_argument(
         "-o",
         "--output_dir",
         default=f"{DEFAULT_NPZ_DIR}",
+        help="Output directory where to store phi_coords estimations.",
+    )
+
+    parser.add_argument(
+        "--vis",
+        action="store_true",
         help="Output directory where to store phi_coords estimations.",
     )
     args = parser.parse_args()

@@ -42,7 +42,7 @@ def get_scene_list_from_dir(args):
     ).tolist()
     data_dict = {}
     for room in tqdm(list_rooms, desc="List rooms..."):
-        data_dict[room] = [Path(fn).stem for fn in list_mvl_fn if room in fn]
+        data_dict[room] = [Path(fn).stem for fn in list_mvl_fn if f"{room}_" in fn]
 
     return data_dict
 
@@ -243,3 +243,9 @@ def process_arcname(list_fn, base_dir):
 def load_gt_label(fn):
     assert os.path.exists(fn), f"Not found {fn}"
     return np.load(fn)["phi_coords"]
+
+
+def print_cfg_information(cfg):
+    logging.info(f"Experiment ID: {cfg.id_exp}")
+    logging.info(f"Output_dir: {cfg.output_dir}")
+    

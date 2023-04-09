@@ -9,5 +9,7 @@ SCENE_LIST_DIR = os.path.join(ROOT_DIR, "data/scene_list")
 DEFAULT_DOWNLOAD_DIR = os.path.join(ASSETS_DIR, "data")
 DEFAULT_MVL_DIR = os.path.join(ASSETS_DIR, "data/mvl_data")
 DEFAULT_NPZ_DIR = os.path.join(ASSETS_DIR, "npz")
+DEFAULT_TRAINING_DIR = os.path.join(ASSETS_DIR, "data/mvl_training_results")
+DEFAULT_CKPT_DIR = os.path.join(ASSETS_DIR, "ckpt")
 
 EPILOG = "\t * MVL-Challenge - CVPR 2023 - OmniCV workshop"
