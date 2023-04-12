@@ -1,0 +1,33 @@
+# ! Selecting MVL dataset
+mvl_dir: <Required>
+output_dir: <Required>
+
+scene_list: <Required>
+ckpt: <Required> 
+cuda: <Required>
+id_exp: <Required>
+
+runners:
+  mvl:
+    data_dir: ${mvl_dir}
+    scene_list: ${scene_list}
+    batch_size: 10
+    num_workers: 5
+    max_room_factor_size: 2
+    std_kernel: [30, 10, 5]
+
+model:
+  ly_model: HorizonNet
+  ckpt: ${ckpt}
+  optimizer: Adam
+  loss: weighted_L1
+  min_std: 0.001
+  epochs: 25
+  save_every: 1 
+  lr: 0.00005
+  lr_decay_rate: 0.90
+  seed: 594277
+  bn_momentum: 0
+  freeze_earlier_blocks: -1
+  beta1: 0.9
+  weight_decay: 0.0

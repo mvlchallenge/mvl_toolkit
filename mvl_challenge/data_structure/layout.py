@@ -161,12 +161,11 @@ class Layout:
         if np.linalg.norm(self.bound_center) != np.linalg.norm(center):
             self.bound_center = center
 
-        self.boundary_floor = (
-            self.boundary_floor - self.bound_center
-        ) / self.bound_scale
-        self.boundary_ceiling = (
-            self.boundary_ceiling - self.bound_center
-        ) / self.bound_scale
+        self.boundary_floor = self.apply_normalization(self.bearings_floor)
+        self.boundary_ceiling = self.apply_normalization(self.bearings_ceiling)
 
     def get_rgb(self):
         return imread(self.img_fn)
+
+    def apply_normalization(self, xyz):
+        return (xyz - self.bound_center)/self.bound_scale
