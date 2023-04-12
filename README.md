@@ -1,3 +1,7 @@
+## News
+
+April 10th, 2023 - [Tutorial 1](https://github.com/mvlchallenge/mvl_toolkit/tree/main/tutorial/train_horizon_net): Train your HorizonNet on our dataset
+
 ## Overview
 
 This toolkit is part of the Multi-view Layout Estimation Challenge of the [Omnidirectional Computer Vision (OmniCV) workshop](https://sites.google.com/view/omnicv2023/home?authuser=0) at [CVPR'23](https://cvpr2023.thecvf.com/). To participate and submit results, join us on [EvalAI](https://eval.ai/web/challenges/challenge-page/1906/).
