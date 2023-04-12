@@ -23,7 +23,6 @@ class WrapperHorizonNet:
     def __init__(self, cfg):
         self.cfg = cfg
         self.set_horizon_net_path()
-        from mvl_challenge.models.HorizonNet.dataset import visualize_a_data
         from mvl_challenge.models.HorizonNet.misc import utils as hn_utils
         from mvl_challenge.models.HorizonNet.model import HorizonNet
 
@@ -198,7 +197,7 @@ class WrapperHorizonNet:
                 true_eval = {"2DIoU": [], "3DIoU": []}
                 for gt, est in zip(y_bon_ref.cpu().numpy(), y_bon_est.cpu().numpy()):
                     eval_2d3d_iuo_from_tensors(est[None], gt[None], true_eval, )
-                    
+
 
                 local_eval = dict(
                     loss=compute_weighted_L1(y_bon_est.to(

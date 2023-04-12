@@ -1,16 +1,18 @@
 import argparse
 import os
-from mvl_challenge import DEFAULT_CKPT_DIR, GDRIVE_DIR 
+
+from mvl_challenge import DEFAULT_CKPT_DIR, GDRIVE_DIR
 from mvl_challenge.remote_data.download_mvl_data import download_google_drive_link
-from mvl_challenge.utils.io_utils import read_txt_file, create_directory
+from mvl_challenge.utils.io_utils import create_directory, read_txt_file
+
 
 def main(args):
-    
+
     create_directory(args.output_dir, delete_prev=False)
-    
+
     gdrive_ids_fn = args.gdrive_ids
     assert os.path.exists(gdrive_ids_fn), f"Not found {gdrive_ids_fn}"
-    
+
     lines = read_txt_file(gdrive_ids_fn)
 
     for l in lines:
@@ -19,19 +21,19 @@ def main(args):
         download_google_drive_link(
             gd_id, output_file, f"{lines.index(l)+1}/{lines.__len__()}"
         )
-    
-        
+
+
 def get_passed_args():
     parser = argparse.ArgumentParser()
-    
+
     parser.add_argument(
         "-f",
         "--gdrive_ids",
         type=str,
         default=f"{GDRIVE_DIR}/gdrive_ids__ckpt_hn_models.csv",
-        help=f"Default CKPT directory {DEFAULT_CKPT_DIR}.",
+        help=f"CKPT download info.",
     )
-    
+
     parser.add_argument(
         "-o",
         "--output_dir",
@@ -42,8 +44,7 @@ def get_passed_args():
 
     args = parser.parse_args()
     return args
-         
+
 if __name__ == "__main__":
     args = get_passed_args()
     main(args)
-    

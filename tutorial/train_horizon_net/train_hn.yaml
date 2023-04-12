@@ -4,7 +4,7 @@ output_dir: <Required>
 
 pilot_scene_list: <Required>
 
-ckpt: <Required> 
+ckpt: <Required>
 cuda_device: <Required>
 id_exp: <Required>
 
@@ -18,7 +18,7 @@ runners:
     size: -1
     batch_size: 5
     num_workers: 4
-  
+
   valid_iou:
     data_dir:
       img_dir: ${mvl_dir}/img
@@ -36,7 +36,7 @@ model:
   loss: weighted_L1
   min_std: 0.001
   epochs: 25
-  save_every: -1 
+  save_every: -1
   lr: 0.00005
   lr_decay_rate: 0.90
   seed: 594277
