@@ -26,15 +26,9 @@ MLC_TUTORIAL_DIR=os.path.dirname(__file__)
 
 def create_mlc_label_dirs(cfg):
     """
-    Create the directories and create the cfg.mlc_dir into the cfg class used for initialization
+    Create MLC pseudo label the directories
     """
     create_directory(os.path.join(cfg.output_dir, cfg.id_exp), delete_prev=True)
-    # ! Initializing cfg.mlc_dir class directory
-    cfg.mlc_dir = dict(
-        phi_coords = os.path.join(cfg.output_dir, cfg.id_exp, "mlc_label"),
-        std = os.path.join(cfg.output_dir, cfg.id_exp, "std"),
-        vis = os.path.join(cfg.output_dir, cfg.id_exp, "mlc_vis"))
-
     create_directory(cfg.mlc_dir.phi_coords, delete_prev=True)
     create_directory(cfg.mlc_dir.std, delete_prev=True)
     create_directory(cfg.mlc_dir.vis, delete_prev=True)

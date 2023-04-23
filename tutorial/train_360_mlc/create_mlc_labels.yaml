@@ -7,6 +7,11 @@ ckpt: <Required>
 cuda: <Required>
 id_exp: <Required>
 
+mlc_dir:
+  phi_coords: ${output_dir}/${id_exp}/mlc_label
+  std: ${output_dir}/${id_exp}/std
+  vis: ${output_dir}/${id_exp}/mlc_vis
+
 runners:
   mvl:
     data_dir: ${mvl_dir}
