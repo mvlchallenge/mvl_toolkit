@@ -21,7 +21,6 @@ def get_cfg_from_args(args):
     cfg = read_omega_cfg(args.cfg)
     cfg.mvl_dir = args.scene_dir
     cfg.training_scene_list = args.training_scene_list
-    cfg.testing_scene_list = args.testing_scene_list
     cfg.pilot_scene_list = args.pilot_scene_list
     cfg.output_dir = args.output_dir
     cfg.ckpt = args.ckpt
@@ -58,13 +57,6 @@ def get_passed_args():
         type=str,
         default=f"{SCENE_LIST_DIR}/scene_list__warm_up_training_set.json",
         help="Training scene list.",
-    )
-    
-    parser.add_argument(
-        "--testing_scene_list",
-        type=str,
-        default=f"{SCENE_LIST_DIR}/scene_list__warm_up_testing_set.json",
-        help="Testing scene list",
     )
     
     parser.add_argument(

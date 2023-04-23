@@ -19,8 +19,9 @@ pip install .
 ### Step 2: Create MLC pseudo labels
 
 We will use a pre-trained model, [HorionNet](https://github.com/sunset1995/HorizonNet) for example, to predict the layouts of all the images in the same room. By using the technique described in [360-MLC](https://enriquesolarte.github.io/360-mlc/), we can then create the pseudo labels of each frame.  
-You can find all controlable settings and hyperparameters in `create_mlc_labels.yaml`, note that parameters marked with `<Required>` should be filled or they will be the default value.
+You can find all controlable settings and hyperparameters in `create_mlc_labels.yaml`, note that parameters marked with `<Required>` must be filled by the user. For that purpose, we have implemented the method `get_cfg_from_args(args)` for you at `create_mlc_labels.py`. Please take a look of how those hyperparameter are filled from the passed arguments. 
 
+To create MLC pseudo labels, run the next command:
 ```bash
 # use -h for more details
 python create_mlc_labels.py
@@ -28,7 +29,7 @@ python create_mlc_labels.py
 python create_mlc_labels.py -f $SCENE_LIST -o $OUTPUT_DIR -ckpt $CHECK_POINT
 ```
 
-After the pseudo labels are created, you can find them in `$OUTPUT_DIR`, default will be `mvl_challenge/assets/data/mvl_data/labels/mlc__{ckpt}__scene_list__{SCENE_LIST}/`.
+After the pseudo labels are created, you can find them in `$OUTPUT_DIR`. By default, this directory is defined at `mvl_challenge/assets/data/mvl_data/labels/mlc__{ckpt}__scene_list__{SCENE_LIST}/`.
 
 There will be three folders under it:  
 1. mlc_label: pseudo labels (phi coordinates) in npy format
@@ -37,17 +38,18 @@ There will be three folders under it:
 
 ### Step 3: Self-train the model using MLC pseudo labels
 
-By Using the pseudo labels created in [Step 2](#step-2-create-mlc-pseudo-labels), we can self-train the model in the similar way as in [Tutorial 1](https://github.com/mvlchallenge/mvl_toolkit/tree/mvl_chellenge_dev/tutorial/train_horizon_net), which the model is trained on GT labels.  
-You can also find all controlable settings and hyperparameters in `train_mlc.yaml`, note that parameters marked with `<Required>` should be filled or they will be the default value.
+By Using the pseudo labels created in [Step 2](#step-2-create-mlc-pseudo-labels), we can self-train the model in the similar way as in [Tutorial 1](https://github.com/mvlchallenge/mvl_toolkit/tree/mvl_chellenge_dev/tutorial/train_horizon_net), where the model is trained using GT labels.
+
+You can also find all controlable settings and hyperparameters in `train_mlc.yaml`, note that parameters marked with `<Required>` must be filled by the user. For that purpose, we have implemented the method `get_cfg_from_args(args)` for you at `train_mlc.py`. Please take a look of how those hyperparameter are filled from the passed arguments..
 
 ```bash
 # use -h for more details
 python train_mlc.py
 # or
-python train_mlc.py --{split}__scene_list $SCENE_LIST_{split} -o $OUTPUT_DIR -ckpt $CHECK_POINT
+python train_mlc.py --training_scene_list $SCENE_LIST  -o $OUTPUT_DIR -ckpt $CHECK_POINT
 ```
 
-By default, the model will be trained on the pseudo labels of the training split, and validated on the pilot split, since the pilot split has GT labels for you to do the evaluation.
+By default, the model will be trained on the pseudo labels created from the training split, and validated on the pilot split, since the pilot split has GT labels for you to do IoU evaluation.
 
 At the same time, you can find the the training result in `mvl_challenge/assets/data/mvl_training_results/mlc_{ckpt}__scene_list__{split}/`
 

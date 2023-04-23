@@ -55,6 +55,7 @@ class MVLDataLoader(data.Dataset):
             self.data = self.list_frames[:cfg.size]
         # ! By default this dataloader iterates by frames
         logging.info(f"Simple MLC dataloader initialized with: {self.cfg.data_dir.img_dir}")
+        logging.info(f"Labels reading from: {os.path.join(self.cfg.data_dir.labels_dir, self.cfg.label)}")
         logging.info(f"Total number of frames:{self.data.__len__()}")
         
     def __len__(self):

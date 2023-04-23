@@ -30,12 +30,6 @@ runners:
     size: -1
     num_workers: 4
 
-  mvl:
-    data_dir: ${mvl_dir}
-    scene_list: ${testing_scene_list}
-    batch_size: 10
-    num_workers: 5
-
 model:
   ly_model: HorizonNet
   ckpt: ${ckpt}
