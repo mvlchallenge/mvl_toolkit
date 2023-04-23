@@ -4,7 +4,7 @@ from pathlib import Path
 from tqdm import tqdm
 import numpy as np
 from imageio import imwrite
-from mlc.models.utils import load_layout_model
+from mvl_challenge.models.models_utils import load_layout_model
 from mvl_challenge.datasets.mvl_dataset import iter_mvl_room_scenes
 from mvl_challenge.config.cfg import read_omega_cfg
 from mvl_challenge.datasets.mvl_dataset import MVLDataset

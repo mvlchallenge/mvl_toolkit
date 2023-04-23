@@ -7,7 +7,6 @@ testing_scene_list: <Required>
 pilot_scene_list: <Required>
 
 ckpt: <Required> 
-cuda: <Required>
 id_exp: <Required>
 
 runners:

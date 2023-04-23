@@ -1,4 +1,4 @@
-from mvl_challenge.models import WrapperHorizonNet
+from mvl_challenge.models.wrapper_horizon_net import WrapperHorizonNet
 
 
 def load_layout_model(cfg):

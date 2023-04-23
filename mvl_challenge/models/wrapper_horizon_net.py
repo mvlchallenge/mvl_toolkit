@@ -302,7 +302,7 @@ class WrapperHorizonNet:
 
     def set_log_dir(self):
         output_dir = os.path.join(self.cfg.output_dir, self.cfg.id_exp)
-        create_directory(output_dir, delete_prev=False)
+        create_directory(output_dir, delete_prev=True)
         logging.info(f"Output directory: {output_dir}")
         self.dir_log = os.path.join(output_dir, 'log')
         self.dir_ckpt = os.path.join(output_dir, 'ckpt')
