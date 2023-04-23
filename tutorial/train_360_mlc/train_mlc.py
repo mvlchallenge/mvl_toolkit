@@ -32,7 +32,7 @@ def get_cfg_from_args(args):
 def main(args):
     # ! Reading configuration
     cfg = get_cfg_from_args(args)
-    
+
     model = load_layout_model(cfg)
     
     model.prepare_for_training()
