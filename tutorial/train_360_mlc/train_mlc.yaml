@@ -1,3 +1,6 @@
+pass_args: True # If False, the <Required> below must be specified by user.
+                # Since they won't be set by passing the arguments anymore.
+
 # ! Selecting MVL dataset
 mvl_dir: <Required>
 output_dir: <Required>

@@ -1,3 +1,6 @@
+pass_args: True # If False, the <Required> below must be specified by user.
+                # Since they won't be set by passing the arguments anymore.
+
 # ! Selecting MVL dataset
 mvl_dir: <Required>
 output_dir: <Required>
@@ -6,6 +9,7 @@ scene_list: <Required>
 ckpt: <Required> 
 cuda: <Required>
 id_exp: <Required>
+
 mlc_dir:
   phi_coords: ${output_dir}/${id_exp}/mlc_label
   std: ${output_dir}/${id_exp}/std
