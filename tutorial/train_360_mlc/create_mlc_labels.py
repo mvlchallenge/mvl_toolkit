@@ -9,13 +9,14 @@ from mlc.mlc import compute_pseudo_labels
 from mvl_challenge.datasets.mvl_dataset import iter_mvl_room_scenes
 from mvl_challenge.config.cfg import read_omega_cfg
 from mvl_challenge import DEFAULT_MVL_DIR
+from mvl_challenge.utils.spherical_utils import xyz2uv
 from mvl_challenge.utils.io_utils import create_directory, save_compressed_phi_coords
 from mvl_challenge.datasets.mvl_dataset import MVLDataset
 from mvl_challenge.models.wrapper_horizon_net import WrapperHorizonNet
 from mvl_challenge.utils.image_utils import (
     draw_boundaries_uv, 
     draw_uncertainty_map, 
-    COLOR_MAGENTA)
+    COLOR_MAGENTA, COLOR_CYAN)
 from mvl_challenge import (
     ASSETS_DIR,
     DEFAULT_MVL_DIR,
@@ -66,7 +67,22 @@ def compute_and_save_mlc_labels(list_ly):
         fn = os.path.join(ref.cfg.mlc_dir.std, f"{ref.idx}")
         np.save(fn, std)
         
+        uv_ceiling_hat = xyz2uv(ref.bearings_ceiling)
+        uv_floor_hat = xyz2uv(ref.bearings_floor)
+    
         img = ref.get_rgb()
+        draw_boundaries_uv(
+            image=img,
+            boundary_uv=uv_ceiling_hat,
+            color=COLOR_CYAN
+        )
+        
+        draw_boundaries_uv(
+            image=img,
+            boundary_uv=uv_floor_hat,
+            color=COLOR_CYAN
+        )
+        
         draw_boundaries_uv(
             image=img,
             boundary_uv=uv_ceiling_ps,
