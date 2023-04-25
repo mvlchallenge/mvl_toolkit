@@ -17,6 +17,7 @@ This implementation offers the following capabilities to support the mvl-challen
 
 ## News
 
+[04/2023] — [Tutorial 2: Use 360-MLC for self-training](https://github.com/mvlchallenge/mvl_toolkit/tree/main/tutorial/train_360_mlc) is out now! \
 [04/2023] — [Tutorial 1: Train your HorizonNet on our dataset](https://github.com/mvlchallenge/mvl_toolkit/tree/main/tutorial/train_horizon_net) is out now! \
 [03/2023] — Toolkit released!
 
