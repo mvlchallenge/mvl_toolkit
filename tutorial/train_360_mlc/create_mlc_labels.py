@@ -105,12 +105,13 @@ def compute_and_save_mlc_labels(list_ly):
         
 def get_cfg_from_args(args):
     cfg = read_omega_cfg(args.cfg)
-    cfg.mvl_dir = args.scene_dir
-    cfg.scene_list = args.scene_list
-    cfg.output_dir = args.output_dir
-    cfg.ckpt = args.ckpt
-    cfg.cuda_device = args.cuda_device
-    cfg.id_exp = f"mlc__{Path(cfg.ckpt).stem}__{Path(args.scene_list).stem}"
+    if cfg.pass_args:   # params in the yaml will be replaced by the passed arguments
+        cfg.mvl_dir = args.scene_dir
+        cfg.scene_list = args.scene_list
+        cfg.output_dir = args.output_dir
+        cfg.ckpt = args.ckpt
+        cfg.cuda_device = args.cuda_device
+        cfg.id_exp = f"mlc__{Path(cfg.ckpt).stem}__{Path(args.scene_list).stem}"
     return cfg
  
 def main(args):
