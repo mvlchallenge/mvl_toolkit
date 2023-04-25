@@ -27,6 +27,8 @@ from mvl_challenge.utils.io_utils import (
 
 def zip_geometry_files(list_scenes, args):
     geometry_files = [
+        "room_gt_v0.0.yaml",
+        "room_gt.yaml",
         "label.json",
         "frm_ref.txt",
         "keyframe_list.txt",
@@ -34,13 +36,13 @@ def zip_geometry_files(list_scenes, args):
         "cam_pose_estimated.csv",
     ]
     for scene in list_scenes:
-        zip_filename = os.path.join(args.o, f"{scene.replace('/', '_')}_geometry.zip")
+        zip_filename = os.path.join(args.output_dir, f"{scene.replace('/', '_')}_geometry.zip")
         scene_dir = os.path.join(args.scene_dir, scene)
         with zipfile.ZipFile(file=zip_filename, mode="w") as zf:
             list_fn = []
             for fn in geometry_files:
                 list_fn += get_files_given_a_pattern(
-                    data_dir=os.path.join(args.scene_dircene_dir, scene),
+                    data_dir=os.path.join(args.scene_dir, scene),
                     flag_file=fn,
                     exclude=["depth", "hn_mp3d"],
                     include_flag_file=True,
@@ -69,7 +71,7 @@ def get_list_frames(scene_path):
 
 def zip_rgb_files(list_scenes, args):
     for scene in list_scenes:
-        zip_filename = os.path.join(args.o, f"{scene.replace('/', '_')}_rgb.zip")
+        zip_filename = os.path.join(args.output_dir, f"{scene.replace('/', '_')}_rgb.zip")
         scene_dir = os.path.join(args.scene_dir, scene)
         with zipfile.ZipFile(file=zip_filename, mode="w") as zf:
             list_fn = get_list_frames(scene_dir)
@@ -85,7 +87,7 @@ def zip_rgb_files(list_scenes, args):
 
 def zip_depth_files(list_scenes, args):
     for scene in list_scenes:
-        zip_filename = os.path.join(args.o, f"{scene.replace('/', '_')}_depth.zip")
+        zip_filename = os.path.join(args.output_dir, f"{scene.replace('/', '_')}_depth.zip")
         scene_dir = os.path.join(args.scene_dir, scene)
         with zipfile.ZipFile(file=zip_filename, mode="w") as zf:
             list_fn = get_list_frames(scene_dir)
@@ -101,7 +103,7 @@ def zip_depth_files(list_scenes, args):
 
 def zip_npy_files(list_scenes, args):
     for scene in list_scenes:
-        zip_filename = os.path.join(args.o, f"{scene.replace('/', '_')}_npy.zip")
+        zip_filename = os.path.join(args.output_dir, f"{scene.replace('/', '_')}_npy.zip")
         scene_dir = os.path.join(args.scene_dir, scene)
         with zipfile.ZipFile(file=zip_filename, mode="w") as zf:
             list_fn = get_files_given_a_pattern(
@@ -151,18 +153,16 @@ def get_argparse():
 
     # * Input Directory (-s)
     parser.add_argument(
-        "-d",
         "--scene_dir",
         # required=True,
-        default="/media/public_dataset/MP3D_360_FPE/MULTI_ROOM_SCENES",
+        default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES",
         type=str,
         help="Input Directory (-source)",
     )
 
     # * Output Directory (-o)
     parser.add_argument(
-        "-o",
-        "-output_dir",
+        "--output_dir",
         # required=True,
         default="/media/public_dataset/MP3D_360_FPE/zipped_mp3d_fpe",
         type=str,
@@ -170,7 +170,7 @@ def get_argparse():
     )
 
     parser.add_argument(
-        "-keys",
+        "--keys",
         # required=True,
         default=["geom", "rgb", "depth", "npy"],
         # default="rgb",

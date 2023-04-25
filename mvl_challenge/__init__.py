@@ -13,3 +13,4 @@ DEFAULT_TRAINING_DIR = os.path.join(ASSETS_DIR, "data/mvl_training_results")
 DEFAULT_CKPT_DIR = os.path.join(ASSETS_DIR, "ckpt")
 
 EPILOG = "\t * MVL-Challenge - CVPR 2023 - OmniCV workshop"
+

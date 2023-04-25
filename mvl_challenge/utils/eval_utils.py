@@ -10,7 +10,7 @@ def compute_weighted_L1(y_est, y_ref, std, min_std=1E-2):
     return F.l1_loss(y_est/(std + min_std)**2, y_ref/(std + min_std)**2) 
 
 
-def eval_2d3d_iuo_from_tensors(est_bon, gt_bon, losses, ch=1):
+def eval_2d3d_iuo_from_tensors(est_bon, gt_bon, losses, ch=1.6):
     est_bearing_ceiling = phi_coords2xyz(est_bon[:, 0, :].squeeze())
     est_bearing_floor = phi_coords2xyz(est_bon[:, 1, :].squeeze())
     gt_bearing_ceiling = phi_coords2xyz(gt_bon[:, 0, :].squeeze())

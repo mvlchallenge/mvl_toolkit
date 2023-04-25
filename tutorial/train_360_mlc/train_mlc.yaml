@@ -1,0 +1,50 @@
+pass_args: True # If False, the <Required> below must be specified by user.
+                # Since they won't be set by passing the arguments anymore.
+
+# ! Selecting MVL dataset
+mvl_dir: <Required>
+output_dir: <Required>
+
+training_scene_list: <Required>
+testing_scene_list: <Required>
+pilot_scene_list: <Required>
+
+ckpt: <Required> 
+id_exp: <Required>
+
+runners:
+  train:
+    data_dir:
+      img_dir: ${mvl_dir}/img
+      labels_dir: ${mvl_dir}/labels/${id_exp}
+    label: mlc_label
+    scene_list: ${training_scene_list}
+    size: -1
+    batch_size: 5
+    num_workers: 4
+  
+  valid_iou:
+    data_dir:
+      img_dir: ${mvl_dir}/img
+      labels_dir: ${mvl_dir}/labels/
+    scene_list: ${pilot_scene_list}
+    batch_size: 4
+    label: gt
+    size: -1
+    num_workers: 4
+
+model:
+  ly_model: HorizonNet
+  ckpt: ${ckpt}
+  optimizer: Adam
+  loss: weighted_L1
+  min_std: 0.001
+  epochs: 25
+  save_every: -1 
+  lr: 0.00005
+  lr_decay_rate: 0.90
+  seed: 594277
+  bn_momentum: 0
+  freeze_earlier_blocks: -1
+  beta1: 0.9
+  weight_decay: 0.0
