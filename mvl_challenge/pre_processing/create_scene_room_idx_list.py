@@ -141,7 +141,7 @@ def scene_list_from_rgbd_dataset(args):
     for room in tqdm(list_rooms, desc="List rooms..."):
         list_frames = [fr for fr in list_scene_room_idx if f"{room}_" in fr]
         if args.max_fr is not None:
-            prune_list_frames(list_frames, args.max_fr)
+            list_frames = prune_list_frames(list_frames, args.max_fr)
         if list_frames.__len__() > args.min_fr:
             data_dict[room] = list_frames
 
@@ -164,8 +164,9 @@ def get_argparse():
         # required=True,
         # default=None,
         # default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/",
-        # default="/media/public_dataset/HM3D-MVL/train",
-        default=f"{DEFAULT_MVL_DIR}",
+        # default="/media/public_dataset/HM3D-MVL/test",
+        # default=f"{DEFAULT_MVL_DIR}",
+        default="/media/public_dataset/mvl_challenge/mp3d_fpe/entire_training_set",
         type=str,
         help="RGBD dataset directory.",
     )
@@ -174,7 +175,7 @@ def get_argparse():
         "-f",
         "--output_filename",
         # required=True,
-        default="scene_room_frames.json",
+        default="scene_list__mp3d_fpe__all_training_set.json",
         type=str,
         help="Filename to the scene_room_idx file.",
     )
@@ -183,7 +184,7 @@ def get_argparse():
         "-o",
         "--output_dir",
         # required=True,
-        default=f"{ASSETS_DIR}/tmp/scene_lists",
+        default=f"/media/public_dataset/mvl_challenge/mp3d_fpe/merged_data",
         type=str,
         help=f'Output directory for the output_file to be created. (Default: "{ASSETS_DIR}/tmp/scene_lists")',
     )
@@ -203,7 +204,7 @@ def get_argparse():
         # required=True,
         # default=f"{ASSETS_DIR}/mvl_data/geometry_info",
         # default=None,
-        action="store_true",
+        action="store_false",
         help="is the passed scene_dir a MVL directory? (data stored in  scene_room_idx format). Default: False",
     )
 

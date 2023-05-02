@@ -51,6 +51,7 @@ def check_mvl_dataset(args):
     """
 
     data_scene = json.load(open(args.scene_list, "r"))
+    print(f"scene list: {args.scene_list}")
     check = [
         check_geo_info_and_img(args.scene_dir, scene_list)
         for scene_list in tqdm(
