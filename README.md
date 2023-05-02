@@ -15,6 +15,10 @@ This implementation offers the following capabilities to support the mvl-challen
 - Provide examples of how to evaluate a layout estimation using `<Layout class>` instances.
 - Provide methods to save, zip and submit layout estimates to EvalAI.
 
+## News
+
+[04/2023] — [Tutorial 1: Train your HorizonNet on our dataset](https://github.com/mvlchallenge/mvl_toolkit/tree/main/tutorial/train_horizon_net) is out now! \
+[03/2023] — Toolkit released!
 
 ## Installation
 
@@ -33,7 +37,7 @@ python test_mvl_toolkit.py
 
 ## Datasets
 
-In this challenge, two multi-view datasets are included, 1) [MP3D-FPE](https://github.com/EnriqueSolarte/direct_360_FPE), and 2) [HM3D-MVL](https://aihabitat.org/), both collected in equirectangular camera projection.
+In this challenge, two multi-view datasets are included, 1) [MP3D-FPE](https://github.com/EnriqueSolarte/direct_360_FPE) collected from [Matterport3D](https://niessner.github.io/Matterport/), and 2) HM3D-MVL collected from [HM3D](https://aihabitat.org/datasets/hm3d/). Both are collected in equirectangular camera projection.
 
 We have reorganized both datasets into a standard naming convention as `${scene_name}_${version}_${room}_${idx}`, e.g., `E9uDoFAP3SH_1_room0_982`, and the data structure is listed as follows:
 ```
@@ -168,3 +172,9 @@ python mvl_challenge/challenge_results/evaluate_results.py -d ${MVL_DATA_DIR} -f
 ```
 
 If the evaluation results are matching, congratulations! You've already completed the submission!
+
+## License
+
+The dataset is for non-commercial academic use only, and it's under the [Matterport open source license](https://matterport.com/matterport-end-user-license-agreement-academic-use-model-data).
+
+The code is released under the MIT license.
