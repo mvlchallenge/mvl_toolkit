@@ -106,17 +106,7 @@ def download_gdrive_file(gdrive_fn, zip_dir):
     cfg = get_empty_cfg()
     cfg.output_dir = zip_dir
     cfg.ids_file = os.path.join(GDRIVE_DIR, gdrive_fn)
-    # download_file(cfg)
     download_file_by_threads(cfg)
-    # subprocess.run(
-    #     [
-    #         "sh",
-    #         f"{ROOT_DIR}/remote_data/download_gdrive_ids.sh",
-    #         f"{cfg.ids_file}",
-    #         f"{cfg.output_dir}/",
-    #         "2>&1", "&"
-    #     ]
-    # )
 
 
 def main(args):
@@ -162,6 +152,34 @@ def main(args):
         )
         # download_data_split_by_folders(args, data_split)
         # return
+    elif args.split == "challenge_training":
+        data_split = DataSplit(
+            # GDRIVE_IDS_MVL_DATA_FN=os.path.join(GDRIVE_DIR, 'gdrive_ids__warm_up_training_set.csv'),
+            GDRIVE_IDS_MVL_DATA_FN=os.path.join(
+                # GDRIVE_DIR, "gdrive_ids__warm_up_training_set_folders.csv"
+                GDRIVE_DIR, "gdrive_ids__challenge_phase_training_set.csv"
+
+            ),
+            GDRIVE_IDS_LABELS_FN="",
+            TYPE="challenge_phase__training_set",
+            GT_LABELS=False,
+            GDRIVE_ID="1bnTTzTsc547DVRSccDQCr16LWwdzXkbG",
+            GDRIVE_ID_LABELS=""
+        )
+    elif args.split == "challenge_testing":
+        data_split = DataSplit(
+            # GDRIVE_IDS_MVL_DATA_FN=os.path.join(GDRIVE_DIR, 'gdrive_ids__warm_up_training_set.csv'),
+            GDRIVE_IDS_MVL_DATA_FN=os.path.join(
+                # GDRIVE_DIR, "gdrive_ids__warm_up_training_set_folders.csv"
+                GDRIVE_DIR, "gdrive_ids__challenge_phase_testing_set.csv"
+
+            ),
+            GDRIVE_IDS_LABELS_FN="",
+            TYPE="challenge_phase__testing_set",
+            GT_LABELS=False,
+            GDRIVE_ID="1VoTifgI8_sIfN324UOtlgB16jxHybKYC",
+            GDRIVE_ID_LABELS=""
+        )
     else:
         raise ValueError(f"Not implemented split: {args.split}")
 
@@ -183,7 +201,7 @@ def get_argparse():
 
     parser.add_argument(
         "-split",
-        default="pilot",
+        default="challenge_training",
         type=str,
         help="Defines the split data you want to download. Options: 'pilot', 'warm_up_testing', 'warm_up_training', 'challenge_testing', 'challenge_training' ",
     )

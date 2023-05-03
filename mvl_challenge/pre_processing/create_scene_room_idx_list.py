@@ -37,6 +37,11 @@ def get_list_idx_from_dir(dir):
     return [int(Path(idx).stem) for idx in os.listdir(dir)]
 
 
+def get_room_idx(scene_frame):
+    room = scene_frame.split("_")
+    return str.join("_", room[:3])
+
+
 def get_list_rooms_idx_from_metadata(metadata_filename):
     """
     Returns the list of rooms and index frames defined for the passed metadata file
@@ -115,17 +120,33 @@ def get_list_scene_room_idx(args):
 
 def save_scene_list_from_mvl_directory(args):
     mvl_dirs = ["geometry_info", 'img']
-    for d in mvl_dirs:
-        assert os.path.exists(os.path.join(args.scene_dir, d)), f"No directory found {args.scene_dir}"
-
-    set_loggings()
-    cfg = get_empty_cfg()
-    cfg.scene_dir = os.path.join(args.scene_dir, "geometry_info")
-    data_dict = get_scene_list_from_dir(cfg)
+    fail_mvl_dir_search = False
+    try:
+        for d in mvl_dirs:
+            assert os.path.exists(os.path.join(args.scene_dir, d)), f"No directory found {args.scene_dir}"
+    except:
+        fail_mvl_dir_search= True
+    
+    if fail_mvl_dir_search: 
+        # ! assuming a dir from mvl_dir was passed
+        list_files = os.listdir(args.scene_dir)
+        assert list_files.__len__() > 0, f"No files found in {args.scene_dir}"
+        
+        rooms = np.unique([get_room_idx(fr) for fr in list_files]).tolist()
+        data_dict = {}
+        for r in rooms:
+            data_dict[r] = [Path(f).stem for f in list_files if f"{r}_" in f]
+        
+    else:
+        set_loggings()
+        cfg = get_empty_cfg()
+        cfg.scene_dir = os.path.join(args.scene_dir, "geometry_info")
+        data_dict = get_scene_list_from_dir(cfg)
 
     create_directory(args.output_dir, delete_prev=False)
     fn = os.path.join(args.output_dir, Path(f"{args.output_filename}").stem)
     save_json_dict(f"{fn}.json", data_dict)
+    print(f"saved: {fn}.json")
 
 
 def scene_list_from_rgbd_dataset(args):
@@ -141,7 +162,7 @@ def scene_list_from_rgbd_dataset(args):
     for room in tqdm(list_rooms, desc="List rooms..."):
         list_frames = [fr for fr in list_scene_room_idx if f"{room}_" in fr]
         if args.max_fr is not None:
-            prune_list_frames(list_frames, args.max_fr)
+            list_frames = prune_list_frames(list_frames, args.max_fr)
         if list_frames.__len__() > args.min_fr:
             data_dict[room] = list_frames
 
@@ -164,8 +185,9 @@ def get_argparse():
         # required=True,
         # default=None,
         # default="/media/public_dataset/MP3D_360_FPE/SINGLE_ROOM_SCENES/",
-        # default="/media/public_dataset/HM3D-MVL/train",
-        default=f"{DEFAULT_MVL_DIR}",
+        # default="/media/public_dataset/HM3D-MVL/test",
+        # default=f"{DEFAULT_MVL_DIR}",
+        default="/media/public_dataset/mvl_challenge/mp3d_fpe/entire_testing_set/labels/gt",
         type=str,
         help="RGBD dataset directory.",
     )
@@ -174,7 +196,7 @@ def get_argparse():
         "-f",
         "--output_filename",
         # required=True,
-        default="scene_room_frames.json",
+        default="scene_list__mp3d_fpe__all_training_set.json",
         type=str,
         help="Filename to the scene_room_idx file.",
     )
@@ -183,7 +205,7 @@ def get_argparse():
         "-o",
         "--output_dir",
         # required=True,
-        default=f"{ASSETS_DIR}/tmp/scene_lists",
+        default=f"/media/public_dataset/mvl_challenge/mp3d_fpe/entire_testing_set/labels/gt",
         type=str,
         help=f'Output directory for the output_file to be created. (Default: "{ASSETS_DIR}/tmp/scene_lists")',
     )
@@ -203,7 +225,7 @@ def get_argparse():
         # required=True,
         # default=f"{ASSETS_DIR}/mvl_data/geometry_info",
         # default=None,
-        action="store_true",
+        action="store_false",
         help="is the passed scene_dir a MVL directory? (data stored in  scene_room_idx format). Default: False",
     )
 

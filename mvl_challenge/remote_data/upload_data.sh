@@ -19,20 +19,22 @@ while getopts ":hd:i:c" arg; do
   esac
 done
 
-if [ -z "$ZIP_DIR" ]
-then
-      usage
-fi
-
 if [ -z "$ID_DIR" ]
 then
       usage
 fi
 
+
 if [ "$CHECK" = true ]; then
-  gdrive list --query " '$ID_DIR' in parents"
+  gdrive list -m 20000 --no-header --query " '$ID_DIR' in parents"
   exit 0  
 fi
+
+if [ -z "$ZIP_DIR" ]
+then
+      usage
+fi
+
 
 for filename in "$ZIP_DIR"/*; do
     echo "$filename"
