@@ -11,8 +11,9 @@ from mvl_challenge import (
 from mvl_challenge.config.cfg import read_omega_cfg
 from mvl_challenge.datasets.mvl_dataset import MVLDataset, iter_mvl_room_scenes
 from mvl_challenge.utils.vispy_utils import plot_list_ly
-from mvl_challenge.utils.image_utils import draw_boundaries_phi_coords
+from mvl_challenge.utils.image_utils import draw_boundaries_phi_coords, add_caption_to_image, draw_boundaries_uv
 from imageio import imwrite
+from mvl_challenge.utils.image_utils import COLOR_CYAN, COLOR_GREEN, xyz2uv
 from mvl_challenge.models.wrapper_horizon_net import WrapperHorizonNet
 from mvl_challenge.utils.io_utils import (
     create_directory,
@@ -42,7 +43,10 @@ def main(args):
     hn = WrapperHorizonNet(cfg)
 
     # ! Join the output_dir and the scene_list
-    output_dir = create_directory(args.output_dir, delete_prev=False)
+    model = Path(cfg.ckpt).stem
+    output_dir = create_directory(os.path.join(args.output_dir, model), delete_prev=True)
+    output_dir_vis = create_directory(os.path.join(output_dir, "vis"), delete_prev=True)
+
     results = {}
 
     for list_ly in iter_mvl_room_scenes(model=hn, dataset=mvl):
@@ -65,6 +69,25 @@ def main(args):
                 results[f"{ly.idx}__2dIoU"] = 0
                 results[f"{ly.idx}__3dIoU"] = 0
 
+            if args.vis:
+                # ! Save visualizations
+                img = ly.get_rgb()
+                draw_boundaries_phi_coords(
+                    img, phi_coords=phi_coords_est,
+                    color=COLOR_CYAN
+                )
+                
+                draw_boundaries_phi_coords(
+                    img, phi_coords=phi_coords_gt,
+                    color=COLOR_GREEN
+                )
+                
+                img = add_caption_to_image(img, ly.idx)
+
+                fn = os.path.join(output_dir_vis, f"{ly.idx}.jpg")
+                imwrite(fn, img)
+
+            
             results[f"{ly.idx}__2dIoU"] = results_2d3d_iou[0]
             results[f"{ly.idx}__3dIoU"] = results_2d3d_iou[1]
 
@@ -119,6 +142,12 @@ def get_argparse():
         help="Pretrained model ckpt (Default: mp3d)",
     )
 
+    parser.add_argument(
+        "--vis",
+        action="store_true",
+        help="Output directory where to store phi_coords estimations.",
+    )
+     
     parser.add_argument("--cuda_device", default=0, type=int, help="Cuda device. (Default: 0)")
 
     parser.add_argument(
