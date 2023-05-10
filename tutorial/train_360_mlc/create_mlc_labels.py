@@ -57,9 +57,9 @@ def compute_and_save_mlc_labels(list_ly):
         )
 
         # ! Saving pseudo labels
-        uv = np.vstack((uv_ceiling_ps[1], uv_floor_ps[1]))
+        v = np.vstack((uv_ceiling_ps[1], uv_floor_ps[1]))
         std = np.vstack((std_ceiling, std_floor))
-        phi_coords = (uv / 512 + 0.5) * np.pi
+        phi_coords = (v / 512 - 0.5) * np.pi
         
         # ! NOTE: 360-MLC expects npy files as pseudo labels
         fn = os.path.join(ref.cfg.mlc_dir.phi_coords, f"{ref.idx}")
