@@ -14,6 +14,7 @@ from mvl_challenge.datasets.mvl_dataset import MVLDataset, iter_mvl_room_scenes
 from mvl_challenge.utils.vispy_utils import plot_list_ly
 from mvl_challenge.utils.image_utils import draw_boundaries_phi_coords, add_caption_to_image
 from imageio import imwrite
+from mvl_challenge.utils.check_utils import check_mvl_dataset
 from mvl_challenge.models.wrapper_horizon_net import WrapperHorizonNet
 from mvl_challenge.utils.io_utils import (
     create_directory,
@@ -37,6 +38,9 @@ def get_cfg_from_args(args):
 
 def main(args):
     cfg = get_cfg_from_args(args)
+    _, ret = check_mvl_dataset(args)
+    assert ret, "Failed checking MVL dataset."
+
     mvl = MVLDataset(cfg)
     hn = WrapperHorizonNet(cfg)
 
@@ -98,7 +102,7 @@ def get_argparse():
         "-f",
         "--scene_list",
         type=str,
-        default=f"{SCENE_LIST_DIR}/scene_list__warm_up_pilot_set.json",
+        default=f"{SCENE_LIST_DIR}/scene_list__challenge_phase_testing_set.json",
         help="Scene_list of mvl scenes in scene_room_idx format.",
     )
 
