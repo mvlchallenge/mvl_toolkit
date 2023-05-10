@@ -1,6 +1,6 @@
 from imageio import imread
 import numpy as np
-from mvl_challenge.utils.spherical_utils import phi_coords2xyz, xyz2uv
+from mvl_challenge.utils.spherical_utils import phi_coords2xyz, xyz2uv, phi_coords2uv
 import matplotlib.pyplot as plt
 from PIL import Image
 from PIL import ImageDraw

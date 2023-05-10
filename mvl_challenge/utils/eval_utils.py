@@ -1,6 +1,7 @@
 from mvl_challenge.utils.spherical_utils import phi_coords2xyz
 from shapely.geometry import Polygon
 import torch.nn.functional as F
+from mvl_challenge.utils.vispy_utils import plot_color_plc
 
 
 def compute_L1_loss(y_est, y_ref):

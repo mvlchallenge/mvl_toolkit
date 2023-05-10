@@ -152,7 +152,7 @@ def plot_color_plc(
     color=(0, 0, 0, 1),
     return_view=False,
     size=0.5,
-    plot_main_axis=False,
+    plot_main_axis=True,
     background="white",
     scale_factor=15,
     caption="",

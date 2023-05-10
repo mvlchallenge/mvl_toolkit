@@ -20,3 +20,4 @@ PyOpenGL-accelerate
 pyransac3d
 python-dateutil==2.8.1
 googledrivedownloader
+scikit-image
