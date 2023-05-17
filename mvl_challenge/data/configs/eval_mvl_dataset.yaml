@@ -1,6 +1,7 @@
 scene_dir: None
 scene_list: None
 ckpt: None
+cuda_device: 0
 
 auto_loading:
   trained_models: ${rel_path:./trained_models.yaml}
