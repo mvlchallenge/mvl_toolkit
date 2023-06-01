@@ -18,7 +18,7 @@ pip install .
 
 ### Step 2: Create MLC pseudo labels
 
-We will use a pre-trained model, [HorionNet](https://github.com/sunset1995/HorizonNet) for example, to predict the layouts of all the images in the same room. By using the technique described in [360-MLC](https://enriquesolarte.github.io/360-mlc/), we can then create the pseudo labels of each frame.
+We will use a pre-trained model, [HorizonNet](https://github.com/sunset1995/HorizonNet) for example, to predict the layouts of all the images in the same room. By using the technique described in [360-MLC](https://enriquesolarte.github.io/360-mlc/), we can then create the pseudo labels of each frame.
 
 You can find all controlable settings and hyperparameters in `create_mlc_labels.yaml`, and you have two options:
 
